@@ -9,9 +9,11 @@ class ProjectModel(BaseModel):
 class TaskModel(BaseModel):
     title: str
     description: str
-    status: Literal['new', 'in_progress', 'completed']
-    priority: Literal['low', 'medium', 'high']
+    type: Literal['TASK', 'HISTORY', 'ISSUE', 'EPIC', 'ENHANCEMENT', 'DEFECT']
+    status: Literal['BACKLOG', 'TODO', 'IN_PROGRESS', 'IN_REVIEW', 'DONE']
+    priority: Literal['LOW', 'MEDIUM', 'HIGHT']
     project_id: int
+    author_id: int
     assignee_id: int
 
 class UserModel(BaseModel):

@@ -73,6 +73,16 @@ const config: Config = {
       width: {
         aside: 'var(--aside-width)',
       },
+      keyframes: {
+        bubble: {
+          '0%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(1.3)' },
+          '100%': { transform: 'scale(1)' },
+        },
+      },
+      animation: {
+        'bubble': 'bubble 500ms ease-in',
+      },
     }
   },
   plugins: [
@@ -86,6 +96,6 @@ const config: Config = {
       });
     }),
   ],
-  safelist: ['-left-aside', 'cursor-pointer', 'text-left', 'text-center', 'text-right']
+  safelist: ['-left-aside', 'cursor-pointer', 'text-left', 'text-center', 'text-right', 'color-red', 'animate-bubble']
 };
 export default config;

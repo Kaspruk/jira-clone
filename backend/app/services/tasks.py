@@ -9,9 +9,11 @@ def create_task(task: TaskModel, connection):
             cur.execute(CREATE_TASK, (
                 task.title,
                 task.description,
+                task.type,
                 task.status,
                 task.priority,
                 str(task.project_id),
+                str(task.author_id),
                 str(task.assignee_id),
             ))
             task_id = cur.fetchone()["id"]
@@ -23,10 +25,16 @@ def create_task(task: TaskModel, connection):
         connection.rollback()
         raise HTTPException(status_code=400, detail=str(e))
     
-def get_tasks(connection):
+def get_tasks(connection, projectId):
     try:
         with connection.cursor() as cur:
-            cur.execute(GET_TASKS)
+            query = [GET_TASKS]
+
+            if projectId:
+                query.append(f"WHERE project_id = {projectId}")
+
+            print(" ".join(query))
+            cur.execute(" ".join(query))
             return cur.fetchall()
     except Error as e:
         connection.rollback()

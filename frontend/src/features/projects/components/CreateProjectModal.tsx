@@ -1,3 +1,5 @@
+'use client';
+
 import { useForm } from "react-hook-form";
 import { ResponsiveModal, type ResponsiveModalProps } from "@/components/ResponsiveModal";
 import { DialogTitle } from "@/components/ui/dialog";
@@ -7,16 +9,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { ErrorMessage } from "@/components/ui/error-message";
 import { DottedSeparator } from "@/components/DottedSeparator";
 
 import { useCreateProject } from "../api";
+import { useProjectModalState } from "../hooks";
 
 type FormDataType = {
     name: string,
     description: string,
 };
 
-export const CreateProjectModal = (props: Omit<ResponsiveModalProps, 'children'>) => {
+export const CreateProjectModal = (props: Partial<Omit<ResponsiveModalProps, 'children'>>) => {
     const {
         register,
         handleSubmit,
@@ -28,18 +32,21 @@ export const CreateProjectModal = (props: Omit<ResponsiveModalProps, 'children'>
         }
     });
 
+    const [isOpen, setIsOpen] = useProjectModalState();
+
     const { mutate, isPending } = useCreateProject();
 
     const onSubmit = async (data: FormDataType) => {
         mutate({ ...data, owner_id: 1 }, {
             onSuccess() {
+                setIsOpen(false);
                 props.onOpenChange?.(false)
             }
         });
     };
 
     return (
-        <ResponsiveModal {...props}>
+        <ResponsiveModal open={isOpen} onOpenChange={setIsOpen}>
             <Card className="w-full p-4 h-full border-none shadow-none">
                 <CardHeader className="flex mb-4">
                     <DialogTitle className="text-xl font-bold">
@@ -57,7 +64,7 @@ export const CreateProjectModal = (props: Omit<ResponsiveModalProps, 'children'>
                                 id="name"
                                 {...register('name', { required: { value: true, message: 'Fields is required' } })}
                             />
-                            {errors.name && (<Label>{errors.name.message}</Label>)}
+                            {errors.name && (<ErrorMessage>{errors.name.message}</ErrorMessage>)}
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="description">Description</Label>
@@ -65,7 +72,7 @@ export const CreateProjectModal = (props: Omit<ResponsiveModalProps, 'children'>
                                 id="description"
                                 {...register('description', { required: { value: true, message: 'Fields is required' } })}
                             />
-                            {errors.description && (<Label className="color-red">{errors.description.message}</Label>)}
+                            {errors.description && (<ErrorMessage>{errors.description.message}</ErrorMessage>)}
                         </div>
                         <DottedSeparator className="my-4" />
                         <div className="flex items-center justify-between">
@@ -73,9 +80,7 @@ export const CreateProjectModal = (props: Omit<ResponsiveModalProps, 'children'>
                                 type="button"
                                 size="lg"
                                 variant="secondary"
-                            // onClick={onCancel}
-                            // disabled={isPending}
-                            // className={cn(!onCancel && "invisible")}
+                                onClick={() => setIsOpen(false)}
                             >
                                 Cancel
                             </Button>

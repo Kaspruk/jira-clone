@@ -1,19 +1,50 @@
+export type ProjectType = {
+  id: number;
+  name: string;
+  owner_id: number;
+  description: string;
+};
+
+export type TaskType = {
+  id: number;
+  title: string;
+  description: string;
+  type: TypeTask;
+  status: TaskStatus;
+  priority: TaskPriority;
+  project_id: number;
+  author_id: number;
+  assignee_id: number;
+  created_at: number;
+  updated_at: number;
+};
+
 export enum TaskStatus {
-    BACKLOG = "BACKLOG",
-    TODO = "TODO",
-    IN_PROGRESS = "IN_PROGRESS",
-    IN_REVIEW = "IN_REVIEW",
-    DONE = "DONE"
-  };
-  
-  export type Task = {
-    name: string;
-    status: TaskStatus;
-    workspaceId: string;
-    assigneeId: string;
-    projectId: string;
-    position: number;
-    dueDate: string;
-    description?: string;
-  };
-  
+  BACKLOG = "BACKLOG",
+  TODO = "TODO",
+  IN_PROGRESS = "IN_PROGRESS",
+  IN_REVIEW = "IN_REVIEW",
+  DONE = "DONE",
+};
+
+export enum TaskPriority {
+  LOW = "LOW",
+  MEDIUM = "MEDIUM",
+  HIGHT = "HIGHT",
+};
+
+export enum TypeTask {
+  TASK = "TASK",
+  HISTORY = "HISTORY",
+  ISSUE = "ISSUE",
+  EPIC = "EPIC",
+  ENHANCEMENT = "ENHANCEMENT",
+  DEFECT = "DEFECT",
+};
+
+export type UserType = {
+  id: number;
+  username: string;
+  email: string;
+  created_at: number;
+};

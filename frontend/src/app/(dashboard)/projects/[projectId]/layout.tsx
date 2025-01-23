@@ -1,7 +1,7 @@
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query'
 
 import { getQueryClient } from "@/lib/react-query";
-import { getProject } from '@/features/projects/api';
+import { getProject } from '@/features/projects';
 
 import { View } from "@/components/ui/view";
 import { DottedSeparator } from "@/components/DottedSeparator";

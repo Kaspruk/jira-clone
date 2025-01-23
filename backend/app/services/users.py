@@ -7,6 +7,7 @@ from app.models import UserModel
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def create_user(user: UserModel, connection):
+    print('user in service', user)
     try:
         with connection.cursor() as cur:
             cur.execute(CREATE_USER, (user.username, user.email, pwd_context.hash(user.password)))

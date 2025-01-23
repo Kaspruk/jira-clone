@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { Providers } from "./providers";
 // import { Toaster } from "@/components/ui/sonner";
 
+import "quill/dist/quill.snow.css";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });

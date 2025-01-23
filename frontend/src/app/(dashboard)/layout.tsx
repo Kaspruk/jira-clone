@@ -5,6 +5,8 @@
 // import { usePathname } from "next/navigation";
 
 import { Sidebar } from "@/components/sidebar";
+import { CreateProjectModal } from "@/features/projects";
+import { CreateTaskModal } from "@/features/tasks";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -17,9 +19,11 @@ const DashboardLayout = async (props: DashboardLayoutProps) => {
       <main className="lg:pl-aside p-2 w-full min-h-screen">
         {props.children}
       </main>
+      <CreateProjectModal />
+      <CreateTaskModal />
       {/* 
         <CreateWorkspaceModal />
-        <CreateProjectModal />
+        
         <CreateTaskModal />
         <EditTaskModal />
       */}

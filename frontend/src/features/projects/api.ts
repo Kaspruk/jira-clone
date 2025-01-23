@@ -1,6 +1,6 @@
 import { queryOptions, useQueryClient, useMutation } from '@tanstack/react-query';
 import { BASE_URL, QueriesKeys } from '@/lib/constants';
-import { type ProjectType } from './types';
+import { type ProjectType } from '../types';
 
 export const getProjects = queryOptions<ProjectType[]>({
     queryKey: [QueriesKeys.Projects],
@@ -75,8 +75,4 @@ export const useDeleteProject = () => {
     }, queryClient);
 
     return mutation;
-};
-
-export const useQueryProject = () => {
-
 };

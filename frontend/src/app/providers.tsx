@@ -2,6 +2,7 @@
 // Since QueryClientProvider relies on useContext under the hood, we have to put 'use client' on top
 
 import { QueryClientProvider } from '@tanstack/react-query';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { getQueryClient } from '@/lib/react-query';
 
 interface ProviderProps {
@@ -16,6 +17,10 @@ export const Providers = ({ children }: ProviderProps) => {
   const queryClient = getQueryClient()
 
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      <NuqsAdapter>
+        {children}
+      </NuqsAdapter>
+    </QueryClientProvider>
   )
 }

@@ -1,11 +1,14 @@
-// import { useRouter } from "next/navigation";
+'use client';
+
+import { useRouter } from "next/navigation";
 import { 
-  LuTrash2 as TrashIcon
+  LuTrash2 as TrashIcon,
+  LuExternalLink
 } from "react-icons/lu";
 
 // import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
 
-// import { useConfirm } from "@/hooks/use-confirm";
+import { useConfirm } from "@/hooks/use-confirm";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,48 +26,48 @@ interface TaskActionsProps {
 
 export const ProjectActions = ({ projectId, children }: TaskActionsProps) => {
   // const workspaceId = useWorkspaceId();
-  // const router = useRouter();
+  const router = useRouter();
 
   // const { open } = useEditTaskModal();
   
-  // const [ConfirmDialog, confirm] = useConfirm(
-  //   "Delete task",
-  //   "This action cannot be undone.",
-  //   "destructive"
-  // );
+  const [ConfirmDialog, confirm] = useConfirm(
+    "Delete project",
+    "This action cannot be undone.",
+    "destructive"
+  );
   const { mutate, isPending } = useDeleteProject();
 
   const onDelete = async () => {
-    // const ok = await confirm();
-    // if (!ok) return;
+    const ok = await confirm();
+    if (!ok) return;
 
     mutate(projectId);
   };
 
-  // const onOpenTask = () => {
-  //   router.push(`/workspaces/${workspaceId}/tasks/${id}`);
+  // const onOpenProjectDetail = () => {
+  //   router.push(`/projects/${projectId}/tasks/`);
   // };
 
-  // const onOpenProject = () => {
-  //   router.push(`/workspaces/${workspaceId}/projects/${projectId}`);
-  // };
+  const onOpenTask = () => {
+    router.push(`/projects/${projectId}/tasks/`);
+  };
   
   return (
     <>
-      {/* <ConfirmDialog /> */}
+      <ConfirmDialog />
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           {children}
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-48">
-          {/* <DropdownMenuItem
+          <DropdownMenuItem
             onClick={onOpenTask}
             className="font-medium p-[10px]"
           >
-            <ExternalLinkIcon className="size-4 mr-2 stroke-2" />
-            Task Details
+            <LuExternalLink className="size-4 mr-2 stroke-2" />
+            Prtoject tasks
           </DropdownMenuItem>
-          <DropdownMenuItem
+          {/* <DropdownMenuItem
             onClick={onOpenProject}
             className="font-medium p-[10px]"
           >

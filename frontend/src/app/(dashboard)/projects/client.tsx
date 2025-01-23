@@ -1,34 +1,28 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { useRouter } from 'next/navigation'
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { LuEllipsisVertical as MoreVertical } from "react-icons/lu";
 
-
-import { getProjects } from '@/features/projects/api';
-import { ProjectActions } from "@/features/projects/components/ProjectActions";
-import { CreateProjectModal } from "@/features/projects/components/CreateProjectModal";
-import { ProjectType } from "@/features/projects/types";
+import { getProjects, useProjectModalState, ProjectActions } from '@/features/projects';
+import { ProjectType } from "@/features/types";
 
 import { Button } from "@/components/ui/button";
 import { DataTable, DataTableProps } from "@/components/DataTable2";
 
 
 export const CreateProjectButton = () => {
-    const [openModal, setOpenModal] = useState(false);
+    const [_, setIsOpen] = useProjectModalState();
 
     return (
-        <>
-            <Button variant="primary" size="sm" onClick={() => setOpenModal(true)}>
-                Create project
-            </Button>
-            <CreateProjectModal open={openModal} onOpenChange={setOpenModal} />
-        </>
+        <Button variant="primary" size="sm" onClick={() => setIsOpen(true)}>
+            Create project
+        </Button>
     )
 };
 
-export const tableColumns: DataTableProps['columns'] = [
+const tableColumns: DataTableProps['columns'] = [
     {
         key: 'name',
         title: 'Name',
@@ -71,7 +65,7 @@ export const ProjectsTable = () => {
     const { data } = useSuspenseQuery(getProjects);
 
     const onRowClick = useCallback((data: ProjectType) => {
-        router.push(`projects/${data.id}`);
+        router.push(`projects/${data.id}/tasks/`);
     }, []);
 
     return (

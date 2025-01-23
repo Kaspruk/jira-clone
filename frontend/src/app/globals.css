@@ -85,3 +85,14 @@ body {
 .hide-scrollbar::--webkit-scrollbar {
   display: none;
 }
+
+.ql-toolbar.ql-snow ,
+.ql-container.ql-snow {
+  border-color: hsl(var(--border));
+}
+
+.ql-toolbar {
+  border-bottom: none;
+  border-top-left-radius: calc(var(--radius)  - 2px);
+  border-top-right-radius: calc(var(--radius)  - 2px);
+}

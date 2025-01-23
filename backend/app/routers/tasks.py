@@ -14,9 +14,10 @@ def create_ptask_router(task: TaskModel, db=Depends(get_db_connection)):
         return create_task(task, connection)
     
 @router.get("/",  summary="Get all tasks")
-def get_tasks_router(db=Depends(get_db_connection)):
+def get_tasks_router(db=Depends(get_db_connection), projectId: str | None = None):
+    print('projectId in route', projectId)
     with db as connection:
-        return get_tasks(connection)
+        return get_tasks(connection, projectId)
 
 @router.get("/{task_id}/", summary="Get task by id")
 def get_task_by_id_router(task_id: int, db=Depends(get_db_connection)):

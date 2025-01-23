@@ -19,3 +19,8 @@ export function snakeCaseToTitleCase(str: string) {
     .replace(/_/g, " ")
     .replace(/\b\w/g, (char) => char.toUpperCase())
 };
+
+export function toCapitalize(str: string): string {
+  if (!str) return ''; // Якщо рядок порожній, повертаємо порожній рядок
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}

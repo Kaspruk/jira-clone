@@ -11,12 +11,7 @@ router = APIRouter(
 @router.post("/")
 def create_user_router(user: UserModel, db=Depends(get_db_connection)):
     with db as connection:
-        return create_user(
-            user.username, 
-            user.email, 
-            user.password, 
-            connection
-        )
+        return create_user(user, connection)
 
 @router.get("/")
 def get_users_router(db=Depends(get_db_connection)):
