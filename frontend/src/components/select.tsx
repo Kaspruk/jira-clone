@@ -39,6 +39,8 @@ export const Select = genericMemo(<T,>(props: SelectProps<T>) => {
     getItemData,
   } = props;
 
+  console.log('value', value)
+
   const onOpenChange = (isOpened: boolean) => {
     if (!isOpened) {
       onBlur?.();

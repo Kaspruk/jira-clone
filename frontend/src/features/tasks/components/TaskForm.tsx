@@ -1,6 +1,6 @@
 'use client';
 
-import { useQueries } from "@tanstack/react-query";
+import { useQueries, useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import dynamic from "next/dynamic";
@@ -17,7 +17,7 @@ import { DottedSeparator } from "@/components/DottedSeparator";
 import { toCapitalize } from "@/lib/utils";
 import { getUsers } from "@/features/users";
 import { getProjects } from "@/features/projects";
-import { useCreateTask } from "@/features/tasks";
+import { useCreateTask, getTask } from "@/features/tasks";
 import { ProjectType, TaskType, UserType, TypeTask, TaskPriority, TaskStatus } from "@/features/types";
 
 import { TaskTypeSelect } from "./TaskTypeSelect";
@@ -30,13 +30,15 @@ type FormDataType = Omit<TaskType, 'id' | 'project_id' | 'created_at' | 'updated
     project_id: string;
 };
 
-type TaskFormType =  React.PropsWithChildren<{
+type TaskFormType = React.PropsWithChildren<{
+    data?: TaskType;
     onSave?(): void;
 }>;
 
 export const TaskForm = (props: TaskFormType) => {
     const params = useParams();
-    const projectId = Number(params.projectId);
+    const projectId = props.data?.project_id ?? Number(params.projectId);
+
     const [projectsData, usersData] = useQueries({
         queries: [getProjects, getUsers]
     });
@@ -51,14 +53,15 @@ export const TaskForm = (props: TaskFormType) => {
         formState: { errors, isValid, isSubmitted },
     } = useForm<FormDataType>({
         defaultValues: {
-            project_id: String(projectId),
             type: TypeTask.TASK,
             title: '',
             status: TaskStatus.BACKLOG,
+            project_id: String(projectId),
             description: '',
             priority: undefined,
             author_id: undefined,
             assignee_id: undefined,
+            ...props.data,
         }
     });
 

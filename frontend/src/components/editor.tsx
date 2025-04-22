@@ -40,9 +40,6 @@ const Editor = (props: EditorProps) => {
       const delta = quill.current.clipboard.convert(value);
       quill.current.setContents(delta);
     }
-
-    console.log("quill.current", quill.current);
-    console.log("Quill.events", Quill.events);
   }, []);
 
   useEffect(() => {

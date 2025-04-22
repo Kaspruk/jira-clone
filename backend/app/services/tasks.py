@@ -43,9 +43,10 @@ def get_tasks(connection, projectId):
 def get_task_by_id(task_id: int, connection):
     try:
         with connection.cursor() as cur:
-            cur.execute(GET_TASK_BY_ID, (str(task_id)))
+            cur.execute(GET_TASK_BY_ID, [str(task_id)])
             return cur.fetchone()
     except Error as e:
+        print('get_task_by_id error', e)
         connection.rollback()
         raise HTTPException(status_code=400, detail=str(e))
     

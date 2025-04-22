@@ -48,31 +48,3 @@ export const useCreateTask = (projectId: number) => {
 
     return mutation;
 };
-
-export const useDeleteProject = () => {
-    const queryClient = useQueryClient();
-
-    const mutation = useMutation<TaskType['id'], Error, TaskType['id']>({
-        mutationFn: async (project_id) => {
-            const response = await fetch(`${BASE_URL}/tasks/${project_id}`, {
-                method: 'DELETE'
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to delete project");
-            }
-
-            return await response.json();
-        },
-        onSuccess: (project_id) => {
-            //   toast.success("Project deleted");
-            queryClient.invalidateQueries({ queryKey: [QueriesKeys.Tasks] });
-            queryClient.invalidateQueries({ queryKey: [QueriesKeys.Task, project_id] });
-        },
-        onError: () => {
-            //   toast.error("Failed to delete project");
-        }
-    }, queryClient);
-
-    return mutation;
-};

@@ -58,7 +58,8 @@ export const TasksTable = () => {
     const { data } = useSuspenseQuery(getTasks(Number(params.projectId)));
 
     const onRowClick = useCallback((data: ProjectType) => {
-        router.push(`projects/${data.id}/tasks/`);
+        console.log('onRowClick')
+        router.push(`/tasks/${data.id}/`);
     }, []);
 
     return (
