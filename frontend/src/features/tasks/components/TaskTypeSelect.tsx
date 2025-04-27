@@ -1,5 +1,5 @@
 import { ComponentProps } from "react";
-import { Select } from "@/components/select";
+import { Select } from "@/components/Select";
 import { TypeTask } from "@/features/types";
 import { TaskTypeData } from "@/lib/constants";
 import { SelectItem } from "@/components/ui/select";

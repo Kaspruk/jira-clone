@@ -20,3 +20,8 @@ class UserModel(BaseModel):
     username: str
     email: EmailStr
     password: str
+
+class TaskStatusModel(BaseModel):
+    name: str
+    order: int
+    project_id: int

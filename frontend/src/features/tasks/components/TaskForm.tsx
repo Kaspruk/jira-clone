@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import dynamic from "next/dynamic";
 
-import { Select } from "@/components/select";
+import { Select } from "@/components/Select";
 
 
 import { Input } from "@/components/ui/input";
@@ -49,6 +49,7 @@ export const TaskForm = (props: TaskFormType) => {
 
     const {
         control,
+        setValue,
         handleSubmit,
         formState: { errors, isValid, isSubmitted },
     } = useForm<FormDataType>({
@@ -56,17 +57,16 @@ export const TaskForm = (props: TaskFormType) => {
             type: TypeTask.TASK,
             title: '',
             status: TaskStatus.BACKLOG,
-            project_id: String(projectId),
             description: '',
             priority: undefined,
             author_id: undefined,
             assignee_id: undefined,
             ...props.data,
+            project_id: String(projectId),
         }
     });
 
     const onSubmit = (data: FormDataType) => {
-        console.log('form data', data);
         mutate({
             ...data,
             project_id: Number(data.project_id)
@@ -80,17 +80,17 @@ export const TaskForm = (props: TaskFormType) => {
     const [isLoading, setLoading] = useState(false);
     const isLoaded = useRef(false);
 
-    useEffect(() => {
-        if (isLoaded.current) {
-            return;
-        }
+    // useEffect(() => {
+    //     if (isLoaded.current) {
+    //         return;
+    //     }
 
-        isLoaded.current = true;
+    //     isLoaded.current = true;
 
-        setInterval(() => {
-            setLoading(state => !state);
-        }, 3000);
-    }, []);
+    //     setInterval(() => {
+    //         setLoading(state => !state);
+    //     }, 3000);
+    // }, []);
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -105,6 +105,7 @@ export const TaskForm = (props: TaskFormType) => {
                             <Select<ProjectType>
                                 {...field}
                                 id="project_id"
+                                value={String(field.value ?? 0)}
                                 items={projects || []}
                                 getItemData={item => ({
                                     value: String(item.id),
@@ -154,6 +155,7 @@ export const TaskForm = (props: TaskFormType) => {
                                 {...field}
                                 id="author_id"
                                 items={users || []}
+                                value={String(field.value ?? 0)}
                                 placeholder="Task author"
                                 getItemData={item => ({
                                     value: String(item.id),
@@ -212,6 +214,7 @@ export const TaskForm = (props: TaskFormType) => {
                                 {...field}
                                 id="assignee_id"
                                 items={users || []}
+                                value={String(field.value ?? 0)}
                                 placeholder="Assign to user"
                                 getItemData={item => ({
                                     value: String(item.id),

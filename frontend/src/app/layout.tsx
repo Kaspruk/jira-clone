@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-
+import localFont from "next/font/local";
+ 
 import { cn } from "@/lib/utils";
 import { Providers } from "./providers";
 // import { Toaster } from "@/components/ui/sonner";
@@ -9,6 +10,13 @@ import "quill/dist/quill.snow.css";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
+
+const materialIcons = localFont({
+  src: "./material-icons.woff2",
+  style: "normal",
+  display: "swap",
+  variable: "--font-material-icons",
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -23,7 +31,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={cn(inter.className, "antialiased min-h-screen bg-neutral-100")}
+        className={cn(
+          inter.className,
+          materialIcons.variable,
+          "antialiased min-h-screen bg-neutral-100"
+        )}
       >
         <Providers>
           {children}

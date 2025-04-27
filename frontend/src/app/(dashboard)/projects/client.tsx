@@ -9,7 +9,7 @@ import { getProjects, useProjectModalState, ProjectActions } from '@/features/pr
 import { ProjectType } from "@/features/types";
 
 import { Button } from "@/components/ui/button";
-import { DataTable, DataTableProps } from "@/components/DataTable2";
+import { DataTable, DataTableProps } from "@/components/DataTable";
 
 
 export const CreateProjectButton = () => {

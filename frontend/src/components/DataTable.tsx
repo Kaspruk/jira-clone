@@ -1,122 +1,141 @@
-// "use client"
+"use client"
 
-// import * as React from "react"
+import React, { memo, useCallback, useState } from "react"
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+    type TableHeadProps,
+} from "@/components/ui/table";
 
-// import {
-//   ColumnDef,
-//   ColumnFiltersState,
-//   SortingState,
-//   flexRender,
-//   getCoreRowModel,
-//   getFilteredRowModel,
-//   getPaginationRowModel,
-//   getSortedRowModel,
-//   useReactTable,
-// } from "@tanstack/react-table"
+type RowData = any & {
+    id: string;
+};
 
-// import { Button } from "@/components/ui/button"
-// import {
-//   Table,
-//   TableBody,
-//   TableCell,
-//   TableHead,
-//   TableHeader,
-//   TableRow,
-// } from "@/components/ui/table"
+type ColumnBodyData = {
+    key: keyof RowData;
+    row: RowData;
+    value: RowData[keyof RowData];
+};
 
-// interface DataTableProps<TData, TValue> {
-//   columns: ColumnDef<TData, TValue>[]
-//   data: TData[]
-// }
+type Column = {
+    key: string;
+    td: (props: ColumnBodyData) => React.ReactElement;
+    textAlign?: TableHeadProps['textAlign'],
+    isSortable?: boolean;
+} & (
+        {
+            th: (props: Pick<TableHeadProps, 'onSort' | 'sortValue'>) => React.ReactElement;
+            title?: never;
+        } | {
+            title: string;
+            th?: never;
+        }
+    );
 
-// export function DataTable<TData, TValue>({
-//   columns,
-//   data,
-// }: DataTableProps<TData, TValue>) {
-//   const [sorting, setSorting] = React.useState<SortingState>([])
-//   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-//     []
-//   )
+export interface DataTableProps {
+    columns: Column[];
+    data: RowData[];
+    onRowClick?(data: RowData): void;
+};
 
-//   const table = useReactTable({
-//     data,
-//     columns,
-//     getCoreRowModel: getCoreRowModel(),
-//     getPaginationRowModel: getPaginationRowModel(),
-//     onSortingChange: setSorting,
-//     getSortedRowModel: getSortedRowModel(),
-//     onColumnFiltersChange: setColumnFilters,
-//     getFilteredRowModel: getFilteredRowModel(),
-//     state: {
-//       sorting,
-//       columnFilters,
-//     },
-//   })
+const serverRender = (Comp: any, props: any) => {
+    if (!Comp) {
+        return null;
+    }
 
-//   return (
-//     <div>
-//       <div className="rounded-md border bg-white">
-//         <Table>
-//           <TableHeader>
-//             {table.getHeaderGroups().map((headerGroup) => (
-//               <TableRow key={headerGroup.id}>
-//                 {headerGroup.headers.map((header) => {
-//                   return (
-//                     <TableHead key={header.id}>
-//                       {header.isPlaceholder
-//                         ? null
-//                         : flexRender(
-//                             header.column.columnDef.header,
-//                             header.getContext()
-//                           )}
-//                     </TableHead>
-//                   )
-//                 })}
-//               </TableRow>
-//             ))}
-//           </TableHeader>
-//           <TableBody>
-//             {table.getRowModel().rows?.length ? (
-//               table.getRowModel().rows.map((row) => (
-//                 <TableRow
-//                   key={row.id}
-//                   data-state={row.getIsSelected() && "selected"}
-//                 >
-//                   {row.getVisibleCells().map((cell) => (
-//                     <TableCell key={cell.id}>
-//                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
-//                     </TableCell>
-//                   ))}
-//                 </TableRow>
-//               ))
-//             ) : (
-//               <TableRow>
-//                 <TableCell colSpan={columns.length} className="h-24 text-center">
-//                   No results.
-//                 </TableCell>
-//               </TableRow>
-//             )}
-//           </TableBody>
-//         </Table>
-//       </div>
-//       <div className="flex items-center justify-end space-x-2 py-4">
-//         <Button
-//           variant="secondary"
-//           size="sm"
-//           onClick={() => table.previousPage()}
-//           disabled={!table.getCanPreviousPage()}
-//         >
-//           Previous
-//         </Button>
-//         <Button
-//           variant="secondary"
-//           size="sm"
-//           onClick={() => table.nextPage()}
-//           disabled={!table.getCanNextPage()}
-//         >
-//           Next
-//         </Button>
-//       </div>
-//     </div>
-//   )
-// }
+    if (typeof Comp === "function") {
+        return React.createElement(Comp, props);
+    }
+
+    return Comp;
+};
+
+// @ts-ignore
+export const DataTable: React.NamedExoticComponent<DataTableProps> & {
+    HeadCell: typeof TableHead;
+    RowCell: typeof TableCell;
+} = memo((props: DataTableProps) => {
+    const {
+        data,
+        columns,
+        onRowClick
+    } = props;
+
+    const [sortState, setSortState] = useState(() => {
+        return columns.reduce<{ [key: string]: TableHeadProps['sortValue'] }>((acc, column) => {
+            acc[column.key] = null;
+            return acc;
+        }, {});
+    });
+
+    const onSortHandler = useCallback((key: Column['key']) => {
+        setSortState(state => {
+            const oldValue = state[key];
+            let newValue: TableHeadProps['sortValue'];
+
+            if (oldValue === 'asc') {
+                newValue = 'desc'
+            } else if (oldValue === 'desc') {
+                newValue = null
+            } else {
+                newValue = 'asc'
+            }
+
+            return { ...state, [key]: newValue };
+        })
+    }, []);
+
+    return (
+        <Table>
+            <TableHeader>
+                <tr>
+                    {columns.map((column) => {
+                        const sortValue = sortState[column.key];
+                        const onSort = () => onSortHandler(column.key);
+
+                        return (
+                            column.th?.({ onSort, sortValue }) || (
+                                <TableHead
+                                    key={column.key}
+                                    onSort={onSort}
+                                    sortValue={sortValue}
+                                    textAlign={column.textAlign}
+                                    isSortable={column.isSortable}
+                                >
+                                    {column.title}
+                                </TableHead>
+                            )
+                        )
+                    })}
+                </tr>
+            </TableHeader>
+            <TableBody>
+                {data.length ? (
+                    data.map((row) => {
+                        const onClick = onRowClick && (() => onRowClick(row));
+                        return (
+                            <TableRow key={row.id} onClick={onClick}>
+                                {columns.map((column) => {
+                                    return serverRender(column.td, { key: column.key, value: row[column.key], row })
+                                })}
+                            </TableRow>
+                        )
+                    })
+                ) : (
+                    <TableRow>
+                        <TableCell colSpan={columns.length} className="h-24 text-center">
+                            No results.
+                        </TableCell>
+                    </TableRow>
+                )}
+            </TableBody>
+        </Table >
+    );
+});
+
+DataTable.HeadCell = TableHead;
+DataTable.RowCell = TableCell;

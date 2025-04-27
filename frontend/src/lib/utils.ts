@@ -1,4 +1,5 @@
 import { clsx, type ClassValue } from "clsx"
+import { memo } from "react";
 import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
@@ -23,4 +24,6 @@ export function snakeCaseToTitleCase(str: string) {
 export function toCapitalize(str: string): string {
   if (!str) return ''; // Якщо рядок порожній, повертаємо порожній рядок
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-}
+};
+
+export const genericMemo: <T>(component: T) => T = memo;

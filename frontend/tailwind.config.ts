@@ -83,6 +83,9 @@ const config: Config = {
       animation: {
         'bubble': 'bubble 500ms ease-in',
       },
+      fontFamily: {
+        mi: ['var(--font-material-icons)'],
+      },
     }
   },
   plugins: [
@@ -95,7 +98,23 @@ const config: Config = {
         },
       });
     }),
+    plugin(function({ addUtilities }) {
+      addUtilities({
+        '.translate-x-var': {
+          transform: 'translateX(var(--translate-x, 0))',
+        },
+        '.translate-y-var': {
+          transform: 'translateY(var(--translate-y, 0))',
+        },
+        '.scale-x-var': {
+          transform: 'scaleX(var(--scale-x, 1))',
+        },
+        '.scale-y-var': {
+          transform: 'scaleY(var(--scale-y, 1))',
+        },
+      });
+    }),
   ],
-  safelist: ['-left-aside', 'cursor-pointer', 'text-left', 'text-center', 'text-right', 'color-red', 'animate-bubble']
+  safelist: ['-left-aside', 'translate-y-(--translate-y)', 'cursor-pointer', 'text-left', 'text-center', 'text-right', 'color-red', 'animate-bubble']
 };
 export default config;

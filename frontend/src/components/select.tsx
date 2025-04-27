@@ -1,7 +1,7 @@
 "use client";
 
-import { memo } from "react";
 import { ControllerRenderProps } from "react-hook-form";
+import { genericMemo } from "@/lib/utils";
 import {
   Select as SelectUI,
   SelectTrigger,
@@ -10,9 +10,10 @@ import {
   SelectItem,
 } from "./ui/select";
 
-type SelectProps<T> = ControllerRenderProps & {
+type SelectProps<T> = Partial<ControllerRenderProps> & {
   id?: string;
   items?: T[];
+  variant?: 'default' | 'preview';
   placeholder?: string;
 } & ({
   children: React.ReactNode;
@@ -22,8 +23,6 @@ type SelectProps<T> = ControllerRenderProps & {
   getItemData(data: T): { value: string, title: string };
 });
 
-const genericMemo: <T>(component: T) => T = memo;
-
 export const Select = genericMemo(<T,>(props: SelectProps<T>) => {
   const {
     id,
@@ -31,6 +30,7 @@ export const Select = genericMemo(<T,>(props: SelectProps<T>) => {
     name,
     value,
     onBlur,
+    variant,
     disabled,
     onChange,
     items,
@@ -38,8 +38,6 @@ export const Select = genericMemo(<T,>(props: SelectProps<T>) => {
     children, 
     getItemData,
   } = props;
-
-  console.log('value', value)
 
   const onOpenChange = (isOpened: boolean) => {
     if (!isOpened) {
@@ -55,7 +53,7 @@ export const Select = genericMemo(<T,>(props: SelectProps<T>) => {
       onOpenChange={onOpenChange}
       onValueChange={onChange}
     >
-      <SelectTrigger ref={ref} id={id}>
+      <SelectTrigger ref={ref} id={id} variant={variant}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>

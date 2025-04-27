@@ -48,3 +48,34 @@ export const useCreateTask = (projectId: number) => {
 
     return mutation;
 };
+
+export const useUpdateTask = (taskId: string) => {
+    const queryClient = useQueryClient();
+
+    const mutation = useMutation<TaskType, Error, TaskType>({
+        mutationFn: async (task) => {
+            const response = await fetch(`${BASE_URL}/tasks/${taskId}/`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(task),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to update task");
+            }
+
+            return await response.json();
+        },
+        onSuccess: (data) => {
+            queryClient.setQueryData([QueriesKeys.Task, taskId], data);
+            queryClient.invalidateQueries({ queryKey: [QueriesKeys.Tasks] });
+        },
+        onError: () => {
+            //   toast.error("Failed to update Task");
+        }
+    }, queryClient);
+
+    return mutation;
+};

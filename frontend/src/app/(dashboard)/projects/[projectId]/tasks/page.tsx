@@ -7,8 +7,8 @@ import { TasksTable } from "./client";
 
 
 export default async function Tasks(props: { params: { projectId: number } }) {
-    console.log('props', props);
-    const projectId = props.params.projectId; 
+    const data = await props.params;
+    const projectId = data.projectId; 
     const queryClient = getQueryClient();
     void queryClient.prefetchQuery(getTasks(projectId));
 

@@ -1,14 +1,17 @@
 from psycopg2 import Error
 from fastapi import HTTPException
 from app.shemas.projects import CREATE_PROJECT, GET_PROJECTS, GET_PROJECT_BY_ID, UPDATE_PROJECT_BY_ID, DELETE_PROJECT_BY_ID
+from app.services.task_statuses import create_default_task_statuses
 from app.models import ProjectModel
 
-def create_project(project: ProjectModel, connection):
+async def create_project(project: ProjectModel, connection):
     try:
         with connection.cursor() as cur:
             cur.execute(CREATE_PROJECT, (project.name, project.description, str(project.owner_id)))
             project_id = cur.fetchone()["id"]
             connection.commit()
+
+            await create_default_task_statuses(project_id, connection)
 
             return { "id": project_id, **project.model_dump() }
     except Error as e:

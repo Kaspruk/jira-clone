@@ -1,8 +1,8 @@
 import { useQueryState, parseAsBoolean } from "nuqs";
 
-export const useProjectModalState = () => {
+export function useTaskStatusModalState() {
     return useQueryState(
-        "create-project",
+        "tasks-statuses",
         parseAsBoolean.withDefault(false).withOptions({ clearOnDefault: true })
     )
-};
+}

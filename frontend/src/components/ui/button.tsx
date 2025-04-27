@@ -54,39 +54,40 @@ const loaderVariants = cva(
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
+  ref?: React.RefObject<HTMLButtonElement>;
   asChild?: boolean;
   loading?: boolean;
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, loading, children, ...props }, ref) => {
-    const Comp = asChild ? Slot : "button"
-    return (
-      <Comp
-        className={buttonVariants({ variant, size, className })}
-        ref={ref}
-        {...props}
+const Button = (props: ButtonProps) => {
+  const { ref, className, variant, size, asChild = false, loading, children, ...restProps } = props;
+
+  const Comp = asChild ? Slot : "button"
+  return (
+    <Comp
+      className={buttonVariants({ variant, size, className })}
+      ref={ref}
+      {...restProps}
+    >
+      <span
+        className={cn(
+          'absolute transition-opacity opacity-100 pointer-events-none duration-150', 
+          loading ? 'animate-bubble' : 'opacity-0'
+        )}
       >
-        <span
-          className={cn(
-            'absolute transition-opacity opacity-100 pointer-events-none duration-150', 
-            loading ? 'animate-bubble' : 'opacity-0'
-          )}
-        >
-          <LuLoader className={loaderVariants({ size })} />
-        </span>
-        <span
-          className={cn(
-            'transition-opacity opacity-100 duration-150', 
-            loading && 'opacity-0'
-          )}
-        >
-          {children}
-        </span>
-      </Comp>
-    )
-  }
-)
+        <LuLoader className={loaderVariants({ size })} />
+      </span>
+      <span
+        className={cn(
+          'transition-opacity opacity-100 duration-150', 
+          loading && 'opacity-0'
+        )}
+      >
+        {children}
+      </span>
+    </Comp>
+  )
+}
 Button.displayName = "Button"
 
 export { Button, buttonVariants }

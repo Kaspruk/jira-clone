@@ -96,3 +96,11 @@ body {
   border-top-left-radius: calc(var(--radius)  - 2px);
   border-top-right-radius: calc(var(--radius)  - 2px);
 }
+
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}

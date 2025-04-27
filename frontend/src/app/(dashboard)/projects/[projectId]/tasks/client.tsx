@@ -9,22 +9,12 @@ import { getTasks } from "@/features/tasks/api";
 import { ProjectType } from "@/features/types";
 
 import { Button } from "@/components/ui/button";
-import { DataTable, DataTableProps } from "@/components/DataTable2";
+import { DataTable, DataTableProps } from "@/components/DataTable";
 
 const tableColumns: DataTableProps['columns'] = [
     {
-        key: 'name',
-        title: 'Name',
-        isSortable: true,
-        td: ({ value }) => (
-            <DataTable.RowCell>
-                {value}
-            </DataTable.RowCell>
-        )
-    },
-    {
-        key: 'description',
-        title: 'Description',
+        key: 'title',
+        title: 'Title',
         isSortable: true,
         td: ({ value }) => (
             <DataTable.RowCell>

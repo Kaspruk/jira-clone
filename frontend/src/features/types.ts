@@ -19,6 +19,15 @@ export type TaskType = {
   updated_at: number;
 };
 
+export type TaskStatusType = {
+  id: number;
+  project_id: number;
+  name: string;
+  description: string;
+  color: string;
+  icon: string;
+};
+
 export enum TaskStatus {
   BACKLOG = "BACKLOG",
   TODO = "TODO",

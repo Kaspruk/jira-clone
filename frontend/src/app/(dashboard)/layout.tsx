@@ -7,7 +7,7 @@
 import { Sidebar } from "@/components/sidebar";
 import { CreateProjectModal } from "@/features/projects";
 import { CreateTaskModal } from "@/features/tasks";
-
+import { TasksStatusModal } from "@/features/task-statuses";
 interface DashboardLayoutProps {
   children: React.ReactNode;
 };
