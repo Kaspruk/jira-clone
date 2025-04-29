@@ -2,11 +2,12 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.database import get_db_connection
-from app.shemas import CREATE_TABLE_USERS, CREATE_TABLE_TASKS, CREATE_TABLE_PROJECTS, CREATE_TABLE_PROJECTS_MEMBERS, CREATE_TABLE_TASK_STATUSES
-from app.routers import users, projects, tasks, task_statuses
+from app.shemas import SCHEMAS
+from app.routers import users, workspaces, projects, tasks, task_statuses
 
 app = FastAPI()
 app.include_router(users.router)
+app.include_router(workspaces.router)
 app.include_router(projects.router)
 app.include_router(tasks.router)
 app.include_router(task_statuses.router)
@@ -24,11 +25,8 @@ def setup_database():
     """Ініціалізація бази даних при запуску сервера."""
     with get_db_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute(CREATE_TABLE_USERS)
-            cur.execute(CREATE_TABLE_PROJECTS)
-            cur.execute(CREATE_TABLE_TASKS)
-            cur.execute(CREATE_TABLE_PROJECTS_MEMBERS)
-            cur.execute(CREATE_TABLE_TASK_STATUSES)
+            for schema in SCHEMAS:
+                cur.execute(SCHEMAS[schema])
             conn.commit()
 
 if __name__ == "__main__":

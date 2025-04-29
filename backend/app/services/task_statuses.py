@@ -1,15 +1,15 @@
 from psycopg2 import Error
 from fastapi import HTTPException
-from app.shemas.task_statuses import CREATE_TASK_STATUS, GET_TASK_STATUSES_BY_PROJECT_ID, GET_TASK_STATUS_BY_ID, UPDATE_TASK_STATUS_BY_ID, DELETE_TASK_STATUS_BY_ID
+from app.shemas.task_statuses import CREATE_TASK_STATUS, GET_TASK_STATUSES_BY_WORKSPACE_ID, GET_TASK_STATUS_BY_ID, UPDATE_TASK_STATUS_BY_ID, DELETE_TASK_STATUS_BY_ID
 from app.models import TaskStatusModel
+from app.constants import default_statuses
 
-def get_task_statuses_by_project_id(project_id, connection):
+def get_task_statuses_by_workspace_id(workspace_id, connection):
     try:
         with connection.cursor() as cur:
-            cur.execute(GET_TASK_STATUSES_BY_PROJECT_ID, [str(project_id)])
+            cur.execute(GET_TASK_STATUSES_BY_WORKSPACE_ID, [str(workspace_id)])
             return cur.fetchall()
     except Error as e:
-        print('get_task_statuses_by_project_id', e)
         connection.rollback()
         raise HTTPException(status_code=400, detail=str(e))
     
@@ -60,20 +60,16 @@ def delete_task_status(task_status_id, connection):
         connection.rollback()
         raise HTTPException(status_code=400, detail=str(e)) 
     
-def create_default_task_statuses(project_id, connection):
-    default_statuses = [
-        {"name": "Backlog", "order": 1},
-        {"name": "To Do", "order": 2},
-        {"name": "In Progress", "order": 3},
-        {"name": "In Review", "order": 4},
-        {"name": "Done", "order": 5},
-    ]
-
+def create_default_task_statuses(workspace_id, connection, cursor):
     try:
-        with connection.cursor() as cur:
-            for status in default_statuses:
-                cur.execute(CREATE_TASK_STATUS, (status["name"], status["order"], project_id))
-            connection.commit()
+        for status in default_statuses:
+            cursor.execute(CREATE_TASK_STATUS, [
+                status["name"],
+                status["icon"],
+                status["color"],
+                status["description"],
+                workspace_id
+            ])
     except Error as e:
         connection.rollback()
         raise HTTPException(status_code=400, detail=str(e))

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from app.database import get_db_connection
-from app.services.task_statuses import create_task_status, get_task_statuses_by_project_id, get_task_status_by_id, update_task_status, delete_task_status
+from app.services.task_statuses import create_task_status, get_task_statuses_by_workspace_id, get_task_status_by_id, update_task_status, delete_task_status
 from app.models import TaskStatusModel
 
 router = APIRouter(
@@ -10,14 +10,13 @@ router = APIRouter(
 
 @router.post("/", summary="Create task status")
 def create_task_status_router(task_status: TaskStatusModel, db=Depends(get_db_connection)):
-    print('task_status', task_status)
     with db as connection:
         return create_task_status(task_status, connection)
 
-@router.get("/{project_id}/",  summary="Get all tasks statuses by project id")
-def get_tasks_statuses_by_project_id_router(project_id: int, db=Depends(get_db_connection)):
+@router.get("/{workspace_id}/",  summary="Get all tasks statuses by workspace id")
+def get_tasks_statuses_by_workspace_id_router(workspace_id: int, db=Depends(get_db_connection)):
     with db as connection:
-        return get_task_statuses_by_project_id(project_id, connection)
+        return get_task_statuses_by_workspace_id(workspace_id, connection)
 
 @router.get("/{task_status_id}/", summary="Get task status by id")
 def get_task_status_by_id_router(task_status_id: int, db=Depends(get_db_connection)):

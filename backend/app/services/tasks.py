@@ -21,7 +21,6 @@ def create_task(task: TaskModel, connection):
 
             return { "id": task_id, **task.model_dump() }
     except Error as e:
-        print('error', e)
         connection.rollback()
         raise HTTPException(status_code=400, detail=str(e))
     
@@ -33,7 +32,6 @@ def get_tasks(connection, projectId):
             if projectId:
                 query.append(f"WHERE project_id = {projectId}")
 
-            print(" ".join(query))
             cur.execute(" ".join(query))
             return cur.fetchall()
     except Error as e:

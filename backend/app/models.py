@@ -1,9 +1,15 @@
-from typing import Literal
+from typing import Literal, Dict
 from pydantic import BaseModel, EmailStr
+
+class WorkspaceModel(BaseModel):
+    name: str
+    description: str
+    owner_id: int
 
 class ProjectModel(BaseModel):
     name: str
     description: str
+    workspace_id: int
     owner_id: int
 
 class TaskModel(BaseModel):
@@ -23,5 +29,7 @@ class UserModel(BaseModel):
 
 class TaskStatusModel(BaseModel):
     name: str
-    order: int
-    project_id: int
+    icon: str
+    color: str
+    description: str
+    workspace_id: int

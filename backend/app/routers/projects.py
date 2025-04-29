@@ -1,6 +1,7 @@
+from typing import Dict
 from fastapi import APIRouter, Depends
 from app.database import get_db_connection
-from app.services.projects import create_project, get_projects, get_project_by_id, update_project, delete_project
+from app.services.projects import create_project, get_projects, get_project_by_id, update_project, delete_project, update_project_statuses, update_project_statuses_order
 from app.models import ProjectModel
 
 router = APIRouter(
@@ -10,7 +11,6 @@ router = APIRouter(
 
 @router.post("/", summary="Create project")
 def create_project_router(project: ProjectModel, db=Depends(get_db_connection)):
-    print('project', project)
     with db as connection:
         return create_project(project, connection)
 
@@ -33,3 +33,13 @@ def update_project_router(project: ProjectModel, project_id: int, db=Depends(get
 def update_project_router(project_id: int, db=Depends(get_db_connection)):
     with db as connection:
         return delete_project(project_id, connection)
+    
+@router.put("/{project_id}/statuses/select", summary="Select project status")
+def update_project_statuses_select_router(data: Dict[str, int], project_id: int, db=Depends(get_db_connection)):
+    with db as connection:
+        return update_project_statuses(project_id, data['status_id'], data['value'], connection)
+    
+@router.put("/{project_id}/statuses/order", summary="Update project statuses order")
+def update_project_statuses_order_router(data: Dict[str, int], project_id: int, db=Depends(get_db_connection)):
+    with db as connection:
+        return update_project_statuses_order(project_id, data['oldIndex'], data['newIndex'], connection)
