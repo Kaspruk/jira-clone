@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ErrorMessage } from "@/components/ui/error-message";
 import { DottedSeparator } from "@/components/DottedSeparator";
 
+import { useGetWorkspaces } from "../../workspaces/api";
 import { useCreateProject } from "../api";
 import { useProjectModalState } from "../hooks";
 
@@ -34,10 +35,17 @@ export const CreateProjectModal = (props: Partial<Omit<ResponsiveModalProps, 'ch
 
     const [isOpen, setIsOpen] = useProjectModalState();
 
+    const { data: workspaces } = useGetWorkspaces();
+
     const { mutate, isPending } = useCreateProject();
 
     const onSubmit = async (data: FormDataType) => {
-        mutate({ ...data, owner_id: 1 }, {
+        mutate({
+            ...data,
+            owner_id: 1,
+            statuses: [],
+            workspace_id: workspaces[0].id,
+        }, {
             onSuccess() {
                 setIsOpen(false);
                 props.onOpenChange?.(false)

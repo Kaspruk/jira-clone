@@ -1,59 +1,116 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { arrayMove } from '@dnd-kit/sortable';
-import { TaskStatusType } from '@/features/types';
-import { SortableList } from '@/components/SortableList';
-import { TaskStatusListItem, TasksStatusModal } from '@/features/task-statuses';
-import { useTaskStatusModalState } from '@/features/task-statuses/hooks';
+import React, { useState } from "react";
+import { arrayMove } from "@dnd-kit/sortable";
+import { ProjectType, WorkspaceTaskStatusType } from "@/features/types";
+import { SortableList } from "@/components/SortableList";
+import { TaskStatusListItem, TasksStatusModal } from "@/features/task-statuses";
+import { useTaskStatusModalState } from "@/features/task-statuses/hooks";
+import { useUpdateProjectStatusesOrder, useSelectProjectStatus } from "@/features/projects";
 
 interface ClientsProps {
-    statuses: TaskStatusType[];
+  project: ProjectType;
+  statuses: WorkspaceTaskStatusType[];
 }
 
-const mockStatuses: TaskStatusType[] = [
-    { id: 1, name: 'Task', description: 'Tasks to be done', icon: 'check_box', color: '#38bdf8', project_id: 1 },
-    { id: 2, name: 'History', description: 'Tasks in progress', icon: 'bookmark', color: '#d9f99d', project_id: 1 },
-    { id: 3, name: 'Issue', description: 'Completed tasks', icon: 'mode_standby', color: '#f43f5e', project_id: 1 },
-    { id: 4, name: 'Epic', description: 'Completed tasks', icon: 'bolt', color: '#818cf8', project_id: 1 },
-    { id: 5, name: 'Enhancement', description: 'Completed tasks', icon: 'auto_awesome_motion', color: '#a7f3d0', project_id: 1 },
-    { id: 6, name: 'Defect', description: 'Completed tasks', icon: 'bug_report', color: '#f43f5e', project_id: 1 },
-];
+export const TaskStatuses: React.FC<ClientsProps> = (props) => {
+  const { project, statuses: statusesProps } = props;
 
-export const TaskStatuses: React.FC<ClientsProps> = () => {
-    const [statuses, setStatuses] = useState<TaskStatusType[]>(mockStatuses.slice(0));
+  const [statuses, setStatuses] = useState<WorkspaceTaskStatusType[]>(statusesProps);
+  const [_, setIsOpen] = useTaskStatusModalState();
+  const [editedTaskStatus, setEditedTaskStatus] = useState<WorkspaceTaskStatusType | null>(null);
+  const { mutate: updateProjectStatusesOrder, isPending: isUpdatingProjectStatusesOrder } = useUpdateProjectStatusesOrder();
+  const { mutate: selectProjectStatus, isPending: isSelectingProjectStatus } = useSelectProjectStatus();
 
-    const [_, setIsOpen] = useTaskStatusModalState();
-    const [editedTaskStatus, setEditedTaskStatus] = useState<TaskStatusType | null>(null);
+  const disableAllActions = isUpdatingProjectStatusesOrder || isSelectingProjectStatus;
 
-    return (
-        <div className="flex flex-col gap-2 w-1/3">
-            <h5 className="text-md font-bold ml-2">Project Settings:</h5>
-            <SortableList<TaskStatusType>
-                items={statuses}
-                getIndex={(id) => {
-                    return statuses.findIndex((status) => status.id === id);
-                }}
-                onReorder={(oldIndex, newIndex) => {
-                    setStatuses(statuses => arrayMove(statuses, oldIndex, newIndex));
-                }}
-                renderItem={(data) => {
-                    return (
-                        <TaskStatusListItem
-                            key={data.id}
-                            {...data}
-                            onEdit={() => {
-                                setEditedTaskStatus(data);
-                                setIsOpen(true);
-                            }}
-                        />
-                    )
-                }}
-            />
-            <TasksStatusModal
-                data={editedTaskStatus}
-                projectId={1}
-            />
-        </div>
+  const handleReorder = async (oldIndex: number, newIndex: number) => {
+    if (disableAllActions) return;
+
+    setStatuses((state) => arrayMove(state, oldIndex, newIndex));
+
+    updateProjectStatusesOrder(
+      {
+        project_id: project.id,
+        oldIndex: oldIndex,
+        newIndex: newIndex,
+      },
+      {
+        onError: () => {
+          setStatuses((state) => arrayMove(state, newIndex, oldIndex));
+        },
+      }
     );
-}
+  };
+
+  const handleSelect = (id: number) => (value: boolean) => {
+    let oldIndex = 0;
+    let newIndex = 0;
+
+    setStatuses((state) => {
+        newIndex = state.length - 1;
+        const newStatuses = state.map((status, index) => {
+            if (status.id === id) {
+                oldIndex = index;
+            }
+
+            if (status.selected) {
+                newIndex = index + 1;
+            }
+
+            return {
+                ...status,
+                selected: status.id === id ? value : status.selected
+            }
+        });
+
+        if (!value) {
+            newIndex = state.length;
+        }
+
+        return arrayMove(newStatuses, oldIndex, newIndex);
+    });
+
+    selectProjectStatus({
+      status_id: id,
+      value: value,
+      project_id: project.id,
+    }, {
+        onError: () => {
+          setStatuses((state) => {
+            const newStatuses = state.map((status) => ({
+                ...status,
+                selected: status.id === id ? !value : status.selected
+            }));
+
+            return arrayMove(newStatuses, oldIndex, newIndex);
+          });
+        },
+    })
+  };
+
+  return (
+    <div className="flex flex-col gap-2 w-1/3">
+      <h5 className="text-md font-bold ml-2">Project Settings:</h5>
+      <SortableList<WorkspaceTaskStatusType>
+        items={statuses}
+        getIndex={(id) => statuses.findIndex((status) => status.id === id)}
+        onReorder={handleReorder}
+        renderItem={(data) => {
+          return (
+            <TaskStatusListItem
+              key={data.id}
+              {...data}
+              onEdit={() => {
+                setEditedTaskStatus(data);
+                setIsOpen(true);
+              }}
+              onSelect={handleSelect(data.id)}
+            />
+          );
+        }}
+      />
+      <TasksStatusModal data={editedTaskStatus} projectId={1} />
+    </div>
+  );
+};

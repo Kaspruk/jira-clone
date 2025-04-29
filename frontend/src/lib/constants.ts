@@ -15,6 +15,7 @@ export const QueriesKeys = {
     Task: 'task',
     Users: 'users',
     User: 'user',
+    WorkspaceStatuses: 'workspaceStatuses',
 };
 
 export const TaskTypeData = {

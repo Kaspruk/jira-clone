@@ -3,6 +3,8 @@ export type ProjectType = {
   name: string;
   owner_id: number;
   description: string;
+  workspace_id: number;
+  statuses: TaskStatusType[];
 };
 
 export type TaskType = {
@@ -26,6 +28,17 @@ export type TaskStatusType = {
   description: string;
   color: string;
   icon: string;
+};
+
+export type WorkspaceTaskStatusType = TaskStatusType & {
+  selected: boolean;
+};
+
+export type TaskStatusRelationType = {
+  id: number;
+  project_id: number;
+  task_status_id: number;
+  order: number;
 };
 
 export enum TaskStatus {

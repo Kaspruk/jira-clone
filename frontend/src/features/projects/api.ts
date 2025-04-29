@@ -1,4 +1,4 @@
-import { queryOptions, useQueryClient, useMutation } from '@tanstack/react-query';
+import { queryOptions, useQueryClient, useMutation, MutationOptions } from '@tanstack/react-query';
 import { BASE_URL, QueriesKeys } from '@/lib/constants';
 import { type ProjectType } from '../types';
 
@@ -10,7 +10,7 @@ export const getProjects = queryOptions<ProjectType[]>({
     },
 });
 
-export const getProject = (projectId: string) => queryOptions<ProjectType>({
+export const getProject = (projectId: number) => queryOptions<ProjectType>({
     queryKey: [QueriesKeys.Project, projectId],
     queryFn: async () => {
         const response = await fetch(`${BASE_URL}/projects/${projectId}/`)
@@ -73,6 +73,74 @@ export const useDeleteProject = () => {
             //   toast.error("Failed to delete project");
         }
     }, queryClient);
+
+    return mutation;
+};
+
+type UpdateProjectStatusesOrderType = {
+    project_id: number;
+    oldIndex: number;
+    newIndex: number;
+}
+
+export const useUpdateProjectStatusesOrder = () => {
+    const queryClient = useQueryClient();
+
+    const mutation = useMutation<UpdateProjectStatusesOrderType, Error, UpdateProjectStatusesOrderType>({
+        mutationFn: async (data) => {
+            const response = await fetch(`${BASE_URL}/projects/${data.project_id}/statuses/order`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ oldIndex: data.oldIndex, newIndex: data.newIndex }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to update project statuses order");
+            }
+
+            return response.json();
+        },
+        onSuccess: (_, variables) => {
+            //   toast.success("Project deleted");
+            queryClient.invalidateQueries({ queryKey: [QueriesKeys.Project, variables.project_id] });
+        },
+    });
+
+    return mutation;
+};
+
+type SelectProjectStatus = {
+    value: boolean;
+    status_id: number;
+    project_id: number;
+}
+
+export const useSelectProjectStatus = () => {
+    const queryClient = useQueryClient();
+
+    const mutation = useMutation<SelectProjectStatus, Error, SelectProjectStatus>({
+        mutationFn: async (data) => {
+            const response = await fetch(`${BASE_URL}/projects/${data.project_id}/statuses/select`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ status_id: data.status_id, value: data.value }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to update project statuses order");
+            }
+
+            return response.json();
+        },
+        onSuccess: (_, variables) => {
+            //   toast.success("Project deleted");
+            queryClient.invalidateQueries({ queryKey: [QueriesKeys.Project, variables.project_id] });
+        },
+    });
 
     return mutation;
 };

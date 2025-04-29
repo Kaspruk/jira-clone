@@ -27,6 +27,11 @@ const listItemVariants = tv({
                 base: 'p-2 text-sm',
             },
         },
+        disabled: {
+            true: {
+                base: 'bg-gray-100 opacity-50 cursor-default',
+            },
+        },
         isDragging: {
             true: {
                 base: 'z-10 transition-opacity opacity-75',
@@ -51,9 +56,21 @@ export type ListItemProps = React.HTMLAttributes<HTMLLIElement> & VariantProps<t
 }
 
 export const ListItem: React.FC<ListItemProps> = (props) => {
-    const { ref, left, title, subtitle, children, className, right, variant, isDragging, ...restProps } = props;
+    const {
+        ref,
+        left,
+        title,
+        subtitle,
+        children,
+        className,
+        right,
+        variant,
+        isDragging,
+        disabled,
+        ...restProps
+    } = props;
 
-    const classes = listItemVariants({ variant, isDragging, className });
+    const classes = listItemVariants({ variant, isDragging, disabled, className });
 
     return (
         <li ref={ref} {...restProps} className={classes.base({ class: className })}>

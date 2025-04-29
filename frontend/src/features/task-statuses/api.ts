@@ -1,5 +1,5 @@
 import { useMutation, UseMutationResult } from '@tanstack/react-query';
-import { useQuery, UseQueryResult, queryOptions } from '@tanstack/react-query';
+import {  queryOptions } from '@tanstack/react-query';
 import { TaskStatusType } from '@/features/types';
 import { BASE_URL } from '@/lib/constants';
 
