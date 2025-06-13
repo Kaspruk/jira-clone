@@ -61,7 +61,7 @@ type ConfirmationType = React.FC & {
 };
 
 export const Confirm: ConfirmationType = () => {
-    const { resolve, ...modalProps } = useSyncExternalStore(subscribe, getSnapshot);
+    const { resolve, ...modalProps } = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 
     const onClose = () => {
         resolve(false);

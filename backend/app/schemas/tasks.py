@@ -32,3 +32,12 @@ UPDATE tasks SET {template} WHERE id = %s
 DELETE_TASK_BY_ID = """
 DELETE FROM tasks WHERE id = %s
 """
+
+class TaskSchemes:
+    """Клас для організації всіх SQL схем завдань"""
+    CREATE_TABLE_TASKS = CREATE_TABLE_TASKS
+    CREATE_TASK = CREATE_TASK
+    GET_TASKS = GET_TASKS
+    GET_TASK_BY_ID = GET_TASK_BY_ID
+    UPDATE_TASK_BY_ID = UPDATE_TASK_BY_ID
+    DELETE_TASK_BY_ID = DELETE_TASK_BY_ID

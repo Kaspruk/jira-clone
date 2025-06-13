@@ -1,0 +1,43 @@
+CREATE_TABLE_TASK_PRIORITY_RELATIONS = """
+CREATE TABLE IF NOT EXISTS task_priority_relations (
+    id SERIAL PRIMARY KEY,
+    task_priority_id INT REFERENCES task_priorities(id) ON DELETE CASCADE,
+    project_id INT REFERENCES projects(id) ON DELETE CASCADE,
+    "order" INT NOT NULL,
+    UNIQUE (task_priority_id, project_id)
+);
+"""
+
+CREATE_TASK_PRIORITY_RELATION = """
+INSERT INTO task_priority_relations (task_priority_id, project_id, "order") VALUES (%s, %s, %s) RETURNING id
+"""
+
+GET_TASK_PRIORITY_RELATIONS_BY_PROJECT_ID = """
+SELECT * FROM task_priority_relations WHERE project_id = %s ORDER BY "order"
+"""
+
+GET_TASK_PRIORITY_RELATIONS_BY_TASK_PRIORITY_ID = """
+SELECT * FROM task_priority_relations WHERE task_priority_id = %s ORDER BY "order"
+"""
+
+GET_TASK_PRIORITY_RELATION_BY_ID = """
+SELECT * FROM task_priority_relations WHERE id = %s
+"""
+
+UPDATE_TASK_PRIORITY_RELATION_BY_ID = """
+UPDATE task_priority_relations SET {template} WHERE id = %s
+"""
+
+DELETE_TASK_PRIORITY_RELATION_BY_ID = """
+DELETE FROM task_priority_relations WHERE id = %s
+"""
+
+class TaskPriorityRelationSchemes:
+    """Клас для організації всіх SQL схем зв'язків пріоритетів завдань"""
+    CREATE_TABLE_TASK_PRIORITY_RELATIONS = CREATE_TABLE_TASK_PRIORITY_RELATIONS
+    CREATE_TASK_PRIORITY_RELATION = CREATE_TASK_PRIORITY_RELATION
+    GET_TASK_PRIORITY_RELATIONS_BY_PROJECT_ID = GET_TASK_PRIORITY_RELATIONS_BY_PROJECT_ID
+    GET_TASK_PRIORITY_RELATIONS_BY_TASK_PRIORITY_ID = GET_TASK_PRIORITY_RELATIONS_BY_TASK_PRIORITY_ID
+    GET_TASK_PRIORITY_RELATION_BY_ID = GET_TASK_PRIORITY_RELATION_BY_ID
+    UPDATE_TASK_PRIORITY_RELATION_BY_ID = UPDATE_TASK_PRIORITY_RELATION_BY_ID
+    DELETE_TASK_PRIORITY_RELATION_BY_ID = DELETE_TASK_PRIORITY_RELATION_BY_ID 

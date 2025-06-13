@@ -33,3 +33,10 @@ class TaskStatusModel(BaseModel):
     color: str
     description: str
     workspace_id: int
+
+class TaskPriorityModel(BaseModel):
+    name: str
+    icon: str
+    color: str
+    description: str
+    workspace_id: int

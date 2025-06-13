@@ -23,3 +23,11 @@ SELECT * from users WHERE email = %s;
 GET_USER_BY_ID = """
 SELECT * FROM users WHERE id = %s;
 """
+
+class UserSchemes:
+    """Клас для організації всіх SQL схем користувачів"""
+    CREATE_TABLE_USERS = CREATE_TABLE_USERS
+    CREATE_USER = CREATE_USER
+    GET_USERS = GET_USERS
+    GET_USER_BY_EMAIL = GET_USER_BY_EMAIL
+    GET_USER_BY_ID = GET_USER_BY_ID
