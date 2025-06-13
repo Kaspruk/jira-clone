@@ -16,7 +16,8 @@ const buttonVariants = cva(
         secondary: "bg-white text-black hover:bg-neutral-100",
         ghost: "border-transparent shadow-none hover:bg-accent hover:text-accent-foreground",
         muted: "bg-neutral-200 text-neutral-600 hover:bg-neutral-200/80",
-        teritary: "bg-blue-100 text-blue-600 border-transparent hover:bg-blue-200 shadow-none"
+        teritary: "bg-blue-100 text-blue-600 border-transparent hover:bg-blue-200 shadow-none",
+        red: "bg-red-100 text-red-600 border-transparent hover:bg-red-200 shadow-none"
       },
       size: {
         default: "h-10 px-4 py-2",
@@ -79,7 +80,7 @@ const Button = (props: ButtonProps) => {
       </span>
       <span
         className={cn(
-          'transition-opacity opacity-100 duration-150', 
+          'flex items-center gap-2 transition-opacity opacity-100 duration-150', 
           loading && 'opacity-0'
         )}
       >

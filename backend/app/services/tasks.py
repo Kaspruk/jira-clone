@@ -1,6 +1,6 @@
 from psycopg2 import Error
 from fastapi import HTTPException
-from app.shemas.tasks import CREATE_TASK, GET_TASKS, GET_TASK_BY_ID, UPDATE_TASK_BY_ID, DELETE_TASK_BY_ID
+from app.schemas.tasks import CREATE_TASK, GET_TASKS, GET_TASK_BY_ID, UPDATE_TASK_BY_ID, DELETE_TASK_BY_ID
 from app.models import TaskModel
 
 def create_task(task: TaskModel, connection):

@@ -23,11 +23,11 @@ export type TaskType = {
 
 export type TaskStatusType = {
   id: number;
-  project_id: number;
-  name: string;
-  description: string;
-  color: string;
   icon: string;
+  name: string;
+  color: string;
+  description: string;
+  workspace_id: number;
 };
 
 export type WorkspaceTaskStatusType = TaskStatusType & {
@@ -36,9 +36,9 @@ export type WorkspaceTaskStatusType = TaskStatusType & {
 
 export type TaskStatusRelationType = {
   id: number;
+  order: number;
   project_id: number;
   task_status_id: number;
-  order: number;
 };
 
 export enum TaskStatus {

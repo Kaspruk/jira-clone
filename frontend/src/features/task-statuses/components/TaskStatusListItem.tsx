@@ -11,6 +11,7 @@ type TaskStatusListItemProps = TaskStatusType & {
     selected: boolean,
     onEdit: () => void,
     onSelect: (value: boolean) => void,
+    onRemove: () => void,
 }
 
 export const TaskStatusListItem = (props: TaskStatusListItemProps) => {
@@ -22,6 +23,7 @@ export const TaskStatusListItem = (props: TaskStatusListItemProps) => {
         selected,
         onEdit,
         onSelect,
+        onRemove,
     } = props;
 
     const {
@@ -62,9 +64,14 @@ export const TaskStatusListItem = (props: TaskStatusListItemProps) => {
             )}
             color={color}
             right={(
-                <Button variant="ghost" size="icon" onClick={onEdit}>
-                    <Icon name="edit" size={20} className="text-gray-500" />
-                </Button>
+                <div className="flex gap-2 items-center">
+                    <Button variant="ghost" size="icon" onClick={onEdit}>
+                        <Icon name="edit" size={20} className="text-gray-500" />
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={onRemove}>
+                        <Icon name="close" size={20} className="text-red-500" />
+                    </Button>
+                </div>
             )}
             style={{
                 transition,

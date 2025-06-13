@@ -2,7 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.database import get_db_connection
-from app.shemas import SCHEMAS
+from app.schemas import SCHEMAS
 from app.routers import users, workspaces, projects, tasks, task_statuses
 
 app = FastAPI()

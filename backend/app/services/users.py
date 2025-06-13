@@ -1,7 +1,7 @@
 from psycopg2 import Error
 from fastapi import HTTPException
 from passlib.context import CryptContext
-from app.shemas.users import CREATE_USER, GET_USERS, GET_USER_BY_ID
+from app.schemas.users import CREATE_USER, GET_USERS, GET_USER_BY_ID
 from app.models import UserModel
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

@@ -1,9 +1,9 @@
 from app.models import WorkspaceModel
 from psycopg2 import Error
-from app.shemas.task_statuses import GET_TASK_STATUSES_BY_WORKSPACE_ID
-from app.shemas.task_status_relations import GET_TASK_STATUS_RELATIONS_BY_PROJECT_ID
+from app.schemas.task_statuses import GET_TASK_STATUSES_BY_WORKSPACE_ID
+from app.schemas.task_status_relations import GET_TASK_STATUS_RELATIONS_BY_PROJECT_ID
 from fastapi import HTTPException
-from app.shemas.workspaces import CREATE_WORKSPACE, GET_WORKSPACES, GET_WORKSPACE_BY_ID, UPDATE_WORKSPACE_BY_ID, DELETE_WORKSPACE_BY_ID
+from app.schemas.workspaces import CREATE_WORKSPACE, GET_WORKSPACES, GET_WORKSPACE_BY_ID, UPDATE_WORKSPACE_BY_ID, DELETE_WORKSPACE_BY_ID
 from app.services.task_statuses import create_default_task_statuses
 
 # Припускаємо, що існує якась база даних або ORM для роботи з даними

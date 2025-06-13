@@ -7,7 +7,8 @@
 import { Sidebar } from "@/components/sidebar";
 import { CreateProjectModal } from "@/features/projects";
 import { CreateTaskModal } from "@/features/tasks";
-import { TasksStatusModal } from "@/features/task-statuses";
+import { Confirm } from "@/components/Confirm";
+
 interface DashboardLayoutProps {
   children: React.ReactNode;
 };
@@ -21,6 +22,7 @@ const DashboardLayout = async (props: DashboardLayoutProps) => {
       </main>
       <CreateProjectModal />
       <CreateTaskModal />
+      <Confirm />
       {/* 
         <CreateWorkspaceModal />
         

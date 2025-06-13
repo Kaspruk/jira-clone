@@ -16,6 +16,10 @@ GET_TASK_STATUS_RELATIONS_BY_PROJECT_ID = """
 SELECT * FROM task_status_relations WHERE project_id = %s ORDER BY "order"
 """
 
+GET_TASK_STATUS_RELATIONS_BY_TASK_STATUS_ID = """
+SELECT * FROM task_status_relations WHERE task_status_id = %s ORDER BY "order"
+"""
+
 GET_TASK_STATUS_RELATION_BY_ID = """
 SELECT * FROM task_status_relations WHERE id = %s
 """

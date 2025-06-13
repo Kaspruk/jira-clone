@@ -78,9 +78,10 @@ export const useDeleteProject = () => {
 };
 
 type UpdateProjectStatusesOrderType = {
-    project_id: number;
     oldIndex: number;
     newIndex: number;
+    project_id: number;
+    workspace_id: number;
 }
 
 export const useUpdateProjectStatusesOrder = () => {
@@ -104,7 +105,7 @@ export const useUpdateProjectStatusesOrder = () => {
         },
         onSuccess: (_, variables) => {
             //   toast.success("Project deleted");
-            queryClient.invalidateQueries({ queryKey: [QueriesKeys.Project, variables.project_id] });
+            queryClient.invalidateQueries({ queryKey: [QueriesKeys.WorkspaceStatuses, variables.workspace_id] });
         },
     });
 
@@ -115,6 +116,7 @@ type SelectProjectStatus = {
     value: boolean;
     status_id: number;
     project_id: number;
+    workspace_id: number;
 }
 
 export const useSelectProjectStatus = () => {
@@ -138,7 +140,7 @@ export const useSelectProjectStatus = () => {
         },
         onSuccess: (_, variables) => {
             //   toast.success("Project deleted");
-            queryClient.invalidateQueries({ queryKey: [QueriesKeys.Project, variables.project_id] });
+            queryClient.invalidateQueries({ queryKey: [QueriesKeys.Project, variables.workspace_id] });
         },
     });
 

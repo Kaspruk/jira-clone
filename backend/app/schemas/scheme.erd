@@ -1,0 +1,88 @@
+{
+  "entities": [
+    {
+      "name": "users",
+      "fields": [
+        {"name": "id", "type": "SERIAL", "constraints": "PRIMARY KEY"},
+        {"name": "username", "type": "VARCHAR(50)", "constraints": "UNIQUE"},
+        {"name": "email", "type": "VARCHAR(100)", "constraints": "UNIQUE"},
+        {"name": "hashed_password", "type": "TEXT"},
+        {"name": "created_at", "type": "TIMESTAMP"}
+      ]
+    },
+    {
+      "name": "projects",
+      "fields": [
+        {"name": "id", "type": "SERIAL", "constraints": "PRIMARY KEY"},
+        {"name": "name", "type": "VARCHAR(100)"},
+        {"name": "description", "type": "TEXT"},
+        {"name": "owner_id", "type": "INT", "constraints": "REFERENCES users(id)"},
+        {"name": "workspace_id", "type": "INT", "constraints": "REFERENCES workspaces(id)"},
+        {"name": "created_at", "type": "TIMESTAMP"}
+      ]
+    },
+    {
+      "name": "project_members",
+      "fields": [
+        {"name": "id", "type": "SERIAL", "constraints": "PRIMARY KEY"},
+        {"name": "user_id", "type": "INT", "constraints": "REFERENCES users(id)"},
+        {"name": "project_id", "type": "INT", "constraints": "REFERENCES projects(id)"},
+        {"name": "role", "type": "VARCHAR(20)"}
+      ]
+    },
+    {
+      "name": "task_statuses",
+      "fields": [
+        {"name": "id", "type": "SERIAL", "constraints": "PRIMARY KEY"},
+        {"name": "name", "type": "VARCHAR(50)"},
+        {"name": "icon", "type": "VARCHAR(50)"},
+        {"name": "color", "type": "VARCHAR(50)"},
+        {"name": "description", "type": "VARCHAR(255)"},
+        {"name": "workspace_id", "type": "INT", "constraints": "REFERENCES workspaces(id)"}
+      ]
+    },
+    {
+      "name": "task_status_relations",
+      "fields": [
+        {"name": "id", "type": "SERIAL", "constraints": "PRIMARY KEY"},
+        {"name": "task_status_id", "type": "INT", "constraints": "REFERENCES task_statuses(id)"},
+        {"name": "project_id", "type": "INT", "constraints": "REFERENCES projects(id)"},
+        {"name": "order", "type": "INT"}
+      ]
+    },
+    {
+      "name": "workspaces",
+      "fields": [
+        {"name": "id", "type": "SERIAL", "constraints": "PRIMARY KEY"},
+        {"name": "name", "type": "VARCHAR(100)"},
+        {"name": "description", "type": "TEXT"},
+        {"name": "owner_id", "type": "INT", "constraints": "REFERENCES users(id)"},
+        {"name": "created_at", "type": "TIMESTAMP"}
+      ]
+    },
+    {
+      "name": "tasks",
+      "fields": [
+        {"name": "id", "type": "SERIAL", "constraints": "PRIMARY KEY"},
+        {"name": "title", "type": "VARCHAR(200)"},
+        {"name": "description", "type": "TEXT"},
+        {"name": "type", "type": "VARCHAR(20)"},
+        {"name": "status", "type": "VARCHAR(20)"},
+        {"name": "priority", "type": "VARCHAR(20)"},
+        {"name": "project_id", "type": "INT", "constraints": "REFERENCES projects(id)"},
+        {"name": "author_id", "type": "INT", "constraints": "REFERENCES users(id)"},
+        {"name": "assignee_id", "type": "INT", "constraints": "REFERENCES users(id)"},
+        {"name": "created_at", "type": "TIMESTAMP"},
+        {"name": "updated_at", "type": "TIMESTAMP"}
+      ]
+    }
+  ],
+  "relationships": [
+    {"from": "users", "to": "projects", "type": "owns"},
+    {"from": "projects", "to": "project_members", "type": "has"},
+    {"from": "projects", "to": "tasks", "type": "contains"},
+    {"from": "workspaces", "to": "projects", "type": "includes"},
+    {"from": "task_statuses", "to": "task_status_relations", "type": "has"},
+    {"from": "projects", "to": "task_status_relations", "type": "has"}
+  ]
+}

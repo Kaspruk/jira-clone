@@ -1,19 +1,10 @@
 from psycopg2 import Error
 from fastapi import HTTPException
-from app.shemas.projects import CREATE_PROJECT, GET_PROJECTS, GET_PROJECT_BY_ID, UPDATE_PROJECT_BY_ID, DELETE_PROJECT_BY_ID
+from app.schemas.projects import CREATE_PROJECT, GET_PROJECTS, GET_PROJECT_BY_ID, UPDATE_PROJECT_BY_ID, DELETE_PROJECT_BY_ID
 from app.models import ProjectModel
-from app.shemas.task_statuses import GET_TASK_STATUSES_BY_WORKSPACE_ID
-from app.shemas.task_status_relations import CREATE_TASK_STATUS_RELATION, DELETE_TASK_STATUS_RELATION_BY_ID, GET_TASK_STATUS_RELATIONS_BY_PROJECT_ID, UPDATE_TASK_STATUS_RELATION_BY_ID
+from app.schemas.task_statuses import GET_TASK_STATUSES_BY_WORKSPACE_ID
+from app.schemas.task_status_relations import CREATE_TASK_STATUS_RELATION, DELETE_TASK_STATUS_RELATION_BY_ID, GET_TASK_STATUS_RELATIONS_BY_PROJECT_ID, UPDATE_TASK_STATUS_RELATION_BY_ID
 from app.constants import default_statuses
-
-[
-    {'id': 1, 'name': 'Task', 'icon': 'Tasks to be done', 'color': 'check_box', 'workspace_id': 5, 'description': '#38bdf8'}, 
-    {'id': 2, 'name': 'History', 'icon': 'Tasks in progress', 'color': 'bookmark', 'workspace_id': 5, 'description': '#d9f99d'}, 
-    {'id': 3, 'name': 'Issue', 'icon': 'Issue', 'color': 'mode_standby', 'workspace_id': 5, 'description': '#f43f5e'}, 
-    {'id': 4, 'name': 'Epic', 'icon': 'Epic', 'color': 'bolt', 'workspace_id': 5, 'description': '#818cf8'}, 
-    {'id': 5, 'name': 'Enhancement', 'icon': 'Enhancement', 'color': 'auto_awesome_motion', 'workspace_id': 5, 'description': '#a7f3d0'}, 
-    {'id': 6, 'name': 'Defect', 'icon': 'Defect', 'color': 'bug_report', 'workspace_id': 5, 'description': '#f43f5e'}
-]
 
 def create_project(project: ProjectModel, connection):
     try:
@@ -122,8 +113,8 @@ def update_project_statuses_order(project_id: int, oldIndex: int, newIndex: int,
             statuses = cur.fetchall()
             queryForUpdate = UPDATE_TASK_STATUS_RELATION_BY_ID.format(template=f'"order" = %s')
             
-            currentStatuas = statuses[oldIndex]
-            cur.execute(queryForUpdate, [newIndex, currentStatuas['id']])
+            currentStatus = statuses[oldIndex]
+            cur.execute(queryForUpdate, [newIndex, currentStatus['id']])
                  
             rangeValue = None
             if isPositive: rangeValue = range(oldIndex + 1, newIndex + 1)

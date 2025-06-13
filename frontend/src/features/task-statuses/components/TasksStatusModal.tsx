@@ -1,4 +1,7 @@
-import { useForm } from "react-hook-form";
+"use client";
+
+import { memo, useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
 import { ResponsiveModal, type ResponsiveModalProps } from "@/components/ResponsiveModal";
 import { DialogTitle } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -12,68 +15,70 @@ import { DottedSeparator } from "@/components/DottedSeparator";
 import { IconForm } from "@/components/IconForm";
 import { TaskStatusType } from "@/features/types";
 
-import { useCreateTaskStatus } from "../api";
 import { useTaskStatusModalState } from "../hooks";
-import { Controller } from "react-hook-form";
-import { useEffect } from "react";
 
 // Define the form data type
-type FormDataType = Omit<TaskStatusType, 'id'>;
+type FormDataType = Omit<TaskStatusType, 'id'> & { id?: TaskStatusType['id'] | null };
 
 type TasksStatusModalProps = Partial<Omit<ResponsiveModalProps, 'children'>> & {
     data?: TaskStatusType | null;
-    projectId: number;
+    workspaceId: number;
+    onSubmit: (data: FormDataType) => void;
 }
 
-// Create the TasksStatusModal component
-export const TasksStatusModal = (props: TasksStatusModalProps) => {
+export const TasksStatusModal = memo((props: TasksStatusModalProps) => {
     const {
         data,
-        projectId,
+        workspaceId,
+        onSubmit,
+        onOpenChange,
     } = props;
 
+    const [isOpen, setIsOpen] = useTaskStatusModalState();
     const isEdit = Boolean(data);
 
     const {
+        reset,
         control,
         setValue,
+        getValues,
         handleSubmit,
         formState: { errors },
     } = useForm<FormDataType>({
         defaultValues: {
-            name: '',
-            description: '',
+            id: null,
             icon: '',
-            color: '',
+            name: '',
+            color: '#000000',
+            description: '',
             ...data,
-            project_id: projectId,
+            workspace_id: workspaceId,
         }
     });
 
+    const formValues = getValues();
+
     useEffect(() => {
+        if (isOpen) {
+            reset();
+        }
+
         if (data) {
+            setValue('id', data.id);
             setValue('name', data.name);
-            setValue('description', data.description);
             setValue('icon', data.icon);
             setValue('color', data.color);
+            setValue('description', data.description);
         }
-    }, [data]);
+    }, [isOpen]);
 
-    const [isOpen, setIsOpen] = useTaskStatusModalState();
-
-    const { mutate, isPending } = useCreateTaskStatus();
-
-    const onSubmit = async (data: FormDataType) => {
-        mutate({ ...data, project_id: projectId }, {
-            onSuccess() {
-                setIsOpen(false);
-                props.onOpenChange?.(false);
-            }
-        });
+    const handleOpenChange = (isOpen: boolean) => {
+        setIsOpen(isOpen);
+        onOpenChange?.(isOpen);
     };
 
     return (
-        <ResponsiveModal open={isOpen} onOpenChange={setIsOpen}>
+        <ResponsiveModal open={isOpen} onOpenChange={handleOpenChange}>
             <Card className="w-full p-4 h-full border-none shadow-none">
                 <CardHeader className="flex mb-4">
                     <DialogTitle className="text-xl font-bold">
@@ -97,7 +102,7 @@ export const TasksStatusModal = (props: TasksStatusModalProps) => {
                             />
                             {errors.name && (<ErrorMessage>{errors.name.message}</ErrorMessage>)}
                         </div>
-                        <div className="space-y-2">
+                        <div className="space-y-2 mb-2">
                             <Label htmlFor="statusDescription">Description</Label>
                             <Controller
                                 name="description"
@@ -111,6 +116,8 @@ export const TasksStatusModal = (props: TasksStatusModalProps) => {
                         </div>
                         <IconForm
                             control={control}
+                            icon={formValues.icon}
+                            color={formValues.color}
                         />
                         <DottedSeparator className="my-4" />
                         <div className="flex items-center justify-between">
@@ -121,11 +128,8 @@ export const TasksStatusModal = (props: TasksStatusModalProps) => {
                             >
                                 Cancel
                             </Button>
-                            <Button
-                                type="submit"
-                                disabled={isPending}
-                            >
-                                {isPending ? "Submitting" : isEdit ? "Update Status" : "Create Status"}
+                            <Button type="submit">
+                                {isEdit ? "Update Status" : "Create Status"}
                             </Button>
                         </div>
                     </form>
@@ -133,4 +137,4 @@ export const TasksStatusModal = (props: TasksStatusModalProps) => {
             </Card>
         </ResponsiveModal>
     );
-}; 
+}); 
