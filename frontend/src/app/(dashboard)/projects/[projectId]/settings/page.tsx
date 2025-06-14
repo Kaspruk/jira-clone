@@ -1,8 +1,8 @@
-import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { getQueryClient } from "@/lib/react-query";
 import { getProject } from "@/features/projects";
 import { getWorkspaceStatuses } from "@/features/workspaces/api";
 import { TaskStatusesList } from "@/features/task-statuses";
+import { TaskPrioritiesList } from "@/features/task-priorities";
 
 export default async function ProjectSettingsPage(props: {
   params: { projectId: number };
@@ -20,13 +20,19 @@ export default async function ProjectSettingsPage(props: {
     });
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <div className="flex flex-row gap-4">
       <div className="flex flex-col gap-2 w-1/3">
         <TaskStatusesList
           projectId={params.projectId}
           workspaceId={project.workspace_id}
         />
       </div>
-    </HydrationBoundary>
+      <div className="flex flex-col gap-2 w-1/3">
+        <TaskPrioritiesList
+          projectId={params.projectId}
+          workspaceId={project.workspace_id}
+        />
+      </div>
+    </div>
   );
 }

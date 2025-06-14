@@ -1,8 +1,6 @@
 import { getQueryClient } from "@/lib/react-query";
 import { TaskDetail, getTask } from "@/features/tasks";
-import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import { View, ViewTitle } from "@/components/ui/view";
-import { DottedSeparator } from "@/components/DottedSeparator";
+import { View } from "@/components/ui/view";
 
 export default async function Task({ params }: { params: { taskId: string } }) {
     const data = await params;
@@ -12,10 +10,8 @@ export default async function Task({ params }: { params: { taskId: string } }) {
     const task = await queryClient.fetchQuery(getTask(data.taskId));
     
     return (
-        <HydrationBoundary state={dehydrate(queryClient)}>
-            <View>
-                <TaskDetail data={task} />
-            </View>
-        </HydrationBoundary>
+        <View>
+            <TaskDetail data={task} />
+        </View>
     );
 }

@@ -1,5 +1,3 @@
-import { HydrationBoundary, dehydrate } from '@tanstack/react-query'
-
 import { getQueryClient } from "@/lib/react-query";
 import { getProjects } from '@/features/projects';
 
@@ -10,7 +8,7 @@ import { CreateProjectButton, ProjectsTable } from "./client";
 
 export default async function Projects() {
     const queryClient = getQueryClient();
-    void queryClient.prefetchQuery(getProjects);
+    await queryClient.fetchQuery(getProjects);
 
     return (
         <View>
@@ -21,9 +19,7 @@ export default async function Projects() {
                 <CreateProjectButton />
             </div>
             <DottedSeparator className="my-3" />
-            <HydrationBoundary state={dehydrate(queryClient)}>
-                <ProjectsTable />
-            </HydrationBoundary>
+            <ProjectsTable />
         </View>
     )
 }

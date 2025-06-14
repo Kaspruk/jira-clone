@@ -68,26 +68,30 @@ class TaskPriorityService:
     @staticmethod
     def delete_task_priority(task_priority_id, connection):
         try:
-            task_priority_relations = [] 
+            task_priority = None
+            task_priority_relations = []
             
             with connection.cursor() as cur:
                 cur.execute(TaskPriorityRelationSchemes.GET_TASK_PRIORITY_RELATIONS_BY_TASK_PRIORITY_ID, [task_priority_id])
+                task_priority = cur.fetchone()
+                
+                if task_priority is None:
+                    raise HTTPException(status_code=404, detail="Task priority not found")
+                
+                cur.execute(TaskPriorityRelationSchemes.GET_TASK_PRIORITY_RELATIONS_BY_PROJECT_ID, [task_priority['project_id']])
                 task_priority_relations = cur.fetchall()
             
-            with connection.cursor() as cur:
-                for task_priority_relation in task_priority_relations:
-                    ProjectService.update_project_priorities_order(
-                        task_priority_relation['project_id'], 
-                        task_priority_relation['order'], 
-                        -1, 
-                        connection
-                    )
+            ProjectService.update_project_task_priorities_order(
+                task_priority['project_id'], 
+                task_priority['order'], 
+                len(task_priority_relations) - 1, 
+                connection
+            )
             
             with connection.cursor() as cur:
                 cur.execute(TaskPrioritySchemes.DELETE_TASK_PRIORITY_BY_ID, [task_priority_id])
                 connection.commit()
                 return task_priority_id
-            
         except Error as e:
             connection.rollback()
             raise HTTPException(status_code=400, detail=str(e)) 

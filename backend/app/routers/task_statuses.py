@@ -13,7 +13,7 @@ router = APIRouter(
 def create_task_status_router(task_status: TaskStatusModel, project_id: int, db=Depends(get_db_connection)):
     with db as connection:
         task_status = TaskStatusService.create_task_status(task_status, connection)
-        ProjectService.update_project_statuses(project_id, task_status['id'], True, connection)
+        ProjectService.update_project_task_statuses(project_id, task_status['id'], True, connection)
         return task_status
 
 @router.get("/{workspace_id}/",  summary="Get all tasks statuses by workspace id")

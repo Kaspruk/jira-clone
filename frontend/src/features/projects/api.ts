@@ -1,4 +1,4 @@
-import { queryOptions, useQueryClient, useMutation, MutationOptions } from '@tanstack/react-query';
+import { queryOptions, useQueryClient, useMutation } from '@tanstack/react-query';
 import { BASE_URL, QueriesKeys } from '@/lib/constants';
 import { type ProjectType } from '../types';
 
@@ -141,6 +141,74 @@ export const useSelectProjectStatus = () => {
         onSuccess: (_, variables) => {
             //   toast.success("Project deleted");
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.Project, variables.workspace_id] });
+        },
+    });
+
+    return mutation;
+};
+
+type UpdateProjectPrioritiesOrderType = {
+    oldIndex: number;
+    newIndex: number;
+    project_id: number;
+    workspace_id: number;
+}
+
+export const useUpdateProjectPrioritiesOrder = () => {
+    const queryClient = useQueryClient();
+
+    const mutation = useMutation<UpdateProjectPrioritiesOrderType, Error, UpdateProjectPrioritiesOrderType>({
+        mutationFn: async (data) => {
+            const response = await fetch(`${BASE_URL}/projects/${data.project_id}/priorities/order`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ oldIndex: data.oldIndex, newIndex: data.newIndex }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to update project priorities order");
+            }
+
+            return response.json();
+        },
+        onSuccess: (_, variables) => {
+            queryClient.invalidateQueries({ queryKey: [QueriesKeys.WorkspacePriorities, variables.workspace_id] });
+        },
+    });
+
+    return mutation;
+};
+
+type SelectProjectPriority = {
+    value: boolean;
+    priority_id: number;
+    project_id: number;
+    workspace_id: number;
+}
+
+export const useSelectProjectPriority = () => {
+    const queryClient = useQueryClient();
+
+    const mutation = useMutation<SelectProjectPriority, Error, SelectProjectPriority>({
+        mutationFn: async (data) => {
+            const response = await fetch(`${BASE_URL}/projects/${data.project_id}/priorities/select`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ priority_id: data.priority_id, value: data.value }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to update project priorities");
+            }
+
+            return response.json();
+        },
+        onSuccess: (_, variables) => {
+            queryClient.invalidateQueries({ queryKey: [QueriesKeys.WorkspacePriorities, variables.workspace_id] });
         },
     });
 

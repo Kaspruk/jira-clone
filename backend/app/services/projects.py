@@ -102,7 +102,17 @@ class ProjectService:
             raise HTTPException(status_code=400, detail=str(e))
         
     @staticmethod
-    def update_project_statuses(project_id: int, status_id: int, value: bool, connection):
+    def get_project_task_types(project_id, connection):
+        try:
+            with connection.cursor() as cur:
+                cur.execute(ProjectSchemes.GET_PROJECT_TYPES, [str(project_id)])
+                return cur.fetchall()
+        except Error as e:
+            connection.rollback()
+            raise HTTPException(status_code=400, detail=str(e))
+        
+    @staticmethod
+    def update_project_task_statuses(project_id: int, status_id: int, value: bool, connection):
         try:
             with connection.cursor() as cur:
                 cur.execute(TaskStatusRelationSchemes.GET_TASK_STATUS_RELATIONS_BY_PROJECT_ID, [str(project_id)])
@@ -131,7 +141,7 @@ class ProjectService:
             raise HTTPException(status_code=400, detail=str(e))
         
     @staticmethod
-    def update_project_statuses_order(project_id: int, oldIndex: int, newIndex: int, connection):
+    def update_project_task_statuses_order(project_id: int, oldIndex: int, newIndex: int, connection):
         try:
             with connection.cursor() as cur:                
                 cur.execute(TaskStatusRelationSchemes.GET_TASK_STATUS_RELATIONS_BY_PROJECT_ID, [str(project_id)])
@@ -141,7 +151,13 @@ class ProjectService:
                 currentStatus = statuses[oldIndex]
                 cur.execute(queryForUpdate, [newIndex, currentStatus['id']])
                 
-                update_order_map(oldIndex, newIndex, lambda index, index_to_update: cur.execute(queryForUpdate, [index_to_update, statuses[index]['id']]))
+                update_order_map(
+                    oldIndex, 
+                    newIndex, 
+                    lambda index, index_to_update: cur.execute(
+                        queryForUpdate, [index_to_update, statuses[index]['id']]
+                    )
+                )
                                        
                 connection.commit()
         except Error as e:
@@ -150,7 +166,7 @@ class ProjectService:
             raise HTTPException(status_code=400, detail=str(e))
 
     @staticmethod
-    def update_project_priorities(project_id: int, priority_id: int, value: bool, connection):
+    def update_project_task_priorities(project_id: int, priority_id: int, value: bool, connection):
         try:
             with connection.cursor() as cur:
                 cur.execute(TaskPriorityRelationSchemes.GET_TASK_PRIORITY_RELATIONS_BY_PROJECT_ID, [str(project_id)])
@@ -179,7 +195,7 @@ class ProjectService:
             raise HTTPException(status_code=400, detail=str(e))
 
     @staticmethod
-    def update_project_priorities_order(project_id: int, oldIndex: int, newIndex: int, connection):
+    def update_project_task_priorities_order(project_id: int, oldIndex: int, newIndex: int, connection):
         try:
             with connection.cursor() as cur:                
                 cur.execute(TaskPriorityRelationSchemes.GET_TASK_PRIORITY_RELATIONS_BY_PROJECT_ID, [str(project_id)])
@@ -189,7 +205,16 @@ class ProjectService:
                 currentPriority = priorities[oldIndex]
                 cur.execute(queryForUpdate, [newIndex, currentPriority['id']])
                 
-                update_order_map(oldIndex, newIndex, lambda index: cur.execute(queryForUpdate, [index, priorities[index]['id']]))
+                print(oldIndex, newIndex)
+                
+                update_order_map(
+                    oldIndex, 
+                    newIndex,  
+                    lambda index, index_to_update: cur.execute(
+                        queryForUpdate, 
+                        [index_to_update, priorities[index]['id']]
+                    )
+                )
 
                 connection.commit()
         except Error as e:

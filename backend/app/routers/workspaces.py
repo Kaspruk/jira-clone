@@ -48,7 +48,6 @@ def delete_workspace_route(workspace_id: int, db=Depends(get_db_connection)):
             raise HTTPException(status_code=404, detail="Workspace not found")
         return {"detail": "Workspace deleted"}
 
-
 @router.get("/{workspace_id}/statuses")
 def get_workspaces_statutest(workspace_id: int, project_id: int | None = None, db=Depends(get_db_connection)):
     with db as connection:

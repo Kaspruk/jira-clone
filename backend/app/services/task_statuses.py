@@ -68,20 +68,25 @@ class TaskStatusService:
     @staticmethod
     def delete_task_status(task_status_id, connection):
         try:
+            task_status = None 
             task_status_relations = [] 
             
             with connection.cursor() as cur:
                 cur.execute(TaskStatusRelationSchemes.GET_TASK_STATUS_RELATIONS_BY_TASK_STATUS_ID, [task_status_id])
+                task_status = cur.fetchone()
+                
+                if task_status is None:
+                    raise HTTPException(status_code=404, detail="Task status not found")
+                
+                cur.execute(TaskStatusRelationSchemes.GET_TASK_STATUS_RELATIONS_BY_PROJECT_ID, [task_status['project_id']])
                 task_status_relations = cur.fetchall()
             
-            with connection.cursor() as cur:
-                for task_status_relation in task_status_relations:
-                    ProjectService.update_project_statuses_order(
-                        task_status_relation['project_id'], 
-                        task_status_relation['order'], 
-                        -1, 
-                        connection
-                    )
+            ProjectService.update_project_task_statuses_order(
+                task_status['project_id'], 
+                task_status['order'], 
+                len(task_status_relations) - 1, 
+                connection
+            )
             
             with connection.cursor() as cur:
                 cur.execute(TaskStatusSchemes.DELETE_TASK_STATUS_BY_ID, [task_status_id])

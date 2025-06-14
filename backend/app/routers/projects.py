@@ -35,11 +35,21 @@ def update_project_router(project_id: int, db=Depends(get_db_connection)):
         return ProjectService.delete_project(project_id, connection)
     
 @router.put("/{project_id}/statuses/select", summary="Select project status")
-def update_project_statuses_select_router(data: Dict[str, int], project_id: int, db=Depends(get_db_connection)):
+def update_project_task_statuses_select_router(data: Dict[str, int], project_id: int, db=Depends(get_db_connection)):
     with db as connection:
-        return ProjectService.update_project_statuses(project_id, data['status_id'], data['value'], connection)
+        return ProjectService.update_project_task_statuses(project_id, data['status_id'], data['value'], connection)
     
 @router.put("/{project_id}/statuses/order", summary="Update project statuses order")
-def update_project_statuses_order_router(data: Dict[str, int], project_id: int, db=Depends(get_db_connection)):
+def update_project_task_statuses_order_router(data: Dict[str, int], project_id: int, db=Depends(get_db_connection)):
     with db as connection:
-        return ProjectService.update_project_statuses_order(project_id, data['oldIndex'], data['newIndex'], connection)
+        return ProjectService.update_project_task_statuses_order(project_id, data['oldIndex'], data['newIndex'], connection)
+
+@router.put("/{project_id}/priorities/select", summary="Select project priority")
+def update_project_task_priorities_select_router(data: Dict[str, int], project_id: int, db=Depends(get_db_connection)):
+    with db as connection:
+        return ProjectService.update_project_task_priorities(project_id, data['priority_id'], data['value'], connection)
+    
+@router.put("/{project_id}/priorities/order", summary="Update project priorities order")
+def update_project_task_priorities_order_router(data: Dict[str, int], project_id: int, db=Depends(get_db_connection)):
+    with db as connection:
+        return ProjectService.update_project_task_priorities_order(project_id, data['oldIndex'], data['newIndex'], connection)

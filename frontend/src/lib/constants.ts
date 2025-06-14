@@ -9,13 +9,17 @@ import { LiaDotCircle } from "react-icons/lia";
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL!;
 
 export const QueriesKeys = {
+    Workspaces: 'workspaces',
     Projects: 'projects',
     Project: 'project',
+    ProjectTaskTypes: 'projectTaskTypes',
+    ProjectTaskPriorities: 'projectTaskPriorities',
     Tasks: 'tasks',
     Task: 'task',
     Users: 'users',
     User: 'user',
     WorkspaceStatuses: 'workspaceStatuses',
+    WorkspacePriorities: 'workspacePriorities',
 };
 
 export const TaskTypeData = {

@@ -24,7 +24,9 @@ export function useCreateTaskStatus(): UseMutationResult<any, Error, CreateTaskS
             return response.json();
         },
         onSuccess: (_, variables) => {
-            queryClient.invalidateQueries({ queryKey: [QueriesKeys.WorkspaceStatuses, variables.task_status.workspace_id] });
+            queryClient.invalidateQueries({
+                queryKey: [QueriesKeys.WorkspaceStatuses, variables.task_status.workspace_id]
+            });
         }
     });
 };

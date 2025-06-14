@@ -1,3 +1,11 @@
+export type WorkspaceType = {
+  id: number;
+  name: string;
+  description: string;
+  created_at: number;
+  updated_at: number;
+};
+
 export type ProjectType = {
   id: number;
   name: string;
@@ -5,6 +13,7 @@ export type ProjectType = {
   description: string;
   workspace_id: number;
   statuses: TaskStatusType[];
+  priorities: TaskPriorityType[];
 };
 
 export type TaskType = {
@@ -31,6 +40,19 @@ export type TaskStatusType = {
 };
 
 export type WorkspaceTaskStatusType = TaskStatusType & {
+  selected: boolean;
+};
+
+export type TaskPriorityType = {
+  id: number;
+  icon: string;
+  name: string;
+  color: string;
+  description: string;
+  workspace_id: number;
+};
+
+export type WorkspaceTaskPriorityType = TaskPriorityType & {
   selected: boolean;
 };
 

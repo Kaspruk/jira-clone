@@ -30,23 +30,40 @@ SELECT * FROM projects
 GET_PROJECT_BY_ID = """
 SELECT 
     projects.*,
-    json_agg(json_build_object(
-        'id', task_statuses.id,
-        'name', task_statuses.name,
-        'icon', task_statuses.icon,
-        'color', task_statuses.color,
-        'order', task_status_relations.order
-    ) ORDER BY task_status_relations.order) AS statuses
+    COALESCE(statuses_agg.statuses, '[]'::json) AS statuses,
+    COALESCE(priorities_agg.priorities, '[]'::json) AS priorities
 FROM 
     projects
-LEFT JOIN 
-    task_status_relations ON projects.id = task_status_relations.project_id
-LEFT JOIN 
-    task_statuses ON task_status_relations.task_status_id = task_statuses.id
+LEFT JOIN (
+    SELECT 
+        project_id,
+        json_agg(json_build_object(
+            'id', task_statuses.id,
+            'name', task_statuses.name,
+            'icon', task_statuses.icon,
+            'color', task_statuses.color,
+            'order', task_status_relations.order
+        ) ORDER BY task_status_relations.order) AS statuses
+    FROM task_status_relations
+    LEFT JOIN task_statuses ON task_status_relations.task_status_id = task_statuses.id
+    GROUP BY project_id
+) statuses_agg ON projects.id = statuses_agg.project_id
+LEFT JOIN (
+    SELECT 
+        project_id,
+        json_agg(json_build_object(
+            'id', task_priorities.id,
+            'name', task_priorities.name,
+            'icon', task_priorities.icon,
+            'color', task_priorities.color,
+            'order', task_priority_relations.order
+        ) ORDER BY task_priority_relations.order) AS priorities
+    FROM task_priority_relations
+    LEFT JOIN task_priorities ON task_priority_relations.task_priority_id = task_priorities.id
+    GROUP BY project_id
+) priorities_agg ON projects.id = priorities_agg.project_id
 WHERE 
     projects.id = %s
-GROUP BY 
-    projects.id
 """
 
 UPDATE_PROJECT_BY_ID = """
@@ -57,27 +74,6 @@ DELETE_PROJECT_BY_ID = """
 DELETE FROM projects WHERE id = %s
 """
 
-GET_PROJECT_STATUSES = """
-SELECT * FROM task_statuses WHERE workspace_id = %s AND id IN (
-    projects.*,
-    json_agg(json_build_object(
-        'id', task_statuses.id,
-        'name', task_statuses.name,
-        'icon', task_statuses.icon,
-        'color', task_statuses.color,
-        'order', task_status_relations.order
-    ) ORDER BY task_status_relations.order) AS statuses
-FROM 
-    projects
-LEFT JOIN 
-    task_status_relations ON projects.id = task_status_relations.project_id
-LEFT JOIN 
-    task_statuses ON task_status_relations.task_status_id = task_statuses.id
-WHERE 
-    projects.id = %s
-GROUP BY 
-    projects.id
-"""
 
 class ProjectSchemes:
     """Клас для організації всіх SQL схем проєктів"""
@@ -88,4 +84,3 @@ class ProjectSchemes:
     GET_PROJECT_BY_ID = GET_PROJECT_BY_ID
     UPDATE_PROJECT_BY_ID = UPDATE_PROJECT_BY_ID
     DELETE_PROJECT_BY_ID = DELETE_PROJECT_BY_ID
-    GET_PROJECT_STATUSES = GET_PROJECT_STATUSES

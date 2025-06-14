@@ -1,29 +1,34 @@
 import { ComponentProps } from "react";
 import { Select } from "@/components/Select";
-import { TypeTask } from "@/features/types";
-import { TaskTypeData } from "@/lib/constants";
 import { SelectItem } from "@/components/ui/select";
+import { useQuery } from "@tanstack/react-query";
+import { getProject } from "@/features/projects";
+import { Icon } from "@/components/ui/icon";
 
-const taskTypes = Object.values(TypeTask)
+type TaskTypeSelectProps = Omit<ComponentProps<typeof Select>, 'getItemData'> & {
+    projectId: number;
+}
+export const TaskTypeSelect = (props: TaskTypeSelectProps) => {
+    const { projectId, ...selectProps } = props;
 
-export const TaskTypeSelect = (props: Omit<ComponentProps<typeof Select>, 'getItemData'>) => {
+    const { data: project } = useQuery(getProject(projectId));
+
     return (
-        <Select {...props}>
-            {taskTypes.map(type => {
-                const data = TaskTypeData[type];
-                const Icon = data.icon;
-
-                return (
-                    <SelectItem key={type} value={type}>
-                        <div className="flex justify-start items-center gap-3 font-medium">
-                            <Icon className="size-4 stroke-2" fill={data.color} />
-                            <span className="truncate">
-                                {data.title}
-                            </span>
-                        </div>
-                    </SelectItem>
-                )
-            })}
+        <Select {...selectProps}>
+            {(project?.statuses ?? []).map(taskStatus => (
+                <SelectItem key={taskStatus.id} value={String(taskStatus.id)}>
+                    <div className="flex justify-start items-center gap-3 font-medium">
+                        <Icon
+                            size={16}
+                            name={taskStatus.icon}
+                            color={taskStatus.color}
+                        />
+                        <span className="truncate">
+                            {taskStatus.name}
+                        </span>
+                    </div>
+                </SelectItem>
+            ))}
         </Select>
     )
 };

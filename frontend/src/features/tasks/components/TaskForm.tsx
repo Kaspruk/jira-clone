@@ -21,6 +21,7 @@ import { useCreateTask, getTask } from "@/features/tasks";
 import { ProjectType, TaskType, UserType, TypeTask, TaskPriority, TaskStatus } from "@/features/types";
 
 import { TaskTypeSelect } from "./TaskTypeSelect";
+import { TaskPrioritySelect } from "./TaskPrioritySelect";
 import { useEffect, useRef, useState } from "react";
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
 
@@ -123,7 +124,11 @@ export const TaskForm = (props: TaskFormType) => {
                         rules={{ required: { value: true, message: 'Field is required' }}}
                         control={control}
                         render={({ field }) => (
-                            <TaskTypeSelect {...field} id="type" />
+                            <TaskTypeSelect
+                                {...field}
+                                id="type"
+                                projectId={projectId}
+                            />
                         )}
                     />
                     {errors.type && (<ErrorMessage>{errors.type.message}</ErrorMessage>)}
@@ -189,15 +194,10 @@ export const TaskForm = (props: TaskFormType) => {
                         control={control}
                         rules={{ required: { value: true, message: 'Field is required' }}}
                         render={({ field }) => (
-                            <Select<string>
+                            <TaskPrioritySelect<string>
                                 {...field}
                                 id="priority"
-                                items={TaskPriorityList || []}
-                                placeholder="Task priority"
-                                getItemData={item => ({
-                                    value: item,
-                                    title: toCapitalize(item),
-                                })}
+                                projectId={projectId}
                             />
                         )}
                     />
