@@ -1,12 +1,11 @@
 'use client';
 
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { useQueries } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import dynamic from "next/dynamic";
 
 import { Select } from "@/components/Select";
-
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,20 +13,22 @@ import { Button } from "@/components/ui/button";
 import { ErrorMessage } from "@/components/ui/error-message";
 import { DottedSeparator } from "@/components/DottedSeparator";
 
-import { toCapitalize } from "@/lib/utils";
 import { getUsers } from "@/features/users";
-import { getProjects } from "@/features/projects";
-import { useCreateTask, getTask } from "@/features/tasks";
-import { ProjectType, TaskType, UserType, TypeTask, TaskPriority, TaskStatus } from "@/features/types";
+import { getProject, getProjects } from "@/features/projects";
+import { useCreateTask } from "@/features/tasks";
+import { ProjectType, TaskType, UserType } from "@/features/types";
 
 import { TaskTypeSelect } from "./TaskTypeSelect";
 import { TaskPrioritySelect } from "./TaskPrioritySelect";
 import { useEffect, useRef, useState } from "react";
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
 
-const TaskPriorityList = Object.values(TaskPriority);
-
-type FormDataType = Omit<TaskType, 'id' | 'project_id' | 'created_at' | 'updated_at'> & {
+type FormDataType = Omit<TaskType, 
+    'id' | 
+    'project_id' | 
+    'created_at' | 
+    'updated_at'
+> & {
     project_id: string;
 };
 
@@ -40,9 +41,10 @@ export const TaskForm = (props: TaskFormType) => {
     const params = useParams();
     const projectId = props.data?.project_id ?? Number(params.projectId);
 
-    const [projectsData, usersData] = useQueries({
-        queries: [getProjects, getUsers]
+    const [projectData, projectsData, usersData] = useQueries({
+        queries: [getProject(projectId), getProjects, getUsers]
     });
+    const {data: project} = projectData;
     const {data: projects} = projectsData;
     const {data: users} = usersData;
 
@@ -55,11 +57,11 @@ export const TaskForm = (props: TaskFormType) => {
         formState: { errors, isValid, isSubmitted },
     } = useForm<FormDataType>({
         defaultValues: {
-            type: TypeTask.TASK,
             title: '',
-            status: TaskStatus.BACKLOG,
+            type_id: undefined,
+            status_id: undefined,
+            priority_id: undefined,
             description: '',
-            priority: undefined,
             author_id: undefined,
             assignee_id: undefined,
             ...props.data,
@@ -67,7 +69,16 @@ export const TaskForm = (props: TaskFormType) => {
         }
     });
 
+    useEffect(() => {
+        const firstStatusId = project?.statuses[0]?.id;
+
+        if (firstStatusId) {
+            setValue('status_id', firstStatusId);
+        }
+    }, [project]);
+
     const onSubmit = (data: FormDataType) => {
+        console.log('data', data);
         mutate({
             ...data,
             project_id: Number(data.project_id)
@@ -77,21 +88,6 @@ export const TaskForm = (props: TaskFormType) => {
             }
         });
     };
-
-    const [isLoading, setLoading] = useState(false);
-    const isLoaded = useRef(false);
-
-    // useEffect(() => {
-    //     if (isLoaded.current) {
-    //         return;
-    //     }
-
-    //     isLoaded.current = true;
-
-    //     setInterval(() => {
-    //         setLoading(state => !state);
-    //     }, 3000);
-    // }, []);
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -120,18 +116,18 @@ export const TaskForm = (props: TaskFormType) => {
                 <div>
                     <Label htmlFor="type">Type</Label>
                     <Controller
-                        name="type"
+                        name="type_id"
                         rules={{ required: { value: true, message: 'Field is required' }}}
                         control={control}
                         render={({ field }) => (
                             <TaskTypeSelect
                                 {...field}
-                                id="type"
+                                id="type_id"
                                 projectId={projectId}
                             />
                         )}
                     />
-                    {errors.type && (<ErrorMessage>{errors.type.message}</ErrorMessage>)}
+                    {errors.type_id && (<ErrorMessage>{errors.type_id.message}</ErrorMessage>)}
                 </div>
                 <div>
                     <Label htmlFor="title">Title</Label>
@@ -190,18 +186,18 @@ export const TaskForm = (props: TaskFormType) => {
                 <div>
                     <Label htmlFor="priority">Priority</Label>
                     <Controller
-                        name="priority"
+                        name="priority_id"
                         control={control}
                         rules={{ required: { value: true, message: 'Field is required' }}}
                         render={({ field }) => (
-                            <TaskPrioritySelect<string>
+                            <TaskPrioritySelect
                                 {...field}
-                                id="priority"
+                                id="priority_id"
                                 projectId={projectId}
                             />
                         )}
                     />
-                    {errors.priority && (<ErrorMessage>{errors.priority.message}</ErrorMessage>)}
+                    {errors.priority_id && (<ErrorMessage>{errors.priority_id.message}</ErrorMessage>)}
                 </div>
                 <div>
                     <Label htmlFor="assignee_id">Assigned</Label>

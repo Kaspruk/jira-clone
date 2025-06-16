@@ -5,26 +5,26 @@ import { useQuery } from "@tanstack/react-query";
 import { getProject } from "@/features/projects";
 import { Icon } from "@/components/ui/icon";
 
-type TaskTypeSelectProps = Omit<ComponentProps<typeof Select>, 'getItemData'> & {
+type TaskStatusSelectProps = Omit<ComponentProps<typeof Select>, 'getItemData'> & {
     projectId: number;
 }
-export const TaskTypeSelect = (props: TaskTypeSelectProps) => {
+export const TaskStatusSelect = (props: TaskStatusSelectProps) => {
     const { projectId, ...selectProps } = props;
 
     const { data: project } = useQuery(getProject(projectId));
 
     return (
         <Select {...selectProps}>
-            {(project?.types ?? []).map(taskType => (
-                <SelectItem key={taskType.id} value={String(taskType.id)}>
+            {(project?.statuses ?? []).map(TaskStatus => (
+                <SelectItem key={TaskStatus.id} value={String(TaskStatus.id)}>
                     <div className="flex justify-start items-center gap-3 font-medium">
                         <Icon
                             size={16}
-                            name={taskType.icon}
-                            color={taskType.color}
+                            name={TaskStatus.icon}
+                            color={TaskStatus.color}
                         />
                         <span className="truncate">
-                            {taskType.name}
+                            {TaskStatus.name}
                         </span>
                     </div>
                 </SelectItem>

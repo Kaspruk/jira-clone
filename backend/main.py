@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.database import get_db_connection
 from app.schemas import SCHEMAS
-from app.routers import users, workspaces, projects, tasks, task_statuses, task_priorities
+from app.routers import users, workspaces, projects, tasks, task_statuses, task_priorities, task_types
 
 app = FastAPI()
 app.include_router(users.router)
@@ -12,6 +12,7 @@ app.include_router(projects.router)
 app.include_router(tasks.router)
 app.include_router(task_statuses.router)
 app.include_router(task_priorities.router)
+app.include_router(task_types.router)
 
 app.add_middleware(
     CORSMiddleware,

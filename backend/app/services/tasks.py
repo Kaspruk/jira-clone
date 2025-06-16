@@ -8,22 +8,25 @@ class TaskService:
     
     @staticmethod
     def create_task(task: TaskModel, connection):
+        print('task', task)
         try:
             with connection.cursor() as cur:
                 cur.execute(TaskSchemes.CREATE_TASK, (
                     task.title,
                     task.description,
-                    task.type,
-                    task.status,
-                    task.priority,
+                    task.type_id,
+                    task.status_id,
+                    task.priority_id,
                     str(task.project_id),
                     str(task.author_id),
                     str(task.assignee_id),
                 ))
                 task_id = cur.fetchone()["id"]
                 connection.commit()
-
-                return { "id": task_id, **task.model_dump() }
+                
+                
+                cur.execute(TaskSchemes.GET_TASK_BY_ID, [str(task_id)])
+                return cur.fetchone()
         except Error as e:
             connection.rollback()
             raise HTTPException(status_code=400, detail=str(e))
@@ -75,7 +78,7 @@ class TaskService:
     def delete_task(task_id: int, connection):
         try:
             with connection.cursor() as cur:
-                cur.execute(TaskSchemes.DELETE_TASK_BY_ID, str(task_id))
+                cur.execute(TaskSchemes.DELETE_TASK_BY_ID, [str(task_id)])
                 connection.commit()
                 return True
         except Error as e:

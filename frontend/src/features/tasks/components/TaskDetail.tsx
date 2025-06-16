@@ -1,64 +1,59 @@
 'use client';
 
 import { useQueries } from "@tanstack/react-query";
-import { useParams, useRouter } from "next/navigation";
-import { useQueryClient } from "@tanstack/react-query";
-
 import { getUsers } from "@/features/users";
 import { getProjects } from "@/features/projects";
-import { ProjectType, TaskType, UserType, TaskPriority } from "@/features/types";
+import { ProjectType, UserType } from "@/features/types";
 import { toCapitalize } from "@/lib/utils";
-import { useUpdateTask } from "@/features/tasks/api";
+import { useUpdateTask, getTask } from "@/features/tasks/api";
 
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/Select";
 import { EditableInput, EditableEditor } from "@/components/editable";
 import { TaskTypeSelect } from "./TaskTypeSelect";
-
-const TaskPriorityList = Object.values(TaskPriority);
+import { TaskStatusSelect } from "./TaskStatusSelect";
+import { TaskPrioritySelect } from "./TaskPrioritySelect";
 
 type TaskDetailProps = React.PropsWithChildren<{
-    data: TaskType;
+    taskId: number;
     onSave?(): void;
 }>;
 
 export const TaskDetail = (props: TaskDetailProps) => {
-    const task = props.data;
+    const taskId = props.taskId;
 
-    const params = useParams();
-    const router = useRouter();
-    const queryClient = useQueryClient();
-    const taskId = params.taskId as string;
+    const [taskData, projectsData, usersData] = useQueries({
+        queries: [getTask(taskId), getProjects, getUsers]
+    });
+
+    const {data: task} = taskData;
+    const {data: projects} = projectsData;
+    const {data: users} = usersData;
     
     const { mutate: updateTask } = useUpdateTask(taskId);
 
-    const [projectsData, usersData] = useQueries({
-        queries: [getProjects, getUsers]
-    });
-    const {data: projects} = projectsData;
-    const {data: users} = usersData;
-
-    const author = users?.find(u => u.id === props.data?.author_id);
+    const author = users?.find(u => u.id === task?.author_id);
 
     const handleUpdate = (field: string) => (value: string) => {
-        if (!props.data) return;
+        if (!task) return;
         
         try {
             const updatedTask = { 
-                ...props.data, 
+                ...task, 
                 [field]: value
             };
             
             updateTask(updatedTask, {
                 onSuccess: () => {
                     props.onSave?.();
-                    router.refresh();
                 }
             });
         } catch (error) {
             console.error('Failed to update task description:', error);
         }
     };
+
+    if (!task) return null;
 
     return (
         <div className="flex gap-4">
@@ -93,24 +88,30 @@ export const TaskDetail = (props: TaskDetailProps) => {
                     />
                 </div>
                 <div>
+                    <Label className="text-gray-500">Status</Label>
+                    <TaskStatusSelect 
+                        value={String(task.status_id)}
+                        projectId={task.project_id}
+                        variant="preview"
+                        onChange={handleUpdate('status_id')}
+                    />
+                </div>
+                <div>
                     <Label className="text-gray-500">Type</Label>
                     <TaskTypeSelect
-                        value={task.type}
+                        value={String(task.type_id)}
+                        projectId={task.project_id}
                         variant="preview"
-                        onChange={handleUpdate('type')}
+                        onChange={handleUpdate('type_id')}
                     />
                 </div>
                 <div>
                     <Label className="text-gray-500">Priority</Label>
-                    <Select<string>
-                        items={TaskPriorityList || []}
-                        value={task.priority}
+                    <TaskPrioritySelect
+                        value={String(task.priority_id)}
+                        projectId={task.project_id}
                         variant="preview"
-                        getItemData={item => ({
-                            value: item,
-                            title: toCapitalize(item),
-                        })}
-                        onChange={handleUpdate('priority')}
+                        onChange={handleUpdate('priority_id')}
                     />
                 </div>
                 <div>
@@ -129,10 +130,6 @@ export const TaskDetail = (props: TaskDetailProps) => {
                 <div>
                     <Label className="text-gray-500">Author</Label>
                     <div className="mt-1 text-sm">{author?.username || '-'}</div>
-                </div>
-                <div>
-                    <Label className="text-gray-500">Status</Label>
-                    <div className="mt-1 text-sm">{props.data?.status ? toCapitalize(props.data.status) : '-'}</div>
                 </div>
             </div>
         </div>

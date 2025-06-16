@@ -3,6 +3,7 @@ import { getProject } from "@/features/projects";
 import { getWorkspaceStatuses } from "@/features/workspaces/api";
 import { TaskStatusesList } from "@/features/task-statuses";
 import { TaskPrioritiesList } from "@/features/task-priorities";
+import { TaskTypesList } from "@/features/task-types";
 
 export default async function ProjectSettingsPage(props: {
   params: { projectId: number };
@@ -29,6 +30,12 @@ export default async function ProjectSettingsPage(props: {
       </div>
       <div className="flex flex-col gap-2 w-1/3">
         <TaskPrioritiesList
+          projectId={params.projectId}
+          workspaceId={project.workspace_id}
+        />
+      </div>
+      <div className="flex flex-col gap-2 w-1/3">
+        <TaskTypesList
           projectId={params.projectId}
           workspaceId={project.workspace_id}
         />

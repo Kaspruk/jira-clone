@@ -1,6 +1,6 @@
 import { BASE_URL, QueriesKeys } from "@/lib/constants";
 import { queryOptions, useQuery } from "@tanstack/react-query";
-import { WorkspaceTaskStatusType, WorkspaceTaskPriorityType, WorkspaceType } from "../types";
+import { WorkspaceTaskStatusType, WorkspaceTaskPriorityType, WorkspaceType, WorkspaceTaskTypeType } from "../types";
 
 export const getWorkspaceStatuses = (workspaceId: number, projectId?: number) => queryOptions<WorkspaceTaskStatusType[]>({
     queryKey: [QueriesKeys.WorkspaceStatuses, workspaceId],
@@ -20,6 +20,20 @@ export const getWorkspacePriorities = (workspaceId: number, projectId?: number) 
     queryKey: [QueriesKeys.WorkspacePriorities, workspaceId],
     queryFn: async () => {
         const url = new URL(`${BASE_URL}/workspaces/${workspaceId}/priorities`)
+
+        if (projectId) {
+            url.searchParams.set('project_id', projectId.toString());
+        }
+
+        const response = await fetch(url.toString())
+        return response.json()
+    },
+});
+
+export const getWorkspaceTypes = (workspaceId: number, projectId?: number) => queryOptions<WorkspaceTaskTypeType[]>({
+    queryKey: [QueriesKeys.WorkspaceTypes, workspaceId],
+    queryFn: async () => {
+        const url = new URL(`${BASE_URL}/workspaces/${workspaceId}/types`)
 
         if (projectId) {
             url.searchParams.set('project_id', projectId.toString());

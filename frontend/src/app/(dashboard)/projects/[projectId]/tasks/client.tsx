@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useRouter, useParams } from 'next/navigation'
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { LuEllipsisVertical as MoreVertical } from "react-icons/lu";
@@ -10,52 +10,94 @@ import { ProjectType } from "@/features/types";
 
 import { Button } from "@/components/ui/button";
 import { DataTable, DataTableProps } from "@/components/DataTable";
-
-const tableColumns: DataTableProps['columns'] = [
-    {
-        key: 'title',
-        title: 'Title',
-        isSortable: true,
-        td: ({ value }) => (
-            <DataTable.RowCell>
-                {value}
-            </DataTable.RowCell>
-        )
-    },
-    {
-        key: 'actions',
-        title: '',
-        isSortable: true,
-        textAlign: 'right',
-        td: ({ row }) => (
-            <DataTable.RowCell className="text-right">
-                {/* <ProjectActions projectId={row.id}>
-                    <Button variant="ghost" className="size-8 p-0">
-                        <MoreVertical className="size-4" />
-                    </Button>
-                </ProjectActions> */}
-                <Button variant="ghost" className="size-8 p-0">
-                    <MoreVertical className="size-4" />
-                </Button>
-            </DataTable.RowCell>
-        )
-    }
-];
+import { TaskActions } from "@/features/tasks/components/TaskActions";
+import { getProject } from "@/features/projects";
+import { toObject } from "@/lib/utils";
 
 export const TasksTable = () => {
     const router = useRouter();
     const params = useParams();
-    const { data } = useSuspenseQuery(getTasks(Number(params.projectId)));
+    const { data: project } = useSuspenseQuery(getProject(Number(params.projectId)));
+    const { data: tasks } = useSuspenseQuery(getTasks(Number(params.projectId)));
 
     const onRowClick = useCallback((data: ProjectType) => {
         console.log('onRowClick')
         router.push(`/tasks/${data.id}/`);
     }, []);
 
+    const projectHashData = useMemo(() => {
+        return {
+            ...project,
+            types: toObject(project?.types ?? []),
+            statuses: toObject(project?.statuses ?? []),
+            priorities: toObject(project?.priorities ?? [])
+        };
+    }, [project]);
+
+    const columns = useMemo<DataTableProps['columns']>(() => {
+        return ([
+            {
+                key: 'title',
+                title: 'Title',
+                isSortable: true,
+                td: ({ value }) => (
+                    <DataTable.RowCell>
+                        {value}
+                    </DataTable.RowCell>
+                )
+            },
+            {
+                key: 'type_id',
+                title: 'Type',
+                isSortable: true,
+                td: ({ value }) => (
+                    <DataTable.RowCell>
+                        {projectHashData.types[value]?.name}
+                    </DataTable.RowCell>
+                )
+            },
+            {
+                key: 'status_id',
+                title: 'Status',
+                isSortable: true,
+                td: ({ value }) => (
+                    <DataTable.RowCell>
+                        {projectHashData.statuses[value]?.name}
+                    </DataTable.RowCell>
+                )
+            },
+            {
+                key: 'priority_id',
+                title: 'Priority',
+                isSortable: true,
+                td: ({ value }) => (
+                    <DataTable.RowCell>
+                        {projectHashData.priorities[value]?.name}
+                    </DataTable.RowCell>
+                )
+            },
+            {
+                key: 'actions',
+                title: '',
+                isSortable: true,
+                textAlign: 'right',
+                td: ({ row }) => (
+                    <DataTable.RowCell className="text-right">
+                        <TaskActions taskId={row.id}>
+                            <Button variant="ghost" className="size-8 p-0">
+                                <MoreVertical className="size-4" />
+                            </Button>
+                        </TaskActions>
+                    </DataTable.RowCell>
+                )
+            }
+        ]);
+    }, [tasks]);
+
     return (
         <DataTable
-            data={data}
-            columns={tableColumns}
+            data={tasks}
+            columns={columns}
             onRowClick={onRowClick}
         />
     )

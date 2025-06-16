@@ -4,17 +4,17 @@ import { ListItem } from "@/components/ListItems"
 import { Button } from "@/components/ui/button"
 import { Icon } from "@/components/ui/icon"
 import { Checkbox } from "@/components/ui/checkbox"
-import { TaskStatusType } from "@/features/types"
+import { TaskTypeType } from "@/features/types"
 import { useSortable } from "@dnd-kit/sortable"
 
-type TaskStatusListItemProps = TaskStatusType & {
+type TaskTypeListItemProps = TaskTypeType & {
     selected: boolean,
     onEdit: () => void,
     onSelect: (value: boolean) => void,
     onRemove: () => void,
 }
 
-export const TaskStatusListItem = (props: TaskStatusListItemProps) => {
+export const TaskTypeListItem = (props: TaskTypeListItemProps) => {
     const {
         id,
         name,
@@ -42,7 +42,7 @@ export const TaskStatusListItem = (props: TaskStatusListItemProps) => {
             ref={setNodeRef}
             title={name}
             disabled={!selected}
-            aria-describedby={`status-item-${id}`}
+            aria-describedby={`type-item-${id}`}
             left={(
                 <div className="flex gap-2 items-center">
                     <Button
@@ -80,4 +80,4 @@ export const TaskStatusListItem = (props: TaskStatusListItemProps) => {
             isDragging={isDragging}
         />
     )
-}
+} 

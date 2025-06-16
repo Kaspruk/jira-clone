@@ -18,6 +18,7 @@ export const QueriesKeys = {
     Task: 'task',
     Users: 'users',
     User: 'user',
+    WorkspaceTypes: 'workspaceTypes',
     WorkspaceStatuses: 'workspaceStatuses',
     WorkspacePriorities: 'workspacePriorities',
 };

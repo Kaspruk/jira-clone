@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS project_members (
 """
 
 CREATE_PROJECT = """
-INSERT INTO projects (name, description, owner_id) VALUES (%s, %s, %s) RETURNING id
+INSERT INTO projects (name, description, owner_id, workspace_id) VALUES (%s, %s, %s, %s) RETURNING id
 """
 
 GET_PROJECTS = """
@@ -31,7 +31,8 @@ GET_PROJECT_BY_ID = """
 SELECT 
     projects.*,
     COALESCE(statuses_agg.statuses, '[]'::json) AS statuses,
-    COALESCE(priorities_agg.priorities, '[]'::json) AS priorities
+    COALESCE(priorities_agg.priorities, '[]'::json) AS priorities,
+    COALESCE(types_agg.types, '[]'::json) AS types
 FROM 
     projects
 LEFT JOIN (
@@ -62,6 +63,20 @@ LEFT JOIN (
     LEFT JOIN task_priorities ON task_priority_relations.task_priority_id = task_priorities.id
     GROUP BY project_id
 ) priorities_agg ON projects.id = priorities_agg.project_id
+LEFT JOIN (
+    SELECT 
+        project_id,
+        json_agg(json_build_object(
+            'id', task_types.id,
+            'name', task_types.name,
+            'icon', task_types.icon,
+            'color', task_types.color,
+            'order', task_type_relations.order
+        ) ORDER BY task_type_relations.order) AS types
+    FROM task_type_relations
+    LEFT JOIN task_types ON task_type_relations.task_type_id = task_types.id
+    GROUP BY project_id
+) types_agg ON projects.id = types_agg.project_id
 WHERE 
     projects.id = %s
 """

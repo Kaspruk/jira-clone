@@ -56,4 +56,9 @@ def get_workspaces_statutest(workspace_id: int, project_id: int | None = None, d
 @router.get("/{workspace_id}/priorities")
 def get_workspaces_priorities(workspace_id: int, project_id: int | None = None, db=Depends(get_db_connection)):
     with db as connection:
-        return WorkspaceService.get_workspace_priorities(workspace_id, project_id, connection) 
+        return WorkspaceService.get_workspace_priorities(workspace_id, project_id, connection)
+
+@router.get("/{workspace_id}/types")
+def get_workspaces_types(workspace_id: int, project_id: int | None = None, db=Depends(get_db_connection)):
+    with db as connection:
+        return WorkspaceService.get_workspace_types(workspace_id, project_id, connection) 

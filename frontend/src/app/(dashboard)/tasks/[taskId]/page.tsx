@@ -7,11 +7,11 @@ export default async function Task({ params }: { params: { taskId: string } }) {
 
     // Fetch task data on the server using React Query
     const queryClient = getQueryClient();
-    const task = await queryClient.fetchQuery(getTask(data.taskId));
+    await queryClient.fetchQuery(getTask(data.taskId));
     
     return (
         <View>
-            <TaskDetail data={task} />
+            <TaskDetail taskId={Number(data.taskId)} />
         </View>
     );
 }

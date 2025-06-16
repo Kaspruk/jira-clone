@@ -30,5 +30,6 @@ def update_task_router(task: TaskModel, task_id: int, db=Depends(get_db_connecti
 
 @router.delete("/{task_id}/", summary="Delete task by id")
 def update_task_router(task_id: int, db=Depends(get_db_connection)):
+    print('task_id', task_id)
     with db as connection:
         return TaskService.delete_task(task_id, connection)

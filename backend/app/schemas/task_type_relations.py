@@ -1,0 +1,43 @@
+CREATE_TABLE_TASK_TYPE_RELATIONS = """
+CREATE TABLE IF NOT EXISTS task_type_relations (
+    id SERIAL PRIMARY KEY,
+    task_type_id INT REFERENCES task_types(id) ON DELETE CASCADE,
+    project_id INT REFERENCES projects(id) ON DELETE CASCADE,
+    "order" INT NOT NULL,
+    UNIQUE (task_type_id, project_id)
+);
+"""
+
+CREATE_TASK_TYPE_RELATION = """
+INSERT INTO task_type_relations (task_type_id, project_id, "order") VALUES (%s, %s, %s) RETURNING id
+"""
+
+GET_TASK_TYPE_RELATIONS_BY_PROJECT_ID = """
+SELECT * FROM task_type_relations WHERE project_id = %s ORDER BY "order"
+"""
+
+GET_TASK_TYPE_RELATIONS_BY_TASK_TYPE_ID = """
+SELECT * FROM task_type_relations WHERE task_type_id = %s ORDER BY "order"
+"""
+
+GET_TASK_TYPE_RELATION_BY_ID = """
+SELECT * FROM task_type_relations WHERE id = %s
+"""
+
+UPDATE_TASK_TYPE_RELATION_BY_ID = """
+UPDATE task_type_relations SET {template} WHERE id = %s
+"""
+
+DELETE_TASK_TYPE_RELATION_BY_ID = """
+DELETE FROM task_type_relations WHERE id = %s
+"""
+
+class TaskTypeRelationSchemes:
+    """Клас для організації всіх SQL схем зв'язків типів завдань"""
+    CREATE_TABLE_TASK_TYPE_RELATIONS = CREATE_TABLE_TASK_TYPE_RELATIONS
+    CREATE_TASK_TYPE_RELATION = CREATE_TASK_TYPE_RELATION
+    GET_TASK_TYPE_RELATIONS_BY_PROJECT_ID = GET_TASK_TYPE_RELATIONS_BY_PROJECT_ID
+    GET_TASK_TYPE_RELATIONS_BY_TASK_TYPE_ID = GET_TASK_TYPE_RELATIONS_BY_TASK_TYPE_ID
+    GET_TASK_TYPE_RELATION_BY_ID = GET_TASK_TYPE_RELATION_BY_ID
+    UPDATE_TASK_TYPE_RELATION_BY_ID = UPDATE_TASK_TYPE_RELATION_BY_ID
+    DELETE_TASK_TYPE_RELATION_BY_ID = DELETE_TASK_TYPE_RELATION_BY_ID 

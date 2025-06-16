@@ -21,14 +21,19 @@ export const getProject = (projectId: number) => queryOptions<ProjectType>({
 export const useCreateProject = () => {
     const queryClient = useQueryClient();
 
-    const mutation = useMutation<ProjectType, Error, Omit<ProjectType, 'id'>>({
+    const mutation = useMutation<ProjectType, Error, Omit<ProjectType, 'id' | 'statuses' | 'priorities' | 'types'>>({
         mutationFn: async (project) => {
             const response = await fetch(`${BASE_URL}/projects/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(project),
+                body: JSON.stringify({
+                    ...project,
+                    statuses: [],
+                    priorities: [],
+                    types: [],
+                }),
             });
 
             if (!response.ok) {
@@ -77,7 +82,7 @@ export const useDeleteProject = () => {
     return mutation;
 };
 
-type UpdateProjectStatusesOrderType = {
+type UpdateProjectInstanceOrderType = {
     oldIndex: number;
     newIndex: number;
     project_id: number;
@@ -87,7 +92,7 @@ type UpdateProjectStatusesOrderType = {
 export const useUpdateProjectStatusesOrder = () => {
     const queryClient = useQueryClient();
 
-    const mutation = useMutation<UpdateProjectStatusesOrderType, Error, UpdateProjectStatusesOrderType>({
+    const mutation = useMutation<UpdateProjectInstanceOrderType, Error, UpdateProjectInstanceOrderType>({
         mutationFn: async (data) => {
             const response = await fetch(`${BASE_URL}/projects/${data.project_id}/statuses/order`, {
                 method: 'PUT',
@@ -105,7 +110,7 @@ export const useUpdateProjectStatusesOrder = () => {
         },
         onSuccess: (_, variables) => {
             //   toast.success("Project deleted");
-            queryClient.invalidateQueries({ queryKey: [QueriesKeys.WorkspaceStatuses, variables.workspace_id] });
+            queryClient.invalidateQueries({ queryKey: [QueriesKeys.Project, variables.project_id] });
         },
     });
 
@@ -116,7 +121,6 @@ type SelectProjectStatus = {
     value: boolean;
     status_id: number;
     project_id: number;
-    workspace_id: number;
 }
 
 export const useSelectProjectStatus = () => {
@@ -140,24 +144,17 @@ export const useSelectProjectStatus = () => {
         },
         onSuccess: (_, variables) => {
             //   toast.success("Project deleted");
-            queryClient.invalidateQueries({ queryKey: [QueriesKeys.Project, variables.workspace_id] });
+            queryClient.invalidateQueries({ queryKey: [QueriesKeys.Project, variables.project_id] });
         },
     });
 
     return mutation;
 };
 
-type UpdateProjectPrioritiesOrderType = {
-    oldIndex: number;
-    newIndex: number;
-    project_id: number;
-    workspace_id: number;
-}
-
 export const useUpdateProjectPrioritiesOrder = () => {
     const queryClient = useQueryClient();
 
-    const mutation = useMutation<UpdateProjectPrioritiesOrderType, Error, UpdateProjectPrioritiesOrderType>({
+    const mutation = useMutation<UpdateProjectInstanceOrderType, Error, UpdateProjectInstanceOrderType>({
         mutationFn: async (data) => {
             const response = await fetch(`${BASE_URL}/projects/${data.project_id}/priorities/order`, {
                 method: 'PUT',
@@ -174,7 +171,7 @@ export const useUpdateProjectPrioritiesOrder = () => {
             return response.json();
         },
         onSuccess: (_, variables) => {
-            queryClient.invalidateQueries({ queryKey: [QueriesKeys.WorkspacePriorities, variables.workspace_id] });
+            queryClient.invalidateQueries({ queryKey: [QueriesKeys.Project, variables.project_id] });
         },
     });
 
@@ -185,7 +182,6 @@ type SelectProjectPriority = {
     value: boolean;
     priority_id: number;
     project_id: number;
-    workspace_id: number;
 }
 
 export const useSelectProjectPriority = () => {
@@ -208,7 +204,67 @@ export const useSelectProjectPriority = () => {
             return response.json();
         },
         onSuccess: (_, variables) => {
-            queryClient.invalidateQueries({ queryKey: [QueriesKeys.WorkspacePriorities, variables.workspace_id] });
+            queryClient.invalidateQueries({ queryKey: [QueriesKeys.Project, variables.project_id] });
+        },
+    });
+
+    return mutation;
+};
+
+export const useUpdateProjectTypesOrder = () => {
+    const queryClient = useQueryClient();
+
+    const mutation = useMutation<UpdateProjectInstanceOrderType, Error, UpdateProjectInstanceOrderType>({
+        mutationFn: async (data) => {
+            const response = await fetch(`${BASE_URL}/projects/${data.project_id}/types/order`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ oldIndex: data.oldIndex, newIndex: data.newIndex }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to update project types order");
+            }
+
+            return response.json();
+        },
+        onSuccess: (_, variables) => {
+            queryClient.invalidateQueries({ queryKey: [QueriesKeys.Project, variables.project_id] });
+        },
+    });
+
+    return mutation;
+};
+
+type SelectProjectType = {
+    value: boolean;
+    type_id: number;
+    project_id: number;
+}
+
+export const useSelectProjectType = () => {
+    const queryClient = useQueryClient();
+
+    const mutation = useMutation<SelectProjectType, Error, SelectProjectType>({
+        mutationFn: async (data) => {
+            const response = await fetch(`${BASE_URL}/projects/${data.project_id}/types/select`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ type_id: data.type_id, value: data.value }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to update project types");
+            }
+
+            return response.json();
+        },
+        onSuccess: (_, variables) => {
+            queryClient.invalidateQueries({ queryKey: [QueriesKeys.Project, variables.project_id] });
         },
     });
 

@@ -16,15 +16,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { useDeleteProject } from "../api";
+import { useDeleteTask } from "../api";
+
 
 interface TaskActionsProps {
   // id: string;
-  projectId: number;
+  taskId: number;
   children: React.ReactNode;
 };
 
-export const TaskActions = ({ projectId, children }: TaskActionsProps) => {
+export const TaskActions = ({ taskId, children }: TaskActionsProps) => {
   // const workspaceId = useWorkspaceId();
   const router = useRouter();
 
@@ -35,13 +36,15 @@ export const TaskActions = ({ projectId, children }: TaskActionsProps) => {
     "This action cannot be undone.",
     "destructive"
   );
-  const { mutate, isPending } = useDeleteProject();
+  const { mutate, isPending } = useDeleteTask();
 
   const onDelete = async () => {
     const ok = await confirm();
     if (!ok) return;
 
-    mutate(projectId);
+    console.log('taskId', taskId);
+
+    mutate(taskId);
   };
 
   // const onOpenProjectDetail = () => {
@@ -49,7 +52,7 @@ export const TaskActions = ({ projectId, children }: TaskActionsProps) => {
   // };
 
   const onOpenTask = () => {
-    router.push(`/projects/${projectId}/tasks/`);
+    router.push(`/tasks/${taskId}/`);
   };
   
   return (
@@ -65,7 +68,7 @@ export const TaskActions = ({ projectId, children }: TaskActionsProps) => {
             className="font-medium p-[10px]"
           >
             <LuExternalLink className="size-4 mr-2 stroke-2" />
-            Prtoject tasks
+            Open task
           </DropdownMenuItem>
           {/* <DropdownMenuItem
             onClick={onOpenProject}

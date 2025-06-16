@@ -43,8 +43,7 @@ export const CreateProjectModal = (props: Partial<Omit<ResponsiveModalProps, 'ch
         mutate({
             ...data,
             owner_id: 1,
-            statuses: [],
-            workspace_id: workspaces[0].id,
+            workspace_id: workspaces?.[0]?.id as number,
         }, {
             onSuccess() {
                 setIsOpen(false);

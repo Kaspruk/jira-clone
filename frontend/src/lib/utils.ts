@@ -27,3 +27,10 @@ export function toCapitalize(str: string): string {
 };
 
 export const genericMemo: <T>(component: T) => T = memo;
+
+export const toObject = <T extends { id: number }>(data: T[]) => {
+  return data.reduce((acc, item) => {
+    acc[item.id as T['id']] = item;
+    return acc;
+  }, {} as Record<T['id'], T>);
+};

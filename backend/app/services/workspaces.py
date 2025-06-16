@@ -4,10 +4,13 @@ from app.schemas.task_statuses import TaskStatusSchemes
 from app.schemas.task_status_relations import TaskStatusRelationSchemes
 from app.schemas.task_priorities import TaskPrioritySchemes
 from app.schemas.task_priority_relations import TaskPriorityRelationSchemes
+from app.schemas.task_types import TaskTypeSchemes
+from app.schemas.task_type_relations import TaskTypeRelationSchemes
 from fastapi import HTTPException
 from app.schemas.workspaces import WorkspaceSchemes
 from app.services.task_statuses import TaskStatusService
 from app.services.task_priorities import TaskPriorityService
+from app.services.task_types import TaskTypeService
 
 # Припускаємо, що існує якась база даних або ORM для роботи з даними
 
@@ -23,6 +26,7 @@ class WorkspaceService:
 
                 TaskStatusService.create_default_task_statuses(workspace_id, connection, cur)
                 TaskPriorityService.create_default_task_priorities(workspace_id, connection, cur)
+                TaskTypeService.create_default_task_types(workspace_id, connection, cur)
 
                 connection.commit()
 
@@ -127,6 +131,32 @@ class WorkspaceService:
                 sortedPriorities = sorted(extendedPriorities, key=lambda x: (x['order'] is None, x['order']))
 
                 return sortedPriorities
+        except Error as e:
+            connection.rollback()
+            raise HTTPException(status_code=400, detail=str(e))
+
+    @staticmethod
+    def get_workspace_types(workspace_id, project_id, connection):
+        try:
+            with connection.cursor() as cur:
+                cur.execute(TaskTypeSchemes.GET_TASK_TYPES_BY_WORKSPACE_ID, [str(workspace_id)])
+                types = cur.fetchall()
+                
+                extendedTypes = list(map(lambda task_type: { **task_type, "selected": False, "order": None }, types))
+                
+                if project_id:
+                    cur.execute(TaskTypeRelationSchemes.GET_TASK_TYPE_RELATIONS_BY_PROJECT_ID, [str(project_id)])
+                    relations = cur.fetchall()
+                    
+                    for relation in relations:
+                        for task_type in extendedTypes:
+                            if task_type['id'] == relation['task_type_id']:
+                                task_type['order'] = relation['order']
+                                task_type['selected'] = True
+                                
+                sortedTypes = sorted(extendedTypes, key=lambda x: (x['order'] is None, x['order']))
+
+                return sortedTypes
         except Error as e:
             connection.rollback()
             raise HTTPException(status_code=400, detail=str(e))

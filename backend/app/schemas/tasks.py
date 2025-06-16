@@ -3,9 +3,9 @@ CREATE TABLE IF NOT EXISTS tasks (
     id SERIAL PRIMARY KEY,
     title VARCHAR(200) NOT NULL,
     description TEXT,
-    type VARCHAR(20) CHECK (type IN ('TASK', 'HISTORY', 'ISSUE', 'EPIC', 'ENHANCEMENT', 'DEFECT')) DEFAULT 'TASK',
-    status VARCHAR(20) CHECK (status IN ('BACKLOG', 'TODO', 'IN_PROGRESS', 'IN_REVIEW', 'DONE')) DEFAULT 'BACKLOG',
-    priority VARCHAR(20) CHECK (priority IN ('LOW', 'MEDIUM', 'HIGHT')) DEFAULT 'LOW',
+    type_id INT NULL REFERENCES task_types(id),
+    status_id INT NULL REFERENCES task_statuses(id),
+    priority_id INT NULL REFERENCES task_priorities(id),
     project_id INT REFERENCES projects(id) ON DELETE CASCADE,
     author_id INT REFERENCES users(id),
     assignee_id INT REFERENCES users(id),
@@ -15,11 +15,13 @@ CREATE TABLE IF NOT EXISTS tasks (
 """
 
 CREATE_TASK = """
-INSERT INTO tasks (title, description, type, status, priority, project_id, author_id, assignee_id) 
+INSERT INTO tasks (title, description, type_id, status_id, priority_id, project_id, author_id, assignee_id) 
 VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING id
 """
 
-GET_TASKS = """SELECT * FROM tasks"""
+GET_TASKS = """
+SELECT * FROM tasks
+"""
 
 GET_TASK_BY_ID = """
 SELECT * FROM tasks WHERE id = %s

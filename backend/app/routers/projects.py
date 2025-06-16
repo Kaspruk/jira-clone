@@ -53,3 +53,13 @@ def update_project_task_priorities_select_router(data: Dict[str, int], project_i
 def update_project_task_priorities_order_router(data: Dict[str, int], project_id: int, db=Depends(get_db_connection)):
     with db as connection:
         return ProjectService.update_project_task_priorities_order(project_id, data['oldIndex'], data['newIndex'], connection)
+
+@router.put("/{project_id}/types/select", summary="Select project type")
+def update_project_task_types_select_router(data: Dict[str, int], project_id: int, db=Depends(get_db_connection)):
+    with db as connection:
+        return ProjectService.update_project_task_types(project_id, data['type_id'], data['value'], connection)
+    
+@router.put("/{project_id}/types/order", summary="Update project types order")
+def update_project_task_types_order_router(data: Dict[str, int], project_id: int, db=Depends(get_db_connection)):
+    with db as connection:
+        return ProjectService.update_project_task_types_order(project_id, data['oldIndex'], data['newIndex'], connection)

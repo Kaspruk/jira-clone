@@ -10,7 +10,7 @@ export const getTasks = (projectId: number) => queryOptions<TaskType[]>({
     },
 });
 
-export const getTask = (taskId: string) => queryOptions<TaskType>({
+export const getTask = (taskId: number) => queryOptions<TaskType>({
     queryKey: [QueriesKeys.Task, taskId],
     queryFn: async () => {
         const response = await fetch(`${BASE_URL}/tasks/${taskId}/`)
@@ -18,10 +18,11 @@ export const getTask = (taskId: string) => queryOptions<TaskType>({
     },
 });
 
+type CreateTaskType = Omit<TaskType, 'id' | 'created_at' | 'updated_at' | 'type' | 'status' | 'priority'>;
 export const useCreateTask = (projectId: number) => {
     const queryClient = useQueryClient();
 
-    const mutation = useMutation<TaskType, Error, Omit<TaskType, 'id' | 'created_at' | 'updated_at'>>({
+    const mutation = useMutation<TaskType, Error, CreateTaskType>({
         mutationFn: async (project) => {
             const response = await fetch(`${BASE_URL}/tasks/`, {
                 method: 'POST',
@@ -49,7 +50,7 @@ export const useCreateTask = (projectId: number) => {
     return mutation;
 };
 
-export const useUpdateTask = (taskId: string) => {
+export const useUpdateTask = (taskId: number) => {
     const queryClient = useQueryClient();
 
     const mutation = useMutation<TaskType, Error, TaskType>({
@@ -74,6 +75,32 @@ export const useUpdateTask = (taskId: string) => {
         },
         onError: () => {
             //   toast.error("Failed to update Task");
+        }
+    }, queryClient);
+
+    return mutation;
+};
+
+export const useDeleteTask = () => {
+    const queryClient = useQueryClient();
+
+    const mutation = useMutation<boolean, Error, number>({
+        mutationFn: async (taskId) => {
+            const response = await fetch(`${BASE_URL}/tasks/${taskId}/`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to delete task");
+            }
+
+            return response.json();
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [QueriesKeys.Tasks] });
+        },
+        onError: () => {
+            //   toast.error("Failed to delete Task");
         }
     }, queryClient);
 

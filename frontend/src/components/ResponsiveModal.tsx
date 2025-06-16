@@ -28,6 +28,7 @@ export const ResponsiveModal = (props: ResponsiveModalProps) => {
             "w-full max-w-lg p-0 border-none overflow-y-auto hide-scrollbar max-h-[85vh]",
             className
           )}
+          aria-describedby="modal-description"
         >
           {children}
         </DialogContent>

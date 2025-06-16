@@ -6,7 +6,9 @@ from app.schemas.task_statuses import TaskStatusSchemes
 from app.schemas.task_status_relations import TaskStatusRelationSchemes
 from app.schemas.task_priorities import TaskPrioritySchemes
 from app.schemas.task_priority_relations import TaskPriorityRelationSchemes
-from app.constants import default_statuses, default_priorities
+from app.schemas.task_types import TaskTypeSchemes
+from app.schemas.task_type_relations import TaskTypeRelationSchemes
+from app.constants import default_statuses, default_priorities, default_types
 from app.utils import update_order_map
 
 class ProjectService:
@@ -16,7 +18,12 @@ class ProjectService:
     def create_project(project: ProjectModel, connection):
         try:
             with connection.cursor() as cur:
-                cur.execute(ProjectSchemes.CREATE_PROJECT, (project.name, project.description, str(project.owner_id)))
+                cur.execute(ProjectSchemes.CREATE_PROJECT, (
+                    project.name,
+                    project.description,
+                    str(project.owner_id),
+                    str(project.workspace_id)
+                ))
                 project_id = cur.fetchone()["id"]
                 connection.commit()
 
@@ -44,6 +51,19 @@ class ProjectService:
                 order = 0
                 for priority in filtered_priorities:
                     cur.execute(TaskPriorityRelationSchemes.CREATE_TASK_PRIORITY_RELATION, [priority['id'], project_id, order])
+                    order = order + 1
+
+                # Отримати всі дефолтні типи
+                cur.execute(TaskTypeSchemes.GET_TASK_TYPES_BY_WORKSPACE_ID, (str(project.workspace_id)))
+                workspace_types = cur.fetchall()
+
+                # Перевірити наявність дефолтних типів
+                filtered_types = [item for item in workspace_types if item['name'] in {entry['name'] for entry in default_types}]
+                
+                # Створити записи в task_type_relations
+                order = 0
+                for task_type in filtered_types:
+                    cur.execute(TaskTypeRelationSchemes.CREATE_TASK_TYPE_RELATION, [task_type['id'], project_id, order])
                     order = order + 1
 
                 connection.commit()
@@ -213,6 +233,61 @@ class ProjectService:
                     lambda index, index_to_update: cur.execute(
                         queryForUpdate, 
                         [index_to_update, priorities[index]['id']]
+                    )
+                )
+
+                connection.commit()
+        except Error as e:
+            print('Error', e)
+            connection.rollback()
+            raise HTTPException(status_code=400, detail=str(e))
+
+    @staticmethod
+    def update_project_task_types(project_id: int, type_id: int, value: bool, connection):
+        try:
+            with connection.cursor() as cur:
+                cur.execute(TaskTypeRelationSchemes.GET_TASK_TYPE_RELATIONS_BY_PROJECT_ID, [str(project_id)])
+                types = cur.fetchall()
+                
+                if value:
+                    cur.execute(TaskTypeRelationSchemes.CREATE_TASK_TYPE_RELATION, [type_id, project_id, len(types)])
+                else:
+                    type_index = next((index for index, task_type in enumerate(types) if task_type['task_type_id'] == type_id), None)
+                    
+                    if type_index is None:
+                        raise HTTPException(status_code=400, detail="Cannot find type index")
+                    
+                    cur.execute(TaskTypeRelationSchemes.DELETE_TASK_TYPE_RELATION_BY_ID, [str(types[type_index]['id'])])
+
+                    queryForUpdate = TaskTypeRelationSchemes.UPDATE_TASK_TYPE_RELATION_BY_ID.format(template=f'"order" = %s')
+                    types_to_update_range = range(type_index + 1, len(types))
+                    
+                    for index in types_to_update_range:
+                        cur.execute(queryForUpdate, [index - 1, types[index]['id']])
+                
+                connection.commit()
+                return value
+        except Error as e:
+            connection.rollback()
+            raise HTTPException(status_code=400, detail=str(e))
+
+    @staticmethod
+    def update_project_task_types_order(project_id: int, oldIndex: int, newIndex: int, connection):
+        try:
+            with connection.cursor() as cur:                
+                cur.execute(TaskTypeRelationSchemes.GET_TASK_TYPE_RELATIONS_BY_PROJECT_ID, [str(project_id)])
+                types = cur.fetchall()
+                queryForUpdate = TaskTypeRelationSchemes.UPDATE_TASK_TYPE_RELATION_BY_ID.format(template=f'"order" = %s')
+                
+                currentType = types[oldIndex]
+                cur.execute(queryForUpdate, [newIndex, currentType['id']])
+                
+                update_order_map(
+                    oldIndex, 
+                    newIndex,  
+                    lambda index, index_to_update: cur.execute(
+                        queryForUpdate, 
+                        [index_to_update, types[index]['id']]
                     )
                 )
 

@@ -1,4 +1,4 @@
-from typing import Literal, Dict
+from typing import Optional
 from pydantic import BaseModel, EmailStr
 
 class WorkspaceModel(BaseModel):
@@ -15,9 +15,9 @@ class ProjectModel(BaseModel):
 class TaskModel(BaseModel):
     title: str
     description: str
-    type: Literal['TASK', 'HISTORY', 'ISSUE', 'EPIC', 'ENHANCEMENT', 'DEFECT']
-    status: Literal['BACKLOG', 'TODO', 'IN_PROGRESS', 'IN_REVIEW', 'DONE']
-    priority: Literal['LOW', 'MEDIUM', 'HIGHT']
+    type_id: Optional[int] = None
+    status_id: Optional[int] = None
+    priority_id: Optional[int] = None
     project_id: int
     author_id: int
     assignee_id: int
@@ -35,6 +35,13 @@ class TaskStatusModel(BaseModel):
     workspace_id: int
 
 class TaskPriorityModel(BaseModel):
+    name: str
+    icon: str
+    color: str
+    description: str
+    workspace_id: int
+
+class TaskTypeModel(BaseModel):
     name: str
     icon: str
     color: str
