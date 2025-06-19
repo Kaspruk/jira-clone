@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 export const ProjectTitle = () => {
     const params = useParams<{ projectId: string }>();
     const segment = useSelectedLayoutSegment();
-    const { data } = useSuspenseQuery(getProject(params.projectId));
+    const { data } = useSuspenseQuery(getProject(Number(params.projectId)));
     const [_, setIsOpen] = useTaskModalState();
 
     const isTasksLayout = segment === 'tasks';

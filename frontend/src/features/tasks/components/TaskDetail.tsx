@@ -1,10 +1,9 @@
 'use client';
 
-import { useQueries } from "@tanstack/react-query";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { getUsers } from "@/features/users";
 import { getProjects } from "@/features/projects";
 import { ProjectType, UserType } from "@/features/types";
-import { toCapitalize } from "@/lib/utils";
 import { useUpdateTask, getTask } from "@/features/tasks/api";
 
 import { Label } from "@/components/ui/label";
@@ -22,7 +21,7 @@ type TaskDetailProps = React.PropsWithChildren<{
 export const TaskDetail = (props: TaskDetailProps) => {
     const taskId = props.taskId;
 
-    const [taskData, projectsData, usersData] = useQueries({
+    const [taskData, projectsData, usersData] = useSuspenseQueries({
         queries: [getTask(taskId), getProjects, getUsers]
     });
 

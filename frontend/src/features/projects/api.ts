@@ -82,6 +82,35 @@ export const useDeleteProject = () => {
     return mutation;
 };
 
+export const useUpdateProject = (projectId: number) => {
+    const queryClient = useQueryClient();
+
+    return useMutation<ProjectType, Error, ProjectType>({
+        mutationFn: async (task) => {
+            const response = await fetch(`${BASE_URL}/projects/${projectId}/`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(task),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to update project");
+            }
+
+            return await response.json();
+        },
+        onSuccess: (data) => {
+            queryClient.setQueryData([QueriesKeys.Project, projectId], data);
+            queryClient.invalidateQueries({ queryKey: [QueriesKeys.Projects] });
+        },
+        onError: () => {
+            //   toast.error("Failed to update Task");
+        }
+    }, queryClient);
+}
+
 type UpdateProjectInstanceOrderType = {
     oldIndex: number;
     newIndex: number;

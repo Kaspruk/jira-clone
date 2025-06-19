@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useTransition, useEffect, useCallback } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { arrayMove } from "@dnd-kit/sortable";
 import { TaskStatusType, WorkspaceTaskStatusType } from "@/features/types";
 import { SortableList } from "@/components/SortableList";
@@ -23,7 +23,7 @@ interface TaskStatusesListProps {
 export const TaskStatusesList: React.FC<TaskStatusesListProps> = (props) => {
     const { projectId, workspaceId } = props;
   
-    const { data: originalStatuses = [] } = useQuery(getWorkspaceStatuses(workspaceId, projectId));
+    const { data: originalStatuses } = useSuspenseQuery(getWorkspaceStatuses(workspaceId, projectId));
 
     const [isPending, startTransition] = useTransition();
     const [statuses, setStatuses] = useState<WorkspaceTaskStatusType[]>(originalStatuses);
@@ -101,7 +101,6 @@ export const TaskStatusesList: React.FC<TaskStatusesListProps> = (props) => {
         value: value,
         status_id: id,
         project_id: projectId,
-        workspace_id: workspaceId,
       }, {
           onError: () => {
             setStatuses((state) => {

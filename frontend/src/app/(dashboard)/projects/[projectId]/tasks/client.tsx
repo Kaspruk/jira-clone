@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useMemo } from "react";
-import { useRouter, useParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { LuEllipsisVertical as MoreVertical } from "react-icons/lu";
 
@@ -13,12 +13,16 @@ import { DataTable, DataTableProps } from "@/components/DataTable";
 import { TaskActions } from "@/features/tasks/components/TaskActions";
 import { getProject } from "@/features/projects";
 import { toObject } from "@/lib/utils";
+import { useTaskModalState } from "@/features/tasks";
 
-export const TasksTable = () => {
+type TasksTableProps = {
+    projectId: number;
+}
+
+export const TasksTable = ({ projectId }: TasksTableProps) => {
     const router = useRouter();
-    const params = useParams();
-    const { data: project } = useSuspenseQuery(getProject(Number(params.projectId)));
-    const { data: tasks } = useSuspenseQuery(getTasks(Number(params.projectId)));
+    const { data: project } = useSuspenseQuery(getProject(projectId));
+    const { data: tasks } = useSuspenseQuery(getTasks(projectId));
 
     const onRowClick = useCallback((data: ProjectType) => {
         console.log('onRowClick')
@@ -102,3 +106,12 @@ export const TasksTable = () => {
         />
     )
 };
+
+export const CreateTaskButton = () => {
+    const [_, setIsOpen] = useTaskModalState();
+    return (
+        <Button variant="primary" size="sm" onClick={() => setIsOpen(true)}>
+            Create task
+        </Button>
+    )
+}

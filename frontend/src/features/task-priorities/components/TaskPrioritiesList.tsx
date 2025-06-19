@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useTransition, useEffect, useCallback } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { arrayMove } from "@dnd-kit/sortable";
 import { TaskPriorityType, WorkspaceTaskPriorityType } from "@/features/types";
 import { SortableList } from "@/components/SortableList";
@@ -23,7 +23,7 @@ interface TaskPrioritiesListProps {
 export const TaskPrioritiesList: React.FC<TaskPrioritiesListProps> = (props) => {
     const { projectId, workspaceId } = props;
   
-    const { data: originalPriorities = [] } = useQuery(getWorkspacePriorities(workspaceId, projectId));
+    const { data: originalPriorities } = useSuspenseQuery(getWorkspacePriorities(workspaceId, projectId));
 
     const [isPending, startTransition] = useTransition();
     const [priorities, setPriorities] = useState<WorkspaceTaskPriorityType[]>(originalPriorities);
@@ -101,7 +101,6 @@ export const TaskPrioritiesList: React.FC<TaskPrioritiesListProps> = (props) => 
         value: value,
         priority_id: id,
         project_id: projectId,
-        workspace_id: workspaceId,
       }, {
           onError: () => {
             setPriorities((state) => {
