@@ -1,6 +1,7 @@
 'use client';
 
 import { useForm } from "react-hook-form";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { ResponsiveModal, type ResponsiveModalProps } from "@/components/ResponsiveModal";
 import { DialogTitle } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -12,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ErrorMessage } from "@/components/ui/error-message";
 import { DottedSeparator } from "@/components/DottedSeparator";
 
-import { useGetWorkspaces } from "../../workspaces/api";
+import { getWorkspaces } from "../../workspaces/api";
 import { useCreateProject } from "../api";
 import { useProjectModalState } from "../hooks";
 
@@ -35,7 +36,7 @@ export const CreateProjectModal = (props: Partial<Omit<ResponsiveModalProps, 'ch
 
     const [isOpen, setIsOpen] = useProjectModalState();
 
-    const { data: workspaces } = useGetWorkspaces();
+    const { data: workspaces } = useSuspenseQuery(getWorkspaces);
 
     const { mutate, isPending } = useCreateProject();
 

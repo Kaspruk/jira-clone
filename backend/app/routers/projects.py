@@ -15,9 +15,9 @@ def create_project_router(project: ProjectModel, db=Depends(get_db_connection)):
         return ProjectService.create_project(project, connection)
 
 @router.get("/",  summary="Get all projects")
-def get_projects_router(db=Depends(get_db_connection)):
+def get_projects_router(workspace_id: int = None, db=Depends(get_db_connection)):
     with db as connection:
-        return ProjectService.get_projects(connection)
+        return ProjectService.get_projects(connection, workspace_id)
 
 @router.get("/{project_id}/", summary="Get project by id")
 def get_project_by_id_router(project_id: int, db=Depends(get_db_connection)):

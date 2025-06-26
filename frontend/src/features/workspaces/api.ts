@@ -1,6 +1,13 @@
 import { BASE_URL, QueriesKeys } from "@/lib/constants";
-import { queryOptions, useQuery } from "@tanstack/react-query";
-import { WorkspaceTaskStatusType, WorkspaceTaskPriorityType, WorkspaceType, WorkspaceTaskTypeType } from "../types";
+import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getQueryClient } from "@/lib/react-query";
+import { 
+    WorkspaceTaskStatusType, 
+    WorkspaceTaskPriorityType, 
+    WorkspaceTaskTypeType, 
+    WorkspaceDashboardData, 
+    WorkspaceType 
+} from "../types";
 
 export const getWorkspaceStatuses = (workspaceId: number, projectId?: number) => queryOptions<WorkspaceTaskStatusType[]>({
     queryKey: [QueriesKeys.WorkspaceStatuses, workspaceId],
@@ -46,12 +53,109 @@ export const getWorkspaceTypes = (workspaceId: number, projectId?: number) => qu
 
 export const getWorkspaces = queryOptions<WorkspaceType[]>({
     queryKey: [QueriesKeys.Workspaces],
-    queryFn: async () => {
-        const response = await fetch(`${BASE_URL}/workspaces`);
+    queryFn: async (): Promise<WorkspaceType[]> => {
+        try {
+            const response = await fetch(`${BASE_URL}/workspaces`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch workspaces');
+            }
+            const workspaces = await response.json();
+    
+            return workspaces;
+        } catch (error) {
+            console.error(error);
+            return [];
+        }
+    },
+});
+
+export const getWorkspaceDashboardData = queryOptions<{[key: number]: WorkspaceDashboardData}>({
+    queryKey: [QueriesKeys.WorkspacesDashboard],
+    queryFn: async (): Promise<{[key: number]: WorkspaceDashboardData}> => {
+        const response = await fetch(`${BASE_URL}/dashboard/workspaces`);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch dashboard data for workspaces`);
+        }
         return response.json();
     },
 });
 
-export const useGetWorkspaces = () => {
-    return useQuery(getWorkspaces);
+export const useCreateWorkspace = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (workspace: Pick<WorkspaceType, 'name' | 'description' | 'owner_id'>) => {
+            const response = await fetch(`${BASE_URL}/workspaces/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(workspace),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to create workspace");
+            }
+
+            return await response.json();
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [QueriesKeys.Workspaces] });
+            queryClient.invalidateQueries({ queryKey: [QueriesKeys.WorkspacesDashboard] });
+        },
+    });
+};
+
+export const useUpdateWorkspace = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (workspace: Omit<WorkspaceType,  'created_at' | 'updated_at'>) => {
+            const { id, ...restWorkspace } = workspace;
+
+            const response = await fetch(`${BASE_URL}/workspaces/${id}/`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(restWorkspace),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to update workspace");
+            }
+
+            return await response.json();
+        },
+        onSuccess: (updatedWorkspace) => {
+            queryClient.setQueryData([QueriesKeys.Workspaces], (old: WorkspaceType[]) => {
+                return old.map((workspace) => workspace.id === updatedWorkspace.id ? updatedWorkspace : workspace);
+            });
+        },
+    });
+};
+
+export const useDeleteWorkspace = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (workspaceId: number) => {
+            const response = await fetch(`${BASE_URL}/workspaces/${workspaceId}/`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to delete workspace");
+            }
+
+            return await response.json();
+        },
+        onSuccess: (_, workspaceId) => {
+            queryClient.setQueryData([QueriesKeys.Workspaces], (old: WorkspaceType[]) => {
+                return old.filter((workspace) => workspace.id !== workspaceId);
+            });
+            queryClient.setQueryData([QueriesKeys.WorkspacesDashboard], (old: {[key: number]: WorkspaceDashboardData}) => {
+                const newData = { ...old };
+                delete newData[workspaceId];
+                return newData;
+            });
+        },
+    });
 };

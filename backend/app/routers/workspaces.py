@@ -15,12 +15,6 @@ def get_workspaces_route(db=Depends(get_db_connection)):
     with db as connection:
         return WorkspaceService.get_workspaces(connection) 
 
-@router.post("/")
-def create_workspace_route(workspace: WorkspaceModel, db=Depends(get_db_connection)):
-    # Логіка для створення нового робочого простору
-    with db as connection:  
-        return WorkspaceService.create_workspace(workspace, connection)
-
 @router.get("/{workspace_id}")
 def get_workspace_by_id_route(workspace_id: int, db=Depends(get_db_connection)):
     # Логіка для отримання робочого простору за ID
@@ -29,6 +23,12 @@ def get_workspace_by_id_route(workspace_id: int, db=Depends(get_db_connection)):
         if not workspace:
             raise HTTPException(status_code=404, detail="Workspace not found")
         return workspace
+
+@router.post("/")
+def create_workspace_route(workspace: WorkspaceModel, db=Depends(get_db_connection)):
+    # Логіка для створення нового робочого простору
+    with db as connection:  
+        return WorkspaceService.create_workspace(workspace, connection)
 
 @router.put("/{workspace_id}")
 def update_workspace_route(workspace_id: int, workspace: WorkspaceModel, db=Depends(get_db_connection)):

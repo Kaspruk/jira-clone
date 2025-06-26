@@ -1,0 +1,37 @@
+from psycopg2 import Error
+from fastapi import HTTPException
+from app.schemas.dashboard import DashboardSchemes
+
+
+class DashboardService:
+    """Сервіс для управління панеллю управління"""
+    
+    @staticmethod
+    def get_dashboard_workspaces(connection):
+        """Отримати всі workspace-и з проектами та кількістю завдань"""
+        try:
+            with connection.cursor() as cur:
+                cur.execute(DashboardSchemes.GET_DASHBOARD_WORKSPACES)
+                result = cur.fetchone()
+                
+                # Якщо результат існує і workspaces_data не None, повертаємо його
+                if result and result['workspaces_data']:
+                    return result['workspaces_data']  # result['workspaces_data'] це workspaces_data
+                else:
+                    return {}  # Повертаємо порожній об'єкт якщо немає даних
+                    
+        except Error as e:
+            connection.rollback()
+            raise HTTPException(status_code=400, detail=str(e)) 
+    
+    @staticmethod
+    def get_dashboard_workspace_by_id(workspace_id, connection):
+        """Отримати workspace з проектами та кількістю завдань"""
+        try:
+            with connection.cursor() as cur:
+                cur.execute(DashboardSchemes.GET_DASHBOARD_WORKSPACE_BY_ID, (workspace_id,))
+                result = cur.fetchone()
+                return result
+        except Error as e:
+            connection.rollback()
+            raise HTTPException(status_code=400, detail=str(e))

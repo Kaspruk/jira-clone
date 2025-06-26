@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback } from "react";
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { LuEllipsisVertical as MoreVertical } from "react-icons/lu";
 
@@ -10,6 +10,7 @@ import { ProjectType } from "@/features/types";
 
 import { Button } from "@/components/ui/button";
 import { DataTable, DataTableProps } from "@/components/DataTable";
+import { HtmlOutput } from "@/components/HtmlOutput";
 
 
 export const CreateProjectButton = () => {
@@ -39,7 +40,9 @@ const tableColumns: DataTableProps['columns'] = [
         isSortable: true,
         td: ({ value }) => (
             <DataTable.RowCell>
-                {value}
+                <HtmlOutput className="text-muted-foreground line-clamp-1">
+                    {value}
+                </HtmlOutput>
             </DataTable.RowCell>
         )
     },
@@ -61,8 +64,10 @@ const tableColumns: DataTableProps['columns'] = [
 ];
 
 export const ProjectsTable = () => {
+    const params = useParams();
+    const workspaceId = Number(params.workspaceId);
     const router = useRouter();
-    const { data } = useSuspenseQuery(getProjects);
+    const { data } = useSuspenseQuery(getProjects(workspaceId));
 
     const onRowClick = useCallback((data: ProjectType) => {
         router.push(`projects/${data.id}/tasks/`);

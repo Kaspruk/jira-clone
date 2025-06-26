@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { 
   LuTrash2 as TrashIcon,
   LuExternalLink
@@ -25,17 +25,16 @@ interface TaskActionsProps {
 };
 
 export const ProjectActions = ({ projectId, children }: TaskActionsProps) => {
-  // const workspaceId = useWorkspaceId();
   const router = useRouter();
-
-  // const { open } = useEditTaskModal();
+  const params = useParams();
+  const workspaceId = Number(params.workspaceId);
   
   const [ConfirmDialog, confirm] = useConfirm(
     "Delete project",
     "This action cannot be undone.",
     "destructive"
   );
-  const { mutate, isPending } = useDeleteProject();
+  const { mutate, isPending } = useDeleteProject(workspaceId);
 
   const onDelete = async () => {
     const ok = await confirm();
@@ -62,7 +61,7 @@ export const ProjectActions = ({ projectId, children }: TaskActionsProps) => {
         <DropdownMenuContent align="end" className="w-48">
           <DropdownMenuItem
             onClick={onOpenTask}
-            className="font-medium p-[10px]"
+            className="cursor-pointer font-medium"
           >
             <LuExternalLink className="size-4 mr-2 stroke-2" />
             Prtoject tasks
@@ -84,7 +83,7 @@ export const ProjectActions = ({ projectId, children }: TaskActionsProps) => {
           <DropdownMenuItem
             onClick={onDelete}
             disabled={isPending}
-            className="text-amber-700 focus:text-amber-700 font-medium p-[10px]"
+            className="cursor-pointer text-destructive focus:text-destructive"
           >
             <TrashIcon className="size-4 mr-2 stroke-2" />
             Delete project

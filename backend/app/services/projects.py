@@ -74,10 +74,13 @@ class ProjectService:
             raise HTTPException(status_code=400, detail=str(e))
         
     @staticmethod
-    def get_projects(connection):
+    def get_projects(connection, workspace_id=None):
         try:
             with connection.cursor() as cur:
-                cur.execute(ProjectSchemes.GET_PROJECTS)
+                if workspace_id:
+                    cur.execute(ProjectSchemes.GET_PROJECTS_BY_WORKSPACE_ID, [workspace_id])
+                else:
+                    cur.execute(ProjectSchemes.GET_PROJECTS)
                 return cur.fetchall()
         except Error as e:
             connection.rollback()

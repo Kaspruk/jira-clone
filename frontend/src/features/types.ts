@@ -1,9 +1,24 @@
 export type WorkspaceType = {
   id: number;
   name: string;
+  owner_id: number;
   description: string;
   created_at: number;
   updated_at: number;
+};
+
+export type ProjectDashboardData = {
+  id: number;
+  name: string;
+  description: string;
+  owner_id: number;
+  workspace_id: number;
+  created_at: number;
+  task_count: number;
+};
+
+export type WorkspaceDashboardData = {
+  projects: ProjectDashboardData[];
 };
 
 export type ProjectType = {
@@ -105,4 +120,9 @@ export type UserType = {
   username: string;
   email: string;
   created_at: number;
+};
+
+export type DashboardWorkspaceType = WorkspaceType & {
+  projects: ProjectType[];
+  tasks: TaskType[];
 };

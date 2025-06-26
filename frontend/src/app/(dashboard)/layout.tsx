@@ -1,16 +1,10 @@
-// import { EditTaskModal } from "@/features/tasks/components/edit-task-modal";
-// import { CreateTaskModal } from "@/features/tasks/components/create-task-modal";
-// import { CreateProjectModal } from "@/features/projects/components/create-project-modal";
-// import { CreateWorkspaceModal } from "@/features/workspaces/components/create-workspace-modal";
-// import { usePathname } from "next/navigation";
-
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { Sidebar } from "@/components/sidebar";
+import { getWorkspaceDashboardData, getWorkspaces, WorkspaceModal } from "@/features/workspaces";
 import { CreateProjectModal } from "@/features/projects";
 import { CreateTaskModal } from "@/features/tasks";
 import { Confirm } from "@/components/Confirm";
 import { getQueryClient } from "@/lib/react-query";
-import { getWorkspaces } from "@/features/workspaces/api";
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -18,23 +12,19 @@ interface DashboardLayoutProps {
 
 const DashboardLayout = async (props: DashboardLayoutProps) => {
   const queryClient = getQueryClient();
-  await queryClient.fetchQuery(getWorkspaces);
+  await queryClient.ensureQueryData(getWorkspaces);
+  await queryClient.ensureQueryData(getWorkspaceDashboardData);
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <Sidebar />
-      <main className="lg:pl-aside p-2 w-full min-h-screen">
+      <main className="p-3 w-full min-h-screen">
         {props.children}
       </main>
+      <WorkspaceModal />
       <CreateProjectModal />
       <CreateTaskModal />
       <Confirm />
-      {/* 
-        <CreateWorkspaceModal />
-        
-        <CreateTaskModal />
-        <EditTaskModal />
-      */}
     </HydrationBoundary>
   );
 };

@@ -1,4 +1,4 @@
-import { queryOptions } from "@tanstack/react-query";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 import { BASE_URL, QueriesKeys } from "@/lib/constants";
 import { UserType } from "../types";
 
@@ -9,3 +9,7 @@ export const getUsers = queryOptions<UserType[]>({
         return response.json()
     },
 });
+
+export const useGetUsers = () => {
+    return useQuery(getUsers);
+};

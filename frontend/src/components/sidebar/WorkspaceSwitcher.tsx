@@ -1,13 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { RiAddCircleFill } from "react-icons/ri";
-
-// import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
-// import { useGetWorkspaces } from "@/features/workspaces/api/use-get-workspaces";
-// import { WorkspaceAvatar } from "@/features/workspaces/components/workspace-avatar";
-// import { useCreateWorkspaceModal } from "@/features/workspaces/hooks/use-create-workspace-modal";
-
+import { MdWorkspaces } from "react-icons/md";
+import { HiOutlineOfficeBuilding } from "react-icons/hi";
 import {
     Select,
     SelectContent,
@@ -15,46 +11,70 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { getWorkspaces, useWorkspaceModalState } from "@/features/workspaces";
+import { useQuery } from "@tanstack/react-query";
 
 export const WorkspaceSwitcher = () => {
-    const workspaceId = 0;
-    // const workspaceId = useWorkspaceId();
     const router = useRouter();
+    const params = useParams();
+    const currentWorkspaceId = params.workspaceId as string;
+    const [_, openWorspaceModal] = useWorkspaceModalState();
 
-    const workspaces = { documents: [] };
-    //   const { data: workspaces } = useGetWorkspaces();
-
-    const open = () => {
-
-    };
-    // const { open } = useCreateWorkspaceModal();
+    const {data: workspaces} = useQuery(getWorkspaces)
 
     const onSelect = (id: string) => {
-        router.push(`/workspaces/${id}`);
+        router.push(`/${id}`);
+    };
+
+    const handleCreateWorkspace = () => {
+        openWorspaceModal(0);
     };
 
     return (
-        <div className="flex flex-col gap-y-2">
+        <div className="flex flex-col gap-y-3 mb-4">
             <div className="flex items-center justify-between">
-                <p className="text-xs uppercase text-neutral-500">Workspaces</p>
+                <div className="flex items-center gap-2">
+                    <MdWorkspaces className="size-4 text-neutral-600" />
+                    <p className="text-xs font-semibold uppercase text-neutral-600 tracking-wider">
+                        Workspace
+                    </p>
+                </div>
                 <RiAddCircleFill
-                    className="size-5 text-neutral-500 cursor-pointer hover:opacity-75 transition" 
-                    onClick={open}
+                    title="Створити новий workspace"
+                    className="size-5 text-neutral-500 cursor-pointer hover:text-primary transition-colors" 
+                    onClick={handleCreateWorkspace}
                 />
             </div>
-            <Select onValueChange={onSelect} value={workspaceId}>
-                <SelectTrigger className="w-full bg-neutral-200 font-medium p-1">
-                    <SelectValue placeholder="No workspace selected" />
+            
+            <Select onValueChange={onSelect} value={currentWorkspaceId || ""}>
+                <SelectTrigger className="w-full bg-neutral-50 hover:bg-neutral-100 border-neutral-200 font-medium h-auto p-1.5 transition-colors">
+                    <SelectValue 
+                        placeholder={
+                            <div className="flex items-center gap-2 text-neutral-500">
+                                <HiOutlineOfficeBuilding className="size-4" />
+                                <span>Оберіть workspace</span>
+                            </div>
+                        }
+                    />
                 </SelectTrigger>
-                <SelectContent>
-                    {/* {workspaces?.documents.map((workspace) => (
-                        <SelectItem key={workspace.$id} value={workspace.$id}>
-                            <div className="flex justify-start items-center gap-3 font-medium">
-                                <WorkspaceAvatar name={workspace.name} image={workspace.imageUrl} />
-                                <span className="truncate">{workspace.name}</span>
+                <SelectContent className="w-full">
+                    {workspaces?.map((workspace) => (
+                        <SelectItem 
+                            key={workspace.id} 
+                            value={workspace.id.toString()}
+                            className="cursor-pointer"
+                        >
+                            <div className="flex items-center p-1.5 gap-2">
+                                <div className="w-6 h-6 bg-gradient-to-br from-blue-400 to-blue-600 rounded text-white text-xs flex items-center justify-center font-semibold">
+                                    {workspace.name.charAt(0).toUpperCase()}
+                                </div>
+                                <div className="flex flex-col text-left">
+                                    <span className="font-medium text-sm">{workspace.name}</span>
+                                    <span className="text-xs text-neutral-500">{workspace.description}</span>
+                                </div>
                             </div>
                         </SelectItem>
-                    ))} */}
+                    ))}
                 </SelectContent>
             </Select>
         </div>

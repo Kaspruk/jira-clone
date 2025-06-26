@@ -25,7 +25,7 @@ export function useCreateTaskType(): UseMutationResult<any, Error, CreateTaskTyp
         },
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({
-                queryKey: [QueriesKeys.ProjectTaskTypes, variables.task_type.workspace_id]
+                queryKey: [QueriesKeys.WorkspaceTypes, variables.task_type.workspace_id]
             });
         }
     });
@@ -51,7 +51,7 @@ export function useUpdateTaskType(): UseMutationResult<any, Error, TaskTypeType>
             return response.json();
         },
         onSuccess: (_, variables) => {
-            queryClient.invalidateQueries({ queryKey: [QueriesKeys.ProjectTaskTypes, variables.workspace_id] });
+            queryClient.invalidateQueries({ queryKey: [QueriesKeys.WorkspaceTypes, variables.workspace_id] });
         }
     });
 };
@@ -76,7 +76,7 @@ export function useRemoveTaskType(): UseMutationResult<any, Error, RemoveTaskTyp
             return response.json();
         },
         onSuccess: (_, variables) => {
-            queryClient.invalidateQueries({ queryKey: [QueriesKeys.ProjectTaskTypes, variables.workspace_id] });
+            queryClient.invalidateQueries({ queryKey: [QueriesKeys.WorkspaceTypes, variables.workspace_id] });
         }
     });
 }; 

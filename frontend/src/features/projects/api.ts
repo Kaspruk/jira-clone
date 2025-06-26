@@ -2,10 +2,10 @@ import { queryOptions, useQueryClient, useMutation } from '@tanstack/react-query
 import { BASE_URL, QueriesKeys } from '@/lib/constants';
 import { type ProjectType } from '../types';
 
-export const getProjects = queryOptions<ProjectType[]>({
-    queryKey: [QueriesKeys.Projects],
+export const getProjects = (workspaceId: number) => queryOptions<ProjectType[]>({
+    queryKey: [QueriesKeys.Projects, workspaceId],
     queryFn: async () => {
-        const response = await fetch(`${BASE_URL}/projects/`)
+        const response = await fetch(`${BASE_URL}/projects/?workspace_id=${workspaceId}`)
         return response.json()
     },
 });
@@ -42,9 +42,9 @@ export const useCreateProject = () => {
 
             return await response.json();
         },
-        onSuccess: () => {
+        onSuccess: (data) => {
             //   toast.success("Workspace created");
-            queryClient.invalidateQueries({ queryKey: [QueriesKeys.Projects] });
+            queryClient.invalidateQueries({ queryKey: [QueriesKeys.Projects, data.workspace_id] });
         },
         onError: () => {
             //   toast.error("Failed to create workspace");
@@ -54,7 +54,7 @@ export const useCreateProject = () => {
     return mutation;
 };
 
-export const useDeleteProject = () => {
+export const useDeleteProject = (workspaceId: number) => {
     const queryClient = useQueryClient();
 
     const mutation = useMutation<ProjectType['id'], Error, ProjectType['id']>({
@@ -71,7 +71,7 @@ export const useDeleteProject = () => {
         },
         onSuccess: (project_id) => {
             //   toast.success("Project deleted");
-            queryClient.invalidateQueries({ queryKey: [QueriesKeys.Projects] });
+            queryClient.invalidateQueries({ queryKey: [QueriesKeys.Projects, workspaceId] });
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.Project, project_id] });
         },
         onError: () => {
@@ -103,7 +103,7 @@ export const useUpdateProject = (projectId: number) => {
         },
         onSuccess: (data) => {
             queryClient.setQueryData([QueriesKeys.Project, projectId], data);
-            queryClient.invalidateQueries({ queryKey: [QueriesKeys.Projects] });
+            queryClient.invalidateQueries({ queryKey: [QueriesKeys.Projects, data.workspace_id] });
         },
         onError: () => {
             //   toast.error("Failed to update Task");

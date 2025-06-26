@@ -16,12 +16,6 @@ export default async function ProjectSettingsPage(props: {
 
   const project = await queryClient.ensureQueryData(getProject(projectId));
 
-  await queryClient.ensureQueryData(getWorkspaceStatuses(project.workspace_id, params.projectId))
-    .catch((error) => {
-      console.error(error);
-      return [];
-    });
-
   return (
     <>
       <ProjectForm projectId={projectId} />

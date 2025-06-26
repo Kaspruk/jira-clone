@@ -6,9 +6,10 @@ import { DottedSeparator } from "@/components/DottedSeparator";
 import { CreateProjectButton, ProjectsTable } from "./client";
 
 
-export default async function Projects() {
+export default async function Projects(props: { params: Promise<{ workspaceId: string }> }) {
+    const params = await props.params;
     const queryClient = getQueryClient();
-    await queryClient.fetchQuery(getProjects);
+    await queryClient.ensureQueryData(getProjects(Number(params.workspaceId)));
 
     return (
         <View>

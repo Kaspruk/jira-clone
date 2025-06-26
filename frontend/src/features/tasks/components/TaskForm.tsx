@@ -40,9 +40,10 @@ type TaskFormType = React.PropsWithChildren<{
 export const TaskForm = (props: TaskFormType) => {
     const params = useParams();
     const projectId = props.data?.project_id ?? Number(params.projectId);
+    const workspaceId = Number(params.workspaceId);
 
     const [projectData, projectsData, usersData] = useQueries({
-        queries: [getProject(projectId), getProjects, getUsers]
+        queries: [getProject(projectId), getProjects(workspaceId), getUsers]
     });
     const {data: project} = projectData;
     const {data: projects} = projectsData;

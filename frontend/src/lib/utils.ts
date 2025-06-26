@@ -34,3 +34,58 @@ export const toObject = <T extends { id: number }>(data: T[]) => {
     return acc;
   }, {} as Record<T['id'], T>);
 };
+
+/**
+ * Функція для порівняння поточного роуту зі схемою роуту
+ * @param currentPath - поточний роут (наприклад, "/projects/18/tasks")
+ * @param routePattern - схема роуту (наприклад, "/projects/:projectId/tasks")
+ * @returns об'єкт з результатом порівняння та витягнутими параметрами
+ */
+export function matchRoute(currentPath: string, routePattern: string): {
+  matches: boolean;
+  params: Record<string, string>;
+} {
+  // Розділяємо шляхи на сегменти
+  const currentSegments = currentPath.split('/').filter(Boolean);
+  const patternSegments = routePattern.split('/').filter(Boolean);
+
+  // Якщо кількість сегментів не співпадає, роути не збігаються
+  if (currentSegments.length !== patternSegments.length) {
+    return { matches: false, params: {} };
+  }
+
+  const params: Record<string, string> = {};
+
+  // Порівнюємо кожен сегмент
+  for (let i = 0; i < patternSegments.length; i++) {
+    const patternSegment = patternSegments[i];
+    const currentSegment = currentSegments[i];
+
+    // Якщо це параметр (починається з :)
+    if (patternSegment.startsWith(':')) {
+      const paramName = patternSegment.slice(1); // Видаляємо :
+      params[paramName] = currentSegment;
+    } else if (patternSegment !== currentSegment) {
+      // Якщо це не параметр і сегменти не збігаються
+      return { matches: false, params: {} };
+    }
+  }
+
+  return { matches: true, params };
+}
+
+/**
+ * Функція для заміни параметрів у роуті на конкретні значення
+ * @param routePattern - схема роуту (наприклад, "/projects/:projectId/tasks")
+ * @param params - параметри для заміни (наприклад, { projectId: "18" })
+ * @returns роут з замінними параметрами (наприклад, "/projects/18/tasks")
+ */
+export function buildRoute(routePattern: string, params: Record<string, string>): string {
+  let result = routePattern;
+  
+  for (const [key, value] of Object.entries(params)) {
+    result = result.replace(`:${key}`, value);
+  }
+  
+  return result;
+}

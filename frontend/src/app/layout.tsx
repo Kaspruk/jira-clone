@@ -34,7 +34,7 @@ export default function RootLayout({
         className={cn(
           inter.className,
           materialIcons.variable,
-          "antialiased min-h-screen bg-neutral-100"
+          "flex antialiased min-h-screen bg-neutral-100"
         )}
       >
         <Providers>

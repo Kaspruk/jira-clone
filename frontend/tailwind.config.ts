@@ -115,6 +115,6 @@ const config: Config = {
       });
     }),
   ],
-  safelist: ['-left-aside', 'translate-y-(--translate-y)', 'cursor-pointer', 'text-left', 'text-center', 'text-right', 'color-red', 'animate-bubble']
+  safelist: ['-left-aside', 'lg:-ml-aside', 'translate-y-(--translate-y)', 'cursor-pointer', 'text-left', 'text-center', 'text-right', 'color-red', 'animate-bubble']
 };
 export default config;

@@ -15,14 +15,16 @@ import { TaskPrioritySelect } from "./TaskPrioritySelect";
 
 type TaskDetailProps = React.PropsWithChildren<{
     taskId: number;
+    workspaceId: number;
     onSave?(): void;
 }>;
 
 export const TaskDetail = (props: TaskDetailProps) => {
     const taskId = props.taskId;
+    const workspaceId = props.workspaceId;
 
     const [taskData, projectsData, usersData] = useSuspenseQueries({
-        queries: [getTask(taskId), getProjects, getUsers]
+        queries: [getTask(taskId), getProjects(workspaceId), getUsers]
     });
 
     const {data: task} = taskData;
