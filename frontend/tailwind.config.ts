@@ -60,18 +60,26 @@ const config: Config = {
         sm: 'calc(var(--radius) - 4px)'
       },
       spacing: {
-        aside: 'var(--aside-width)',
+        'top-bar': 'var(--top-bar-height)',
+        'bottom-bar': 'var(--bottom-bar-height)',
+        'aside-md': 'var(--aside-width-md)',
+        'aside-lg': 'var(--aside-width-lg)',
         header: 'var(--header-height)',
       },
       inset: {
-        aside: 'var(--aside-width)',
+        'top-bar': 'var(--top-bar-height)',
+        'bottom-bar': 'var(--bottom-bar-height)',
+        'aside-md': 'var(--aside-width-md)',
+        'aside-lg': 'var(--aside-width-lg)',
         header: 'var(--header-height)',
       },
       height: {
-        header: 'var(--header-height)',
+        'top-bar': 'var(--top-bar-height)',
+        'bottom-bar': 'var(--bottom-bar-height)',
       },
       width: {
-        aside: 'var(--aside-width)',
+        'aside-md': 'var(--aside-width-md)',
+        'aside-lg': 'var(--aside-width-lg)',
       },
       keyframes: {
         bubble: {
@@ -93,8 +101,10 @@ const config: Config = {
     plugin(({ addBase }) => {
       addBase({
         ':root': {
-          '--aside-width': '250px',
-          '--header-height': '60px',
+          '--aside-width-md': '64px',
+          '--aside-width-lg': '250px',
+          '--top-bar-height': '60px',
+          '--bottom-bar-height': '64px',
         },
       });
     }),
@@ -115,6 +125,6 @@ const config: Config = {
       });
     }),
   ],
-  safelist: ['-left-aside', 'lg:-ml-aside', 'translate-y-(--translate-y)', 'cursor-pointer', 'text-left', 'text-center', 'text-right', 'color-red', 'animate-bubble']
+  safelist: ['lg:-ml-aside-md', 'lg:w-aside-md', 'lg:hover:w-aside-lg', 'translate-y-(--translate-y)', 'cursor-pointer', 'text-left', 'text-center', 'text-right', 'color-red', 'animate-bubble']
 };
 export default config;

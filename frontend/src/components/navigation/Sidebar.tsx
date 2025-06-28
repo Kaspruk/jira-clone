@@ -1,0 +1,138 @@
+"use client";
+
+import { memo, useRef, useEffect, useState } from "react";
+import { useMediaQuery } from 'react-responsive'
+import { useParams } from "next/navigation";
+import { WorkspaceSwitcher } from "./WorkspaceSwitcher";
+import { cn, isMobile } from "@/lib/utils";
+import { MenuList } from "./MenuList";
+import { DottedSeparator } from "../DottedSeparator";
+import { getSidebarStateKey } from "./utils";
+import { SidebarState } from "./constants";
+
+const SidebarComponent = memo(() => {
+  const params = useParams();
+  
+  const isTablet = useMediaQuery({ maxWidth: 1024 });
+  const [isHovered, setIsHovered] = useState(() => !isTablet);
+
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  const isSwitcherOpen = useRef(false);
+  const isMouseOverSidebar = useRef(false);
+  
+  const sidebarState = getSidebarStateKey(params as Record<string, string>);
+  const isHome = sidebarState === SidebarState.Home;
+  const isHomeRef = useRef(false);
+  isHomeRef.current = isHome;
+
+  useEffect(() => {
+    if (!isHomeRef.current) {
+      setIsHovered(!isTablet);
+    }
+  }, [isTablet]);
+
+  useEffect(() => {
+    const sidebarElement = sidebarRef.current;
+    if (!sidebarElement) return;
+
+    const handleMouseEnter = () => {
+      isMouseOverSidebar.current = true;
+      if (isTablet && !isHomeRef.current) {
+        setIsHovered(true);
+      }
+    };
+
+    const handleMouseLeave = () => {
+      isMouseOverSidebar.current = false;
+      if (isTablet && !isSwitcherOpen.current) {
+        setIsHovered(false);
+      }
+    };
+
+    sidebarElement.addEventListener('mouseenter', handleMouseEnter);
+    sidebarElement.addEventListener('mouseleave', handleMouseLeave);
+
+    return () => {
+      sidebarElement.removeEventListener('mouseenter', handleMouseEnter);
+      sidebarElement.removeEventListener('mouseleave', handleMouseLeave);
+    };
+  }, [isTablet]);
+
+  useEffect(() => {
+    if (isHome && isTablet) {
+      setIsHovered(false);
+    }
+  }, [isHome, isTablet]);
+
+  const handleOpenChange = (open: boolean) => {
+    isSwitcherOpen.current = open;
+
+    if (isTablet && !open && !isMouseOverSidebar.current) {
+      setIsHovered(false);
+    }
+  }
+
+  return (
+    <aside
+      className={cn(
+        "lg:block min-w-aside-md lg:min-w-aside-lg h-vh overflow-y-auto transition-all duration-300 bg-neutral-50/50 ",
+        isHome && "-ml-aside-md lg:-ml-aside-lg"
+      )}
+    >
+      <div 
+        ref={sidebarRef}
+        className={cn(
+          "fixed top-0 h-full pt-10 p-4 z-20 transition-all duration-300 bg-white shadow overflow-hidden",
+          // Базова ширина для планшетів і десктопа
+          "w-aside-md lg:w-aside-lg",
+          // При hover на планшетах розширюємо до повної ширини
+          isHovered && "max-lg:w-aside-lg max-lg:shadow-lg max-lg:z-30",
+          isHome && "-left-aside-md lg:-left-aside-lg"
+        )}
+      >
+        <div className="flex flex-col h-full">
+          {/* WorkspaceSwitcher тільки коли не на домашній сторінці */}
+          {/* <AnimatePresence mode="popLayout">
+            {sidebarState === SidebarState.Workspace && (
+              <motion.div
+                key="workspace-switcher"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.2 }}
+              >
+                <WorkspaceSwitcher
+                  isCollapsed={!isHovered}
+                  onOpenChange={handleOpenChange}
+                />
+                <DottedSeparator className="my-4" />
+              </motion.div>
+            )}
+          </AnimatePresence> */}
+          <WorkspaceSwitcher
+            isCollapsed={!isHovered}
+            onOpenChange={handleOpenChange}
+          />
+          <DottedSeparator className="my-4" />
+
+          {/* Основна навігація */}
+          <div className="flex-1 overflow-y-auto">
+            <MenuList isCollapsed={!isHovered} />
+          </div>
+
+          {/* Футер сайдбару */}
+          <div className="pt-4 border-t border-neutral-200">
+            <div className="text-xs text-neutral-400 text-center">
+              Jira Clone v1.0
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  );
+});
+
+export const Sidebar = () => {
+  const isMobile = useMediaQuery({ maxWidth: 768 });
+  return isMobile ? null : <SidebarComponent />;
+}

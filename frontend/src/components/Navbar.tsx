@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 
 import { UserButton } from "@/features/auth/components/UserButton";
 
-import { MobileSidebar } from "./sidebar/MobileSidebar";
+import { MobileSidebar } from "./navigation/MobileSidebar";
 
 const pathnameMap = {
   "tasks": {

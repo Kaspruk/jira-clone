@@ -25,13 +25,13 @@ export const RoutesMap: Record<string, RouteType> = {
         activeIcon: AiFillProject,
     },
     [Routes.Project]: {
-        label: "Project tasks",
+        label: "Tasks",
         href: Routes.Project,
         icon: GoProject,
         activeIcon: AiFillProject,
     },
     [Routes.ProjectSettings]: {
-        label: "Project settings",
+        label: "Settings",
         href: Routes.ProjectSettings,
         icon: IoSettingsOutline,
         activeIcon: IoSettingsSharp,

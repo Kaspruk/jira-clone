@@ -13,7 +13,12 @@ import { getSidebarStateKey } from "./utils";
 import { QueriesKeys, Routes } from "@/lib/constants";
 import { TaskType } from "@/features/types";
 
-export const MenuList = memo(() => {
+interface MenuListProps {
+  isMobile?: boolean;
+  isCollapsed?: boolean;
+}
+
+export const MenuList = memo(({ isMobile = false, isCollapsed = false }: MenuListProps) => {
   const params = useParams();
   const pathname = usePathname();
   const queryClient = useQueryClient();
@@ -58,22 +63,27 @@ export const MenuList = memo(() => {
             key={href}
             href={href}
             isActive={isActive}
-          >
-            <Icon className="size-5 text-neutral-500" />
-            {route.label}
-          </MenuItem>
+            isCollapsed={isCollapsed}
+            icon={<Icon className="size-5 text-neutral-500" />}
+            label={route.label}
+            isMobile={isMobile}
+          />
       );
     })
-  }, [pathname, sidebarState]);
+  }, [pathname, sidebarState, isCollapsed]);
 
   return (
-    <div>
+    <div className="overflow-hidden w-full">
       <AnimatePresence mode="popLayout">
         <motion.ul
           key={sidebarState}
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0 }}
+          className={cn(
+            "flex flex-col",
+            isMobile && "flex-row justify-evenly"
+          )}
         >
           {menuItems}
         </motion.ul>
@@ -84,20 +94,39 @@ export const MenuList = memo(() => {
 
 type MenuItemProps = {
     href: string;
-    children: React.ReactNode;
     isActive?: boolean;
+    isCollapsed?: boolean;
+    icon: React.ReactNode;
+    label: string;
+    isMobile?: boolean;
 };
   
-function MenuItem (props: MenuItemProps) {
+function MenuItem ({ href, isActive, isCollapsed, icon, label, isMobile = false }: MenuItemProps) {
     return (
-        <Link key={props.href} href={props.href}>
+        <Link key={href} href={href}>
           <div
             className={cn(
-              "flex items-center gap-2.5 p-2.5 rounded-md font-medium hover:text-primary transition text-neutral-500",
-              props.isActive && "bg-white shadow-sm hover:opacity-100 text-primary"
+              "flex items-center gap-2.5 p-2.5 rounded-md font-medium hover:text-primary transition-all duration-300 text-neutral-500 whitespace-nowrap",
+              isActive && "bg-white shadow-sm hover:opacity-100 text-primary",
+              // На планшетах у згорнутому стані центруємо іконку
+              isCollapsed && "max-lg:pl-1.5",
+              isMobile && "max-md:p-1.5 flex-col gap-1"
             )}
+            title={label}
           >
-            {props.children}
+            <div className="flex items-center justify-center w-5 h-5">
+              {icon}
+            </div>
+            <span 
+              className={cn(
+                "transition-opacity duration-300",
+                // На планшетах у згорнутому стані ховаємо текст
+                isCollapsed && "max-lg:opacity-0 max-lg:pointer-events-none max-lg:w-0 max-lg:overflow-hidden",
+                isMobile && "text-xs"
+              )}
+            >
+              {label}
+            </span>
           </div>
         </Link>
     );

@@ -1,5 +1,5 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import { Sidebar } from "@/components/sidebar";
+import { Sidebar, TopBar, BottomBar } from "@/components/navigation";
 import { getWorkspaceDashboardData, getWorkspaces, WorkspaceModal } from "@/features/workspaces";
 import { CreateProjectModal } from "@/features/projects";
 import { CreateTaskModal } from "@/features/tasks";
@@ -17,10 +17,12 @@ const DashboardLayout = async (props: DashboardLayoutProps) => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
+      <TopBar />
       <Sidebar />
-      <main className="p-3 w-full min-h-screen">
+      <main className="p-3 w-full max-md:flex-1">
         {props.children}
       </main>
+      <BottomBar />
       <WorkspaceModal />
       <CreateProjectModal />
       <CreateTaskModal />
