@@ -20,7 +20,7 @@ import { ProjectType, TaskType, UserType } from "@/features/types";
 
 import { TaskTypeSelect } from "./TaskTypeSelect";
 import { TaskPrioritySelect } from "./TaskPrioritySelect";
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
 
 type FormDataType = Omit<TaskType, 
@@ -62,6 +62,7 @@ export const TaskForm = (props: TaskFormType) => {
             type_id: undefined,
             status_id: undefined,
             priority_id: undefined,
+            workspace_id: workspaceId,
             description: '',
             author_id: undefined,
             assignee_id: undefined,

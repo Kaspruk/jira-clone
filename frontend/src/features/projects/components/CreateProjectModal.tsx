@@ -1,11 +1,11 @@
 'use client';
 
 import { useForm } from "react-hook-form";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
+
 import { ResponsiveModal, type ResponsiveModalProps } from "@/components/ResponsiveModal";
 import { DialogTitle } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { ErrorMessage } from "@/components/ui/error-message";
 import { DottedSeparator } from "@/components/DottedSeparator";
 
-import { getWorkspaces } from "../../workspaces/api";
 import { useCreateProject } from "../api";
 import { useProjectModalState } from "../hooks";
 
@@ -34,9 +33,10 @@ export const CreateProjectModal = (props: Partial<Omit<ResponsiveModalProps, 'ch
         }
     });
 
-    const [isOpen, setIsOpen] = useProjectModalState();
+    const params = useParams();
+    const workspaceId = Number(params.workspaceId);
 
-    const { data: workspaces } = useSuspenseQuery(getWorkspaces);
+    const [isOpen, setIsOpen] = useProjectModalState();
 
     const { mutate, isPending } = useCreateProject();
 
@@ -44,7 +44,7 @@ export const CreateProjectModal = (props: Partial<Omit<ResponsiveModalProps, 'ch
         mutate({
             ...data,
             owner_id: 1,
-            workspace_id: workspaces?.[0]?.id as number,
+            workspace_id: workspaceId,
         }, {
             onSuccess() {
                 setIsOpen(false);
@@ -93,7 +93,6 @@ export const CreateProjectModal = (props: Partial<Omit<ResponsiveModalProps, 'ch
                                 Cancel
                             </Button>
                             <Button
-                                // disabled={isPending}
                                 type="submit"
                                 size="lg"
                                 disabled={isPending}

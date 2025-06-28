@@ -19,6 +19,7 @@ class TaskModel(BaseModel):
     status_id: Optional[int] = None
     priority_id: Optional[int] = None
     project_id: int
+    workspace_id: int
     author_id: int
     assignee_id: int
 

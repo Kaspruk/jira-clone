@@ -28,7 +28,7 @@ class ProjectService:
                 connection.commit()
 
                 # Отримати всі дефолтні статуси
-                cur.execute(TaskStatusSchemes.GET_TASK_STATUSES_BY_WORKSPACE_ID, (str(project.workspace_id)))
+                cur.execute(TaskStatusSchemes.GET_TASK_STATUSES_BY_WORKSPACE_ID, [str(project.workspace_id)])
                 workspace_statuses = cur.fetchall()
 
                 # Перевірити наявність дефолтних статусів
@@ -41,7 +41,7 @@ class ProjectService:
                     order = order + 1
 
                 # Отримати всі дефолтні пріоритети
-                cur.execute(TaskPrioritySchemes.GET_TASK_PRIORITIES_BY_WORKSPACE_ID, (str(project.workspace_id)))
+                cur.execute(TaskPrioritySchemes.GET_TASK_PRIORITIES_BY_WORKSPACE_ID, [str(project.workspace_id)])
                 workspace_priorities = cur.fetchall()
 
                 # Перевірити наявність дефолтних пріоритетів
@@ -54,7 +54,7 @@ class ProjectService:
                     order = order + 1
 
                 # Отримати всі дефолтні типи
-                cur.execute(TaskTypeSchemes.GET_TASK_TYPES_BY_WORKSPACE_ID, (str(project.workspace_id)))
+                cur.execute(TaskTypeSchemes.GET_TASK_TYPES_BY_WORKSPACE_ID, [str(project.workspace_id)])
                 workspace_types = cur.fetchall()
 
                 # Перевірити наявність дефолтних типів

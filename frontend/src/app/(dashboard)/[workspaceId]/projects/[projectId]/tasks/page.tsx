@@ -2,8 +2,7 @@ import { getQueryClient } from "@/lib/react-query";
 import { getProject } from '@/features/projects/api';
 
 import { TasksTable } from "./client";
-import { View, ViewTitle } from "@/components/ui/view";
-import { DottedSeparator } from "@/components/DottedSeparator";
+import { ViewTitle } from "@/components/ui/view";
 import { CreateTaskButton } from "./client";
 
 
@@ -15,11 +14,10 @@ export default async function Tasks(props: { params: { projectId: number } }) {
 
     return (
         <>
-            <div className='flex items-center justify-between'>
+            <div className='flex items-center justify-between mb-5'>
                 <ViewTitle>{project?.name || "Завантаження..."}</ViewTitle>
                 <CreateTaskButton />
             </div>
-            <DottedSeparator className="my-3" />
             <TasksTable projectId={projectId} />
         </>
     )

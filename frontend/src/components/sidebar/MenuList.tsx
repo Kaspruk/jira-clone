@@ -5,15 +5,18 @@ import Link from "next/link";
 import { usePathname, useParams } from "next/navigation";
 import { AnimatePresence } from "motion/react";
 import * as motion from "motion/react-client";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { buildRoute, cn } from "@/lib/utils";
 import { RouteType, RoutesMap, SidebarState } from "./constants";
 import { getSidebarStateKey } from "./utils";
-import { Routes } from "@/lib/constants";
+import { QueriesKeys, Routes } from "@/lib/constants";
+import { TaskType } from "@/features/types";
 
 export const MenuList = memo(() => {
   const params = useParams();
   const pathname = usePathname();
+  const queryClient = useQueryClient();
   const sidebarState = getSidebarStateKey(params as Record<string, string>);
 
   const menuItems = useMemo(() => {
@@ -24,7 +27,7 @@ export const MenuList = memo(() => {
           items = [RoutesMap[Routes.Home], RoutesMap[Routes.Project]];
           break;
         case SidebarState.Project:
-          items = [RoutesMap[Routes.Home], RoutesMap[Routes.Project]];
+          items = [RoutesMap[Routes.Home], RoutesMap[Routes.Workspace], RoutesMap[Routes.ProjectSettings]];
           break;
         case SidebarState.Workspace:
           items = [RoutesMap[Routes.Home]];
@@ -32,21 +35,34 @@ export const MenuList = memo(() => {
     }
 
     return items.map(route => {
-        const href = buildRoute(route.href, params as Record<string, string>);
+      let href = buildRoute(route.href, params as Record<string, string>);
 
-        const isActive = pathname === href;
-        const Icon = isActive ? route.activeIcon : route.icon;
+      if (route.href === Routes.Project) {
+        const task = queryClient.getQueryData<TaskType>([QueriesKeys.Task, Number(params.taskId)]);
 
-        return (
-            <MenuItem
-              key={href}
-              href={href}
-              isActive={isActive}
-            >
-              <Icon className="size-5 text-neutral-500" />
-              {route.label}
-            </MenuItem>
-        );
+        if (!task) {
+          return;
+        }
+
+        href = buildRoute(Routes.Project, {
+          projectId: task.project_id.toString(),
+          workspaceId: task.workspace_id.toString(),
+        });
+      }
+
+      const isActive = pathname === href;
+      const Icon = isActive ? route.activeIcon : route.icon;
+
+      return (
+          <MenuItem
+            key={href}
+            href={href}
+            isActive={isActive}
+          >
+            <Icon className="size-5 text-neutral-500" />
+            {route.label}
+          </MenuItem>
+      );
     })
   }, [pathname, sidebarState]);
 

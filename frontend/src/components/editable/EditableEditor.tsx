@@ -26,7 +26,7 @@ export const EditableEditor = ({
     return (
         <div className="w-full">
             {isEditing ? (
-                <div className="w-full">
+                <div className={cn("w-full", className)}>
                     <Editor
                         onChange={handleChange}
                         placeholder={placeholder}

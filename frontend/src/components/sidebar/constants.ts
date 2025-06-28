@@ -1,7 +1,5 @@
 import { GoHome, GoHomeFill, GoProject } from "react-icons/go";
 import { AiFillProject } from "react-icons/ai";
-import { LiaTasksSolid } from "react-icons/lia";
-import { VscTasklist } from "react-icons/vsc";
 import { IoSettingsOutline, IoSettingsSharp } from "react-icons/io5";
 
 import { Routes } from "@/lib/constants";
@@ -20,15 +18,15 @@ export const RoutesMap: Record<string, RouteType> = {
         icon: GoHome,
         activeIcon: GoHomeFill,
     },
-    [Routes.Projects]: {
-        label: "Projects",
-        href: Routes.Projects,
+    [Routes.Workspace]: {
+        label: "Workspace",
+        href: Routes.Workspace,
         icon: GoProject,
         activeIcon: AiFillProject,
     },
     [Routes.Project]: {
         label: "Project tasks",
-        href: Routes.Projects,
+        href: Routes.Project,
         icon: GoProject,
         activeIcon: AiFillProject,
     },

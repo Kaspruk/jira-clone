@@ -1,20 +1,14 @@
-import { getQueryClient } from "@/lib/react-query";
-import { getWorkspaceStatuses } from "@/features/workspaces/api";
 import { TaskStatusesList } from "@/features/task-statuses";
 import { TaskPrioritiesList } from "@/features/task-priorities";
 import { TaskTypesList } from "@/features/task-types";
-import { getProject } from "@/features/projects";
 import { ProjectForm } from "./clients";
 
 export default async function ProjectSettingsPage(props: {
-  params: { projectId: number };
+  params: { workspaceId: number, projectId: number };
 }) {
   const params = await props.params;
   const projectId = Number(params.projectId);
-
-  const queryClient = getQueryClient();
-
-  const project = await queryClient.ensureQueryData(getProject(projectId));
+  const workspaceId = Number(params.workspaceId);
 
   return (
     <>
@@ -23,19 +17,19 @@ export default async function ProjectSettingsPage(props: {
         <div className="flex flex-col gap-2 w-1/3">
           <TaskStatusesList
             projectId={params.projectId}
-            workspaceId={project.workspace_id}
+            workspaceId={workspaceId}
           />
         </div>
         <div className="flex flex-col gap-2 w-1/3">
           <TaskPrioritiesList
             projectId={params.projectId}
-            workspaceId={project.workspace_id}
+            workspaceId={workspaceId}
           />
         </div>
         <div className="flex flex-col gap-2 w-1/3">
           <TaskTypesList
             projectId={params.projectId}
-            workspaceId={project.workspace_id}
+            workspaceId={workspaceId}
           />
         </div>
       </div>

@@ -18,6 +18,7 @@ class TaskService:
                     task.status_id,
                     task.priority_id,
                     str(task.project_id),
+                    str(task.workspace_id),
                     str(task.author_id),
                     str(task.assignee_id),
                 ))

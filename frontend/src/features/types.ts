@@ -37,6 +37,7 @@ export type TaskType = {
   title: string;
   description: string;
   project_id: number;
+  workspace_id: number;
   author_id: number;
   assignee_id: number;
   type_id?: TaskTypeType['id'];
