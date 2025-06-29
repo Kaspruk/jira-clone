@@ -89,11 +89,3 @@ export function buildRoute(routePattern: string, params: Record<string, string>)
   
   return result;
 };
-
-export const getIsTablet = () => {
-  return window.innerWidth < 1024;
-};
-
-export const isMobile = () => {
-  return window.innerWidth < 768;
-};

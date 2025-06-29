@@ -1,6 +1,5 @@
 "use client";
 
-import { useMediaQuery } from "react-responsive";
 import { useParams } from "next/navigation";
 import { getNavidationStateKey } from "./utils";
 import { NavigationState } from "./constants";

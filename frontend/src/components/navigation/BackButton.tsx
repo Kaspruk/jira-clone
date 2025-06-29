@@ -2,7 +2,6 @@
 
 import { memo, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useMediaQuery } from "react-responsive";
 import { TaskType } from "@/features/types";
 import { getQueryClient } from "@/lib/react-query";
 import { QueriesKeys } from "@/lib/constants";

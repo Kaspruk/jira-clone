@@ -4,7 +4,7 @@ import { memo, useRef, useEffect, useState } from "react";
 import { useMediaQuery } from 'react-responsive'
 import { useParams } from "next/navigation";
 import { WorkspaceSwitcher } from "./WorkspaceSwitcher";
-import { cn, isMobile } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { MenuList } from "./MenuList";
 import { DottedSeparator } from "../DottedSeparator";
 import { getNavidationStateKey } from "./utils";
