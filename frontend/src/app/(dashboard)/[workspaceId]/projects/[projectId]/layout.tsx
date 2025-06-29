@@ -1,6 +1,5 @@
 import { getQueryClient } from "@/lib/react-query";
 import { getProject } from '@/features/projects';
-import { View } from "@/components/ui/view";
 
 interface ProjectLayoutProps {
     children: React.ReactNode;
@@ -13,9 +12,5 @@ export default async function ProjectLayout(props: ProjectLayoutProps) {
     const projectId = Number(params.projectId);
     await queryClient.ensureQueryData(getProject(projectId));
 
-    return (
-        <View>
-            {props.children}
-        </View>
-    )
+    return props.children;
 }

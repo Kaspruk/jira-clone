@@ -1,8 +1,9 @@
 import { getQueryClient } from "@/lib/react-query";
 import { getProject } from '@/features/projects/api';
+import { BackButton } from "@/components/navigation";
+import { View,ViewTitle } from "@/components/ui/view";
 
 import { TasksTable } from "./client";
-import { ViewTitle } from "@/components/ui/view";
 import { CreateTaskButton } from "./client";
 
 
@@ -13,12 +14,14 @@ export default async function Tasks(props: { params: { projectId: number } }) {
     const project = await queryClient.ensureQueryData(getProject(projectId));
 
     return (
-        <>
-            <div className='flex items-center justify-between mb-5'>
+        <View>
+            <div className='flex items-center gap-2 mb-5'>
+                <BackButton />
                 <ViewTitle>{project?.name || "Завантаження..."}</ViewTitle>
+                <div className="flex-1" />
                 <CreateTaskButton />
             </div>
             <TasksTable projectId={projectId} />
-        </>
+        </View>
     )
 }

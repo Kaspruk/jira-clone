@@ -79,7 +79,7 @@ const EnhancedTableHead = React.forwardRef<
             className={cn(
                 "h-12 font-semibold text-sm transition-colors duration-200",
                 isSortable && "cursor-pointer hover:text-foreground hover:bg-muted/50",
-                "first:pl-6 last:pr-6",
+                "first:pl-4 last:pr-4 lg:first:pl-6 lg:last:pr-6",
                 className
             )}
             onSort={onSort}

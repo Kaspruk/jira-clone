@@ -7,8 +7,9 @@ import { WorkspaceSwitcher } from "./WorkspaceSwitcher";
 import { cn, isMobile } from "@/lib/utils";
 import { MenuList } from "./MenuList";
 import { DottedSeparator } from "../DottedSeparator";
-import { getSidebarStateKey } from "./utils";
-import { SidebarState } from "./constants";
+import { getNavidationStateKey } from "./utils";
+import { NavigationState } from "./constants";
+import { MediaQuery } from "./MediaQueryWrapper";
 
 const SidebarComponent = memo(() => {
   const params = useParams();
@@ -20,8 +21,8 @@ const SidebarComponent = memo(() => {
   const isSwitcherOpen = useRef(false);
   const isMouseOverSidebar = useRef(false);
   
-  const sidebarState = getSidebarStateKey(params as Record<string, string>);
-  const isHome = sidebarState === SidebarState.Home;
+  const navigationState = getNavidationStateKey(params as Record<string, string>);
+  const isHome = navigationState === NavigationState.Home;
   const isHomeRef = useRef(false);
   isHomeRef.current = isHome;
 
@@ -93,7 +94,7 @@ const SidebarComponent = memo(() => {
         <div className="flex flex-col h-full">
           {/* WorkspaceSwitcher тільки коли не на домашній сторінці */}
           {/* <AnimatePresence mode="popLayout">
-            {sidebarState === SidebarState.Workspace && (
+            {NavigationState === NavigationState.Workspace && (
               <motion.div
                 key="workspace-switcher"
                 initial={{ opacity: 0, y: -20 }}
@@ -133,6 +134,9 @@ const SidebarComponent = memo(() => {
 });
 
 export const Sidebar = () => {
-  const isMobile = useMediaQuery({ maxWidth: 768 });
-  return isMobile ? null : <SidebarComponent />;
+  return (
+    <MediaQuery minWidth={768}>
+      <SidebarComponent />
+    </MediaQuery>
+  )
 }

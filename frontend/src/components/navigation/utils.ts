@@ -1,18 +1,18 @@
-import { SidebarState } from "./constants";
+import { NavigationState } from "./constants";
 
-export const getSidebarStateKey = (params: Record<string, string>) => {
+export const getNavidationStateKey = (params: Record<string, string>) => {
     const isTask = Boolean(params.taskId);
     const isWorkspace = Boolean(params.workspaceId);
     const isProject = isWorkspace && Boolean(params.projectId);
     
     switch (true) {
         case isTask:
-            return SidebarState.Task;
+            return NavigationState.Task;
         case isWorkspace && isProject:
-            return SidebarState.Project;
+            return NavigationState.Project;
         case isWorkspace:
-            return SidebarState.Workspace;
+            return NavigationState.Workspace;
         default:
-            return SidebarState.Home;
+            return NavigationState.Home;
     }
 }

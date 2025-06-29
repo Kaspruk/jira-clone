@@ -1,7 +1,8 @@
 import { getQueryClient } from "@/lib/react-query";
 import { TaskDetail, getTask } from "@/features/tasks";
-import { View } from "@/components/ui/view";
+import { View, ViewTitle } from "@/components/ui/view";
 import { getProject } from "@/features/projects";
+import { BackButton } from "@/components/navigation";
 
 export default async function Task({ params }: { params: { taskId: string } }) {
     const data = await params;
@@ -14,6 +15,10 @@ export default async function Task({ params }: { params: { taskId: string } }) {
     
     return (
         <View>
+            <div className="flex items-center gap-2 mb-3">
+                <BackButton />
+                <ViewTitle>Back to tasks</ViewTitle>
+            </div>
             <TaskDetail taskId={taskId} workspaceId={project.workspace_id} />
         </View>
     );

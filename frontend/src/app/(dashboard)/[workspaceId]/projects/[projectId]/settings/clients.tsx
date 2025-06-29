@@ -37,7 +37,7 @@ export const ProjectForm = (props: ProjectFormProps) => {
 
   return (
     <>
-      <div className="-mt-2 relative z-10">
+      <div className="sm:-mt-2 -mt-1 relative z-10">
         <EditableInput
             value={project.name}
             className="font-semibold tracking-tight text-xl"

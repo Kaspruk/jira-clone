@@ -33,6 +33,7 @@ type FormDataType = Omit<TaskType,
 };
 
 type TaskFormType = React.PropsWithChildren<{
+    className?: string;
     data?: TaskType;
     onSave?(): void;
 }>;
@@ -49,7 +50,7 @@ export const TaskForm = (props: TaskFormType) => {
     const {data: projects} = projectsData;
     const {data: users} = usersData;
 
-    const { mutate, isPending } = useCreateTask(projectId);
+    const { mutate } = useCreateTask(projectId);
 
     const {
         control,
@@ -80,7 +81,6 @@ export const TaskForm = (props: TaskFormType) => {
     }, [project]);
 
     const onSubmit = (data: FormDataType) => {
-        console.log('data', data);
         mutate({
             ...data,
             project_id: Number(data.project_id)
@@ -92,8 +92,8 @@ export const TaskForm = (props: TaskFormType) => {
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="grid grid-cols-2 gap-4 row-auto">
+        <form className={props.className} onSubmit={handleSubmit(onSubmit)}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 row-auto h-fit overflow-y-auto flex-1">
                 <div>
                     <Label htmlFor="project_id">Project name</Label>
                     <Controller
@@ -169,7 +169,7 @@ export const TaskForm = (props: TaskFormType) => {
                     />
                     {errors.author_id && (<ErrorMessage>{errors.author_id.message}</ErrorMessage>)}
                 </div>
-                <div className="col-span-2 h-fit min-h-[120px]">
+                <div className="sm:col-span-2 h-fit min-h-[120px]">
                     <Label htmlFor="description">Description</Label>
                     <Controller
                         name="description"

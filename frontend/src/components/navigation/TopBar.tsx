@@ -2,15 +2,16 @@
 
 import { useMediaQuery } from "react-responsive";
 import { useParams } from "next/navigation";
-import { getSidebarStateKey } from "./utils";
-import { SidebarState } from "./constants";
+import { getNavidationStateKey } from "./utils";
+import { NavigationState } from "./constants";
 import { WorkspaceSwitcher } from "./WorkspaceSwitcher";
+import { MediaQuery } from "./MediaQueryWrapper";
 
 
 const TopBarComponent = () => {
   const params = useParams();
-  const sidebarState = getSidebarStateKey(params as Record<string, string>);
-  const isHome = sidebarState === SidebarState.Home;
+  const navigationState = getNavidationStateKey(params as Record<string, string>);
+  const isHome = navigationState === NavigationState.Home;
 
   return (
     <header className="pb-top-bar">
@@ -24,8 +25,10 @@ const TopBarComponent = () => {
     </header>
   );
 };
-
 export const TopBar = () => {
-  const isMobile = useMediaQuery({ maxWidth: 768 });
-  return isMobile ? <TopBarComponent /> : null;
+  return (
+    <MediaQuery maxWidth={768}>
+      <TopBarComponent />
+    </MediaQuery>
+  )
 };

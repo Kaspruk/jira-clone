@@ -8,8 +8,8 @@ import * as motion from "motion/react-client";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { buildRoute, cn } from "@/lib/utils";
-import { RouteType, RoutesMap, SidebarState } from "./constants";
-import { getSidebarStateKey } from "./utils";
+import { RouteType, RoutesMap, NavigationState } from "./constants";
+import { getNavidationStateKey } from "./utils";
 import { QueriesKeys, Routes } from "@/lib/constants";
 import { TaskType } from "@/features/types";
 
@@ -22,19 +22,19 @@ export const MenuList = memo(({ isMobile = false, isCollapsed = false }: MenuLis
   const params = useParams();
   const pathname = usePathname();
   const queryClient = useQueryClient();
-  const sidebarState = getSidebarStateKey(params as Record<string, string>);
+  const navigationState = getNavidationStateKey(params as Record<string, string>);
 
   const menuItems = useMemo(() => {
     let items: RouteType[] = [];
 
-    switch (sidebarState) {
-        case SidebarState.Task:
+    switch (navigationState) {
+        case NavigationState.Task:
           items = [RoutesMap[Routes.Home], RoutesMap[Routes.Project]];
           break;
-        case SidebarState.Project:
+        case NavigationState.Project:
           items = [RoutesMap[Routes.Home], RoutesMap[Routes.Workspace], RoutesMap[Routes.ProjectSettings]];
           break;
-        case SidebarState.Workspace:
+        case NavigationState.Workspace:
           items = [RoutesMap[Routes.Home]];
           break;
     }
@@ -70,13 +70,13 @@ export const MenuList = memo(({ isMobile = false, isCollapsed = false }: MenuLis
           />
       );
     })
-  }, [pathname, sidebarState, isCollapsed]);
+  }, [pathname, NavigationState, isCollapsed]);
 
   return (
     <div className="overflow-hidden w-full">
       <AnimatePresence mode="popLayout">
         <motion.ul
-          key={sidebarState}
+          key={NavigationState}
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0 }}

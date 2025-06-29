@@ -86,7 +86,6 @@ export const CreateProjectModal = (props: Partial<Omit<ResponsiveModalProps, 'ch
                         <div className="flex items-center justify-between">
                             <Button
                                 type="button"
-                                size="lg"
                                 variant="secondary"
                                 onClick={() => setIsOpen(false)}
                             >
@@ -94,7 +93,6 @@ export const CreateProjectModal = (props: Partial<Omit<ResponsiveModalProps, 'ch
                             </Button>
                             <Button
                                 type="submit"
-                                size="lg"
                                 disabled={isPending}
 
                             >

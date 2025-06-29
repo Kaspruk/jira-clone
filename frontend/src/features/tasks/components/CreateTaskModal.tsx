@@ -17,26 +17,23 @@ export const CreateTaskModal = () => {
     return (
         <ResponsiveModal
             open={isOpen}
-            className="max-w-4xl"
             onOpenChange={setIsOpen}
         >
-            <Card className="w-full p-4 h-full border-none shadow-none">
-                <CardHeader className="flex flex-col mb-4">
+            <Card className="p-4 flex flex-col gap-4 border-none shadow-none">
+                <CardHeader className="flex flex-col">
                     <DialogTitle className="text-xl font-bold mb-4">
                         Create a new task
                     </DialogTitle>
                     <DottedSeparator />
                 </CardHeader>
-                <CardContent>
-                    <TaskForm onSave={() => setIsOpen(false)}>
-                        <Button 
-                            variant="secondary" 
-                            onClick={() => setIsOpen(false)}
-                        >
-                            Cancel
-                        </Button>
-                    </TaskForm>
-                </CardContent>
+                <TaskForm onSave={() => setIsOpen(false)}>
+                    <Button 
+                        variant="secondary" 
+                        onClick={() => setIsOpen(false)}
+                    >
+                        Cancel
+                    </Button>
+                </TaskForm>
             </Card>
         </ResponsiveModal>
     )

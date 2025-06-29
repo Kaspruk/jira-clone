@@ -12,6 +12,7 @@ import { EditableInput, EditableEditor } from "@/components/editable";
 import { TaskTypeSelect } from "./TaskTypeSelect";
 import { TaskStatusSelect } from "./TaskStatusSelect";
 import { TaskPrioritySelect } from "./TaskPrioritySelect";
+import { cn } from "@/lib/utils";
 
 type TaskDetailProps = React.PropsWithChildren<{
     taskId: number;
@@ -57,7 +58,7 @@ export const TaskDetail = (props: TaskDetailProps) => {
     if (!task) return null;
 
     return (
-        <div className="flex gap-4">
+        <div className="flex sm:flex-row flex-col gap-4">
             {/* Main Content */}
             <div className="flex-1">
                 <EditableInput
@@ -74,7 +75,12 @@ export const TaskDetail = (props: TaskDetailProps) => {
             </div>
 
             {/* Sidebar */}
-            <div className="w-[240px] space-y-3 pl-4 border-l border-gray-200">
+            <div 
+                className={cn(
+                    "sm:w-[240px] sm:space-y-3 sm:pl-4 sm:border-l border-gray-200",
+                    "max-sm:grid max-sm:grid-cols-2 max-sm:gap-2"
+                )}
+            >
                 <div>
                     <Label className="text-gray-500">Project</Label>
                     <Select<ProjectType>

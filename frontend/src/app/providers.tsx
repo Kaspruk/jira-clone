@@ -1,7 +1,7 @@
 'use client'
 // Since QueryClientProvider relies on useContext under the hood, we have to put 'use client' on top
 
-import { QueryClientProvider } from '@tanstack/react-query';
+import { dehydrate, HydrationBoundary, QueryClientProvider } from '@tanstack/react-query';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { getQueryClient } from '@/lib/react-query';
 
@@ -18,9 +18,11 @@ export const Providers = ({ children }: ProviderProps) => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <NuqsAdapter>
-        {children}
-      </NuqsAdapter>
+     <HydrationBoundary state={dehydrate(queryClient)}>
+        <NuqsAdapter>
+          {children}
+        </NuqsAdapter>
+      </HydrationBoundary>
     </QueryClientProvider>
   )
 }

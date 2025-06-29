@@ -38,7 +38,7 @@ export const RoutesMap: Record<string, RouteType> = {
     }
 };
 
-export enum SidebarState {
+export enum NavigationState {
     Home = 'home',
     Workspace = 'workspace',
     Project = 'project',

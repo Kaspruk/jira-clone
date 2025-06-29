@@ -155,14 +155,19 @@ export const TaskPrioritiesList: React.FC<TaskPrioritiesListProps> = (props) => 
     return (
       <>
         <div className="flex justify-between items-center">
-          <h5 className="text-md font-bold ml-2">Task Priorities:</h5>
+          <h5 className="sm:text-md text-sm font-bold sm:ml-2">Task Priorities:</h5>
           <Button
             size="sm"
             variant="ghost"
             onClick={() => setIsOpen(true)}
           >
             <Icon name="add" size={18} />
-            Add Task Priority
+            <span className="sm:block hidden">
+              Add Task Priority
+            </span>
+            <span className="sm:hidden block">
+              Add
+            </span>
           </Button>
         </div>
         <SortableList<WorkspaceTaskPriorityType>

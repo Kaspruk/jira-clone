@@ -1,3 +1,4 @@
+import { useMediaQuery } from "react-responsive";
 import {Dialog, DialogContent} from "@/components/ui/dialog";
 import {Drawer, DrawerContent} from "@/components/ui/drawer";
 import { cn } from "@/lib/utils";
@@ -10,7 +11,6 @@ export interface ResponsiveModalProps {
 }
 
 export const ResponsiveModal = (props: ResponsiveModalProps) => {
-//   const isDesktop = useMedia("(min-width: 1024px)", true);
   const {
     open,
     children,
@@ -18,31 +18,36 @@ export const ResponsiveModal = (props: ResponsiveModalProps) => {
     onOpenChange
   } = props;
 
-  const isDesktop = true;
+  const isMobile = useMediaQuery({ maxWidth: 768 });
 
-  if (isDesktop) {
+  if (isMobile) {
     return (
-      <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent
-          className={cn(
-            "w-full max-w-lg p-0 border-none overflow-y-auto hide-scrollbar max-h-[85vh]",
-            className
-          )}
-          aria-describedby="modal-description"
-        >
-          {children}
-        </DialogContent>
-      </Dialog>
-    )
+      <Drawer open={open} onOpenChange={onOpenChange}>
+        <DrawerContent>
+          <div 
+            className={cn(
+              "w-full max-w-lg p-0 flex-1 border-none overflow-y-auto hide-scrollbar max-h-[85vh]",
+              className
+            )}
+          >
+            {children}
+          </div>
+        </DrawerContent>
+      </Drawer>
+    );
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent>
-        <div className="overflow-y-auto hide-scrollbar max-h-[85vh]">
-          {children}
-        </div>
-      </DrawerContent>
-    </Drawer>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent
+        className={cn(
+          "w-full max-w-lg p-0 border-none overflow-y-auto hide-scrollbar max-h-[85vh]",
+          className
+        )}
+        aria-describedby="modal-description"
+      >
+        {children}
+      </DialogContent>
+    </Dialog>
   );
 };

@@ -155,14 +155,19 @@ export const TaskStatusesList: React.FC<TaskStatusesListProps> = (props) => {
     return (
       <>
         <div className="flex justify-between items-center">
-          <h5 className="text-md font-bold ml-2">Task Statuses:</h5>
+          <h5 className="sm:text-md text-sm font-bold sm:ml-2">Task Statuses:</h5>
           <Button
             size="sm"
             variant="ghost"
             onClick={() => setIsOpen(true)}
           >
             <Icon name="add" size={18} />
-            Add Task Status
+            <span className="sm:block hidden">
+              Add Task Status
+            </span>
+            <span className="sm:hidden block">
+              Add
+            </span>
           </Button>
         </div>
         <SortableList<WorkspaceTaskStatusType>

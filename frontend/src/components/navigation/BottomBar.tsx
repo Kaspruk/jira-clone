@@ -3,14 +3,15 @@
 import { useMediaQuery } from "react-responsive";
 import { MenuList } from "./MenuList";
 import { useParams } from "next/navigation";
-import { getSidebarStateKey } from "./utils";
-import { SidebarState } from "./constants";
+import { getNavidationStateKey } from "./utils";
+import { NavigationState } from "./constants";
 import { cn } from "@/lib/utils";
+import { MediaQuery } from "./MediaQueryWrapper";
 
 const BottomBarComponent = () => {
   const params = useParams();
-  const sidebarState = getSidebarStateKey(params as Record<string, string>);
-  const isHome = sidebarState === SidebarState.Home;
+  const navigationState = getNavidationStateKey(params as Record<string, string>);
+  const isHome = navigationState === NavigationState.Home;
 
   return (
     <footer 
@@ -30,8 +31,10 @@ const BottomBarComponent = () => {
     </footer>
   );
 };
-
 export const BottomBar = () => {
-  const isMobile = useMediaQuery({ maxWidth: 768 });
-  return isMobile ? <BottomBarComponent /> : null;
+  return (
+    <MediaQuery maxWidth={768}>
+      <BottomBarComponent />
+    </MediaQuery>
+  )
 };

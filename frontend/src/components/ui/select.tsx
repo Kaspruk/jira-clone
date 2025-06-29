@@ -23,7 +23,7 @@ const selectTriggerStyles = cva(
   {
     variants: {
       variant: {
-        default: "h-12 border border-input bg-transparent shadow-sm",
+        default: "max-sm:h-10 h-12 border border-input bg-transparent shadow-sm",
         preview: "-ml-3 hover:ml-0 hover:bg-gray-100 transition-all outline-none",
       },
     },

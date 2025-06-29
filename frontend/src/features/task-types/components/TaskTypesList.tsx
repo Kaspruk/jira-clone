@@ -155,14 +155,19 @@ export const TaskTypesList: React.FC<TaskTypesListProps> = (props) => {
     return (
       <>
         <div className="flex justify-between items-center">
-          <h5 className="text-md font-bold ml-2">Task Types:</h5>
+          <h5 className="sm:text-md text-sm font-bold sm:ml-2">Task Types:</h5>
           <Button
             size="sm"
             variant="ghost"
             onClick={() => setIsOpen(true)}
           >
             <Icon name="add" size={18} />
-            Add Task Type
+            <span className="sm:block hidden">
+              Add Task Type
+            </span>
+            <span className="sm:hidden block">
+              Add
+            </span>
           </Button>
         </div>
         <SortableList<WorkspaceTaskTypeType>

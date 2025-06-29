@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 
-export default async function Project(props: { params: Promise<{ projectId: string }>}) {
+export default async function Project(props: { params: Promise<{ workspaceId: string, projectId: string }>}) {
     const params = await props.params;
-    redirect(`/projects/${params.projectId}/tasks`);
+    redirect(`/${params.workspaceId}/projects/${params.projectId}/tasks`);
 }
