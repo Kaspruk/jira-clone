@@ -1,4 +1,5 @@
-import { useSyncExternalStore } from "react"
+"use client";
+
 import { ResponsiveModal } from "./ResponsiveModal"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";

@@ -11,6 +11,7 @@ export default async function Tasks(props: { params: { projectId: number } }) {
     const data = await props.params;
     const projectId = Number(data.projectId); 
     const queryClient = getQueryClient();
+    await queryClient.prefetchQuery(getProject(projectId));
     const project = await queryClient.ensureQueryData(getProject(projectId));
 
     return (

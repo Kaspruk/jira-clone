@@ -3,9 +3,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.database import get_db_connection
 from app.schemas import SCHEMAS
-from app.routers import users, workspaces, projects, tasks, task_statuses, task_priorities, task_types, dashboard
+from app.routers import users, workspaces, projects, tasks, task_statuses, task_priorities, task_types, dashboard, auth
 
 app = FastAPI()
+app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(workspaces.router)
 app.include_router(projects.router)

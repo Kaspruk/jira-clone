@@ -118,10 +118,28 @@ export enum TypeTask {
 
 export type UserType = {
   id: number;
+  avatar: string;
   username: string;
   email: string;
   created_at: number;
 };
+
+export type AuthResponse = {
+  access_token: string;
+  refresh_token: string;
+  token_type: string;
+  user: UserType;
+};
+
+export type LoginDataType = Pick<UserType, 'email'> & {
+  password: string;
+};
+
+export type RegisterDataType = Omit<UserType, 'id' | 'created_at'> & {
+  password: string;
+};
+
+export type RestorePasswordDataType = Pick<UserType, 'email'>;
 
 export type DashboardWorkspaceType = WorkspaceType & {
   projects: ProjectType[];

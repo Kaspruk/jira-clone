@@ -18,7 +18,7 @@ import { DottedSeparator } from "@/components/DottedSeparator";
 import { WorkspaceType } from "../../types";
 import { useWorkspaceModalState } from "../hooks";
 import { useCreateWorkspace, useUpdateWorkspace } from "../api";
-import { useGetUsers } from "../../users/api";
+import { useUser } from "../../users/api";
 
 type WorkspaceFormData = Pick<WorkspaceType, 'name' | 'description'>;
 
@@ -29,9 +29,8 @@ export const WorkspaceModal = () => {
   const isEdit = workspaceId !== 0;
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const {data: users} = useGetUsers();
-  const user = users?.[0];
 
+  const { data: user } = useUser();
   const { mutate: createWorkspace, isPending: isCreating } = useCreateWorkspace();
   const { mutate: updateWorkspace, isPending: isUpdating } = useUpdateWorkspace();
   const isPending = isCreating || isUpdating;
@@ -80,7 +79,7 @@ export const WorkspaceModal = () => {
       } else {
         await createWorkspace({
           ...data,
-          owner_id: user!.id
+          owner_id: user.id
         });
       }
       

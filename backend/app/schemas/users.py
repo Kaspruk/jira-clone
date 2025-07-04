@@ -1,7 +1,7 @@
 CREATE_TABLE_USERS = """
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
-    username VARCHAR(50) NOT NULL UNIQUE,
+    username VARCHAR(50) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     hashed_password TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT NOW()
@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS users (
 """
 
 CREATE_USER = """
-INSERT INTO users (username, email, hashed_password) VALUES (%s, %s, %s) RETURNING id
+INSERT INTO users (username, email, hashed_password) VALUES (%s, %s, %s) RETURNING *
 """
 
 GET_USERS = """
@@ -24,6 +24,14 @@ GET_USER_BY_ID = """
 SELECT * FROM users WHERE id = %s;
 """
 
+UPDATE_USER_BY_ID = """
+UPDATE users SET {template} WHERE id = %s
+"""
+
+DELETE_USER_BY_ID = """
+DELETE FROM users WHERE id = %s
+"""
+
 class UserSchemes:
     """Клас для організації всіх SQL схем користувачів"""
     CREATE_TABLE_USERS = CREATE_TABLE_USERS
@@ -31,3 +39,5 @@ class UserSchemes:
     GET_USERS = GET_USERS
     GET_USER_BY_EMAIL = GET_USER_BY_EMAIL
     GET_USER_BY_ID = GET_USER_BY_ID
+    UPDATE_USER_BY_ID = UPDATE_USER_BY_ID
+    DELETE_USER_BY_ID = DELETE_USER_BY_ID

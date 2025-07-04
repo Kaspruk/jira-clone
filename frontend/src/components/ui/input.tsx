@@ -16,14 +16,13 @@ const inputVariants = cva(
         default: "border border-input bg-transparent shadow-sm",
         preview: "cursor-pointer hover:bg-gray-100",
       },
-      type: {
-        color: "p-0",
-        default: "",
-      },
+      error: {
+        true: "border-red-500 outline-red-500",
+        false: "",
+      }
     },
     defaultVariants: {
       size: "default",
-      type: "default",
       variant: "default",
     },
   }
@@ -34,18 +33,20 @@ export type InputProps = React.InputHTMLAttributes<HTMLInputElement>
   & VariantProps<typeof inputVariants>;
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, size, variant, ...props }, ref) => {
+  (props, ref) => {
+    const { className, type, size, variant, error = false, ...inputProps } = props;
+
     return (
       <input
         type={type}
         className={cn(inputVariants({
-          type,
           size,
+          error,
           variant,
           className
         }))}
         ref={ref}
-        {...props}
+        {...inputProps}
       />
     );
   }

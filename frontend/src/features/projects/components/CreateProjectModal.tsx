@@ -3,6 +3,7 @@
 import { useForm } from "react-hook-form";
 import { useParams } from "next/navigation";
 
+import { useUser } from "@/features/users";
 import { ResponsiveModal, type ResponsiveModalProps } from "@/components/ResponsiveModal";
 import { DialogTitle } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -36,6 +37,8 @@ export const CreateProjectModal = (props: Partial<Omit<ResponsiveModalProps, 'ch
     const params = useParams();
     const workspaceId = Number(params.workspaceId);
 
+    const { data: user } = useUser();
+
     const [isOpen, setIsOpen] = useProjectModalState();
 
     const { mutate, isPending } = useCreateProject();
@@ -43,7 +46,7 @@ export const CreateProjectModal = (props: Partial<Omit<ResponsiveModalProps, 'ch
     const onSubmit = async (data: FormDataType) => {
         mutate({
             ...data,
-            owner_id: 1,
+            owner_id: user.id,
             workspace_id: workspaceId,
         }, {
             onSuccess() {

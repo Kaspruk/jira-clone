@@ -12,7 +12,7 @@ import {
 export const getWorkspaceStatuses = (workspaceId: number, projectId?: number) => queryOptions<WorkspaceTaskStatusType[]>({
     queryKey: [QueriesKeys.WorkspaceStatuses, workspaceId],
     queryFn: async () => {
-        const url = new URL(`${BASE_URL}/workspaces/${workspaceId}/statuses`)
+        const url = new URL(`${BASE_URL}/workspaces/${workspaceId}/statuses/`)
 
         if (projectId) {
             url.searchParams.set('project_id', projectId.toString());
@@ -26,7 +26,7 @@ export const getWorkspaceStatuses = (workspaceId: number, projectId?: number) =>
 export const getWorkspacePriorities = (workspaceId: number, projectId?: number) => queryOptions<WorkspaceTaskPriorityType[]>({
     queryKey: [QueriesKeys.WorkspacePriorities, workspaceId],
     queryFn: async () => {
-        const url = new URL(`${BASE_URL}/workspaces/${workspaceId}/priorities`)
+        const url = new URL(`${BASE_URL}/workspaces/${workspaceId}/priorities/`)
 
         if (projectId) {
             url.searchParams.set('project_id', projectId.toString());
@@ -40,7 +40,7 @@ export const getWorkspacePriorities = (workspaceId: number, projectId?: number) 
 export const getWorkspaceTypes = (workspaceId: number, projectId?: number) => queryOptions<WorkspaceTaskTypeType[]>({
     queryKey: [QueriesKeys.WorkspaceTypes, workspaceId],
     queryFn: async () => {
-        const url = new URL(`${BASE_URL}/workspaces/${workspaceId}/types`)
+        const url = new URL(`${BASE_URL}/workspaces/${workspaceId}/types/`)
 
         if (projectId) {
             url.searchParams.set('project_id', projectId.toString());
@@ -55,7 +55,7 @@ export const getWorkspaces = queryOptions<WorkspaceType[]>({
     queryKey: [QueriesKeys.Workspaces],
     queryFn: async (): Promise<WorkspaceType[]> => {
         try {
-            const response = await fetch(`${BASE_URL}/workspaces`);
+            const response = await fetch(`${BASE_URL}/workspaces/`);
             if (!response.ok) {
                 throw new Error('Failed to fetch workspaces');
             }
@@ -72,7 +72,7 @@ export const getWorkspaces = queryOptions<WorkspaceType[]>({
 export const getWorkspaceDashboardData = queryOptions<{[key: number]: WorkspaceDashboardData}>({
     queryKey: [QueriesKeys.WorkspacesDashboard],
     queryFn: async (): Promise<{[key: number]: WorkspaceDashboardData}> => {
-        const response = await fetch(`${BASE_URL}/dashboard/workspaces`);
+        const response = await fetch(`${BASE_URL}/dashboard/workspaces/`);
         if (!response.ok) {
             throw new Error(`Failed to fetch dashboard data for workspaces`);
         }

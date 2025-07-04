@@ -3,10 +3,12 @@
 import { memo, useRef, useEffect, useState } from "react";
 import { useMediaQuery } from 'react-responsive'
 import { useParams } from "next/navigation";
-import { WorkspaceSwitcher } from "./WorkspaceSwitcher";
 import { cn } from "@/lib/utils";
-import { MenuList } from "./MenuList";
+import { UserPreview } from "@/features/users";
+
 import { DottedSeparator } from "../DottedSeparator";
+import { WorkspaceSwitcher } from "./WorkspaceSwitcher";
+import { MenuList } from "./MenuList";
 import { getNavidationStateKey } from "./utils";
 import { NavigationState } from "./constants";
 import { MediaQuery } from "./MediaQueryWrapper";
@@ -92,24 +94,8 @@ const SidebarComponent = memo(() => {
         )}
       >
         <div className="flex flex-col h-full">
-          {/* WorkspaceSwitcher тільки коли не на домашній сторінці */}
-          {/* <AnimatePresence mode="popLayout">
-            {NavigationState === NavigationState.Workspace && (
-              <motion.div
-                key="workspace-switcher"
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.2 }}
-              >
-                <WorkspaceSwitcher
-                  isCollapsed={!isHovered}
-                  onOpenChange={handleOpenChange}
-                />
-                <DottedSeparator className="my-4" />
-              </motion.div>
-            )}
-          </AnimatePresence> */}
+          <UserPreview />
+          <DottedSeparator className="my-4" />
           <WorkspaceSwitcher
             isCollapsed={!isHovered}
             onOpenChange={handleOpenChange}

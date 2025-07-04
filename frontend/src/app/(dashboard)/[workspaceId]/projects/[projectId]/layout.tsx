@@ -10,7 +10,7 @@ export default async function ProjectLayout(props: ProjectLayoutProps) {
     const params = await props.params;
     const queryClient = getQueryClient();
     const projectId = Number(params.projectId);
-    await queryClient.ensureQueryData(getProject(projectId));
+    await queryClient.prefetchQuery(getProject(projectId));
 
     return props.children;
 }

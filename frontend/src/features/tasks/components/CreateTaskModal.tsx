@@ -17,6 +17,7 @@ export const CreateTaskModal = () => {
     return (
         <ResponsiveModal
             open={isOpen}
+            className="sm:min-w-[700px]"
             onOpenChange={setIsOpen}
         >
             <Card className="p-4 flex flex-col gap-4 border-none shadow-none">

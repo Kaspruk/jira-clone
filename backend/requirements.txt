@@ -23,7 +23,9 @@ pydantic==2.10.4
 pydantic_core==2.27.2
 Pygments==2.18.0
 python-dotenv==1.0.1
+python-jose[cryptography]==3.3.0
 python-multipart==0.0.20
+PyJWT==2.8.0
 PyYAML==6.0.2
 rich==13.9.4
 rich-toolkit==0.12.0

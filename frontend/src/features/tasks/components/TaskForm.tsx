@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { ErrorMessage } from "@/components/ui/error-message";
 import { DottedSeparator } from "@/components/DottedSeparator";
 
-import { getUsers } from "@/features/users";
+import { useUser, getUsers } from "@/features/users";
 import { getProject, getProjects } from "@/features/projects";
 import { useCreateTask } from "@/features/tasks";
 import { ProjectType, TaskType, UserType } from "@/features/types";
@@ -43,6 +43,8 @@ export const TaskForm = (props: TaskFormType) => {
     const projectId = props.data?.project_id ?? Number(params.projectId);
     const workspaceId = Number(params.workspaceId);
 
+    const { data: user } = useUser();
+
     const [projectData, projectsData, usersData] = useQueries({
         queries: [getProject(projectId), getProjects(workspaceId), getUsers]
     });
@@ -65,7 +67,7 @@ export const TaskForm = (props: TaskFormType) => {
             priority_id: undefined,
             workspace_id: workspaceId,
             description: '',
-            author_id: undefined,
+            author_id: user.id,
             assignee_id: undefined,
             ...props.data,
             project_id: String(projectId),

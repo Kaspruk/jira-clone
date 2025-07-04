@@ -50,7 +50,7 @@ export const WorkspaceSwitcher = ({ isMobile = false, isReadonly = false, isColl
             <SelectTrigger 
                 variant={(isCollapsed || isReadonly) ? "preview" : "default"}
                 className={cn(
-                    "bg-neutral-50 hover:bg-neutral-100 border-neutral-200 font-medium h-auto transition-all duration-300 mn-0",
+                    "bg-neutral-50 hover:bg-neutral-100 border-neutral-200 font-medium h-auto transition-all duration-300",
                     isReadonly && "pointer-events-none ml-0",
                     isCollapsed ? "p-1 ml-0 w-8 h-8" : "p-1.5"
                 )}
@@ -90,11 +90,14 @@ export const WorkspaceSwitcher = ({ isMobile = false, isReadonly = false, isColl
     }
 
     return (
-        <div className="flex flex-col gap-y-3 mb-4">
+        <div className={cn(
+            "flex flex-col gap-y-3 transition-all duration-300", 
+            isCollapsed && "gap-y-0"
+        )}>
             <div 
                 className={cn(
                     "flex items-center justify-between flex-nowrap transition-opacity duration-300",
-                    isCollapsed && "opacity-0"
+                    isCollapsed && "h-0 opacity-0"
                 )}
             >
                 <div className="flex items-center gap-2">
