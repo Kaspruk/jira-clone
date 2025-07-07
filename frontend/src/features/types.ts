@@ -125,9 +125,9 @@ export type UserType = {
 };
 
 export type AuthResponse = {
+  expires: string;
   access_token: string;
   refresh_token: string;
-  token_type: string;
   user: UserType;
 };
 

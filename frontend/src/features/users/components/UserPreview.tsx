@@ -16,9 +16,11 @@ import { useUser } from "../api";
 
 interface UserPreviewProps {
     className?: string;
+    isCollapsed?: boolean;
+    onOpenChange?: (open: boolean) => void;
 }
 
-export const UserPreview = ({ className }: UserPreviewProps) => {
+export const UserPreview = ({ className, isCollapsed = false, onOpenChange }: UserPreviewProps) => {
     const router = useRouter();
     const { data: user } = useUser();
     const { mutate: logout } = useLogout();
@@ -43,10 +45,13 @@ export const UserPreview = ({ className }: UserPreviewProps) => {
     };
 
     return (
-        <DropdownMenu>
+        <DropdownMenu onOpenChange={onOpenChange}>
             <DropdownMenuTrigger asChild>
                 <div className={cn(
-                    "flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-neutral-100 transition-colors",
+                    "flex items-center rounded-lg cursor-pointer hover:bg-neutral-100 transition-all duration-300",
+                    isCollapsed 
+                        ? "p-1.5 justify-center rounded-full"
+                        : "gap-3 p-2",
                     className
                 )}>
                     <Avatar className="h-8 w-8">
@@ -55,19 +60,24 @@ export const UserPreview = ({ className }: UserPreviewProps) => {
                             {getInitials(user.username)}
                         </AvatarFallback>
                     </Avatar>
-                    <div className="flex flex-col min-w-0 flex-1">
-                        <span className="text-sm font-medium text-neutral-900 truncate">
-                            {user.username}
-                        </span>
-                        <span className="text-xs text-neutral-500 truncate">
-                            {user.email}
-                        </span>
-                    </div>
-                    <Icon 
-                        name="expand_more" 
-                        size={16} 
-                        className="text-neutral-400 transition-transform group-data-[state=open]:rotate-180" 
-                    />
+                    
+                    {!isCollapsed && (
+                        <>
+                            <div className="flex flex-col min-w-0 flex-1">
+                                <span className="text-sm font-medium text-neutral-900 truncate">
+                                    {user.username}
+                                </span>
+                                <span className="text-xs text-neutral-500 truncate">
+                                    {user.email}
+                                </span>
+                            </div>
+                            <Icon 
+                                name="expand_more" 
+                                size={16} 
+                                className="text-neutral-400 transition-transform group-data-[state=open]:rotate-180" 
+                            />
+                        </>
+                    )}
                 </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">

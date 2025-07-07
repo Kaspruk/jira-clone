@@ -1,5 +1,7 @@
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { getQueryClient } from "@/lib/react-query";
 import { getProject } from '@/features/projects';
+import { getTasks } from "@/features/tasks";
 
 interface ProjectLayoutProps {
     children: React.ReactNode;
@@ -8,9 +10,18 @@ interface ProjectLayoutProps {
 
 export default async function ProjectLayout(props: ProjectLayoutProps) {
     const params = await props.params;
-    const queryClient = getQueryClient();
     const projectId = Number(params.projectId);
-    await queryClient.prefetchQuery(getProject(projectId));
 
-    return props.children;
+    const queryClient = getQueryClient();
+    await Promise.all([
+        queryClient.prefetchQuery(getProject(projectId)),
+        queryClient.prefetchQuery(getTasks(projectId))
+    ]);
+    const dehydratedState = dehydrate(queryClient);
+
+    return (
+        <HydrationBoundary state={dehydratedState}>
+            {props.children}
+        </HydrationBoundary>
+    )
 }

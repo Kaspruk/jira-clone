@@ -15,7 +15,7 @@ export default async function Home() {
     <View>
       <div className="flex items-center justify-between">
         <ViewTitle>Dashboard</ViewTitle>
-        <UserPreview className="max-md:hidden" />
+        <UserPreview className="max-md:hidden" isCollapsed />
       </div>
       <DottedSeparator className="my-3" />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

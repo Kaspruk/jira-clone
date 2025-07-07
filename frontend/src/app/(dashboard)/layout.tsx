@@ -26,7 +26,7 @@ const DashboardLayout = async (props: DashboardLayoutProps) => {
     await Promise.allSettled([
       userId ? queryClient.prefetchQuery(getUser(Number(userId))) : null,
       queryClient.prefetchQuery(getWorkspaces),
-      queryClient.prefetchQuery(getWorkspaceDashboardData)
+      queryClient.prefetchQuery(getWorkspaceDashboardData),
     ]);
   } catch (error) {
     console.warn("Failed to prefetch data on server:", error);

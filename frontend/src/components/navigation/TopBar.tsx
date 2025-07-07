@@ -3,6 +3,7 @@
 import { useParams } from "next/navigation";
 import { getNavidationStateKey } from "./utils";
 import { NavigationState } from "./constants";
+import { UserPreview } from "@/features/users";
 import { WorkspaceSwitcher } from "./WorkspaceSwitcher";
 import { MediaQuery } from "./MediaQueryWrapper";
 
@@ -15,8 +16,7 @@ const TopBarComponent = () => {
   return (
     <header className="pb-top-bar">
       <div className="fixed left-0 right-0 top-0 flex items-center justify-between p-3 h-top-bar border-b border-neutral-200 bg-white z-20">
-        <div className="w-8 h-8 rounded-full bg-neutral-300">
-        </div>
+        <UserPreview isCollapsed />
         {!isHome && (
           <WorkspaceSwitcher isMobile isCollapsed />
         )}

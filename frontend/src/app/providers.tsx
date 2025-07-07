@@ -2,6 +2,7 @@
 // Since QueryClientProvider relies on useContext under the hood, we have to put 'use client' on top
 
 import { QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { SessionProvider } from 'next-auth/react';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { getQueryClient } from '@/lib/react-query';
@@ -22,6 +23,14 @@ export const Providers = ({ children }: ProviderProps) => {
       <NuqsAdapter>
         <QueryClientProvider client={queryClient}>
           {children}
+          {process.env.NODE_ENV === 'development' && (
+            <ReactQueryDevtools 
+              initialIsOpen={false}
+              buttonPosition="bottom-right"
+              errorTypes={[]}
+              client={queryClient}
+            />
+          )}
         </QueryClientProvider>
       </NuqsAdapter>
     </SessionProvider>

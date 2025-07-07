@@ -1,6 +1,5 @@
 import { BASE_URL, QueriesKeys } from "@/lib/constants";
-import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getQueryClient } from "@/lib/react-query";
+import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
 import { 
     WorkspaceTaskStatusType, 
     WorkspaceTaskPriorityType, 
@@ -129,6 +128,7 @@ export const useUpdateWorkspace = () => {
             queryClient.setQueryData([QueriesKeys.Workspaces], (old: WorkspaceType[]) => {
                 return old.map((workspace) => workspace.id === updatedWorkspace.id ? updatedWorkspace : workspace);
             });
+            queryClient.invalidateQueries({ queryKey: [QueriesKeys.WorkspacesDashboard] });
         },
     });
 };

@@ -1,3 +1,5 @@
+import { getQueryClient } from "@/lib/react-query";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { ReactNode } from "react";
 
 interface AuthLayoutProps {
@@ -5,6 +7,8 @@ interface AuthLayoutProps {
 }
 
 export default function AuthLayout({ children }: AuthLayoutProps) {
+    const queryClient = getQueryClient();
+    const dehydratedState = dehydrate(queryClient);
     return (
         <div className="min-h-screen w-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
            <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-8">
@@ -16,7 +20,9 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
                         Керуйте своїми проєктами ефективно
                     </p>
                 </div>
-                {children}
+                <HydrationBoundary state={dehydratedState}>
+                    {children}
+                </HydrationBoundary>
             </div>
         </div>
     );

@@ -94,12 +94,9 @@ const SidebarComponent = memo(() => {
         )}
       >
         <div className="flex flex-col h-full">
-          <UserPreview />
+          <UserPreview isCollapsed={!isHovered} onOpenChange={handleOpenChange} />
           <DottedSeparator className="my-4" />
-          <WorkspaceSwitcher
-            isCollapsed={!isHovered}
-            onOpenChange={handleOpenChange}
-          />
+          <WorkspaceSwitcher isCollapsed={!isHovered} onOpenChange={handleOpenChange} />
           <DottedSeparator className="my-4" />
 
           {/* Основна навігація */}

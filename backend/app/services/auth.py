@@ -127,9 +127,6 @@ class AuthService:
                 # samesite не встановлюємо для localhost розробки
                 max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60  # в секундах
             )
-            print('--------------------------------')
-            print('response', response)
-            print('--------------------------------')
             # response.set_cookie(
             #     key="refresh_token",
             #     value=tokens.refresh_token,
@@ -141,6 +138,9 @@ class AuthService:
             
         user_dict = dict(user)
         user_dict.pop('hashed_password', None)
+        print('--------------------------------')
+        print('reuser_dictsponse', user_dict)
+        print('--------------------------------')
         
         return AuthResponse(
             access_token=tokens.access_token,
