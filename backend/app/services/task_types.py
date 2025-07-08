@@ -1,4 +1,3 @@
-from fastapi import HTTPException
 from psycopg2 import Error
 from app.schemas.task_type_relations import TaskTypeRelationSchemes
 from app.services.projects import ProjectService
@@ -6,6 +5,7 @@ from app.schemas.task_types import TaskTypeSchemes
 from app.models import TaskTypeModel
 from app.constants import default_types
 from app.utils import generate_db_query
+from app.models import ResponseException
 
 class TaskTypeService:
     """Сервіс для управління типами завдань"""
@@ -18,7 +18,7 @@ class TaskTypeService:
                 return cur.fetchall()
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
         
     @staticmethod
     def get_task_type_by_id(task_type_id, connection):
@@ -28,7 +28,7 @@ class TaskTypeService:
                 return cur.fetchone()
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
 
     @staticmethod
     def create_task_type(task_type: TaskTypeModel, connection):
@@ -47,7 +47,7 @@ class TaskTypeService:
                 return { "id": task_type_id, **task_type.model_dump() }
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
         
     @staticmethod
     def update_task_type(task_type_id: int, task_type: TaskTypeModel, connection):
@@ -63,7 +63,7 @@ class TaskTypeService:
                 return { **task_type_dict, "id": task_type_id }
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
         
     @staticmethod
     def delete_task_type(task_type_id, connection):
@@ -76,7 +76,7 @@ class TaskTypeService:
                 task_type = cur.fetchone()
                 
                 if task_type is None:
-                    raise HTTPException(status_code=404, detail="Task type not found")
+                    raise ResponseException(status_code=404, detail="Task type not found")
                 
                 cur.execute(TaskTypeRelationSchemes.GET_TASK_TYPE_RELATIONS_BY_PROJECT_ID, [task_type['project_id']])
                 task_type_relations = cur.fetchall()
@@ -95,7 +95,7 @@ class TaskTypeService:
             
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e)) 
+            raise ResponseException(message=str(e)) 
         
     @staticmethod
     def create_default_task_types(workspace_id, connection, cursor):
@@ -110,4 +110,4 @@ class TaskTypeService:
                 ])
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e)) 
+            raise ResponseException(message=str(e)) 

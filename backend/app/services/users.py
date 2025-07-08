@@ -1,8 +1,9 @@
 from psycopg2 import Error
-from fastapi import HTTPException
+from app.constants import ErrorCodes
 from passlib.context import CryptContext
 from app.schemas.users import UserSchemes
 from app.models import UserModel
+from app.models import ResponseException
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -38,18 +39,21 @@ class UserService:
             print(e)
             
             connection.rollback()
-            detail = str(e)
+            code = ErrorCodes.FAILED_TO_CREATE_USER
 
             if e.pgcode == "23505":
-                detail = "User with this email already exist"
+                code = ErrorCodes.USER_ALREADY_EXISTS
 
-            raise HTTPException(status_code=400, detail=detail)
+            raise ResponseException(message=str(e))
 
     @staticmethod
     def get_users(connection):
         with connection.cursor() as cur:
             cur.execute(UserSchemes.GET_USERS)
             users = cur.fetchall()
+            print('--------------------------------')
+            print('users', users)
+            print('--------------------------------')
             return users
 
     @staticmethod
@@ -61,7 +65,7 @@ class UserService:
                 users.pop('hashed_password', None)
                 return users
         except Error as e:
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
 
     @staticmethod
     def get_user_by_email(email: str, connection):
@@ -73,5 +77,5 @@ class UserService:
                     user.pop('hashed_password', None)
                 return user
         except Error as e:
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(status_code=400, detail=str(e))
 

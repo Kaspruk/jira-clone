@@ -1,6 +1,9 @@
-from typing import Optional
+from typing import Any, Dict, Optional
 from datetime import datetime
+from app.constants import ErrorMessages
 from pydantic import BaseModel, EmailStr
+from fastapi.responses import JSONResponse
+from fastapi import HTTPException
 
 class WorkspaceModel(BaseModel):
     name: str
@@ -82,3 +85,33 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     user_id: Optional[int] = None
+
+class ResponseException(Exception):
+    UNKNOWN_ERROR = 0
+    FAILED_TO_CREATE_USER = 1
+    USER_ALREADY_EXISTS = 2
+    INVALID_EMAIL = 3
+    INVALID_PASSWORD = 4
+    
+    messages = {
+        UNKNOWN_ERROR: "Unknown error",
+        FAILED_TO_CREATE_USER: "Failed to create user",
+        USER_ALREADY_EXISTS: "User already exists",
+        INVALID_EMAIL: "Cannot authenticate user by provided email",
+        INVALID_PASSWORD: "Password is incorrect",
+    }
+    
+    def __init__(self, status_code: int = 400, code: int = UNKNOWN_ERROR, message: str = None, headers: dict = None):
+        self.status_code = status_code
+        self.code = code
+        self.message = message or self.messages.get(code, self.messages.get(self.UNKNOWN_ERROR))
+        self.headers = headers
+            
+        super().__init__(self.status_code, self.code, self.message, self.headers)
+        
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "code": self.code,
+            "message": self.message,
+            "status_code": self.status_code,
+        }

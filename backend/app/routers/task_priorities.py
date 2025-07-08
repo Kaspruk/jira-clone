@@ -3,10 +3,12 @@ from app.database import get_db_connection
 from app.services.task_priorities import TaskPriorityService
 from app.services.projects import ProjectService
 from app.models import TaskPriorityModel
+from app.services.auth import AuthService
 
 router = APIRouter(
     prefix="/task-priorities",
     tags=["Task priorities"],
+    dependencies=[Depends(AuthService.get_current_user)]
 )
 
 @router.post("/{project_id}/", summary="Create task priority")

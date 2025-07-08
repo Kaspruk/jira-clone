@@ -52,8 +52,6 @@ export const setTokens = (accessToken: string, refreshToken: string) => {
   tokens.refreshToken = refreshToken;
 };
 
-const getIsServer = () => typeof window === 'undefined';
-
 const publicPaths = ['/auth/login', '/auth/logout', '/auth/register'];
 
 axiosClient.interceptors.request.use(

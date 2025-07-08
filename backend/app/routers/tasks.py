@@ -2,10 +2,12 @@ from fastapi import APIRouter, Depends
 from app.database import get_db_connection
 from app.services.tasks import TaskService
 from app.models import TaskModel
+from app.services.auth import AuthService
 
 router = APIRouter(
     prefix="/tasks",
     tags=["Tasks"],
+    dependencies=[Depends(AuthService.get_current_user)]
 )
 
 @router.post("/", summary="Create task")

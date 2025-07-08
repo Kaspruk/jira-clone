@@ -2,11 +2,11 @@ from datetime import datetime, timedelta
 from typing import Optional
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-from fastapi import HTTPException, status, Depends, Request, Response
+from fastapi import status, Depends, Response
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from psycopg2 import Error
 from app.schemas.users import UserSchemes
-from app.models import UserModel, UserLoginModel, AuthResponse, TokenPair, UserResponse, TokenData
+from app.models import ResponseException, UserModel, UserLoginModel, AuthResponse, TokenPair, UserResponse, TokenData
 from app.services.users import UserService
 
 # Конфігурація
@@ -87,14 +87,14 @@ class AuthService:
                 user = cur.fetchone()
                 
             if not user:
-                return False
+                raise ResponseException(status_code=401, code=ResponseException.INVALID_EMAIL)
             
             if not UserService.verify_password(password, user['hashed_password']):
-                return False
+                raise ResponseException(status_code=401, code=ResponseException.INVALID_PASSWORD)
             
             return user
         except Error:
-            return False
+            raise ResponseException(status_code=401, code=ResponseException.UNKNOWN_ERROR)
 
     @staticmethod
     def register_user(user_data: UserModel, connection):
@@ -107,11 +107,7 @@ class AuthService:
         user = AuthService.authenticate_user(user_data.email, user_data.password, connection)
         
         if not user:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Неправильний email або пароль",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
+            raise ResponseException(status_code=status.HTTP_401_UNAUTHORIZED, message="Неправильний email або пароль", headers={"WWW-Authenticate": "Bearer"})
         
         # Створюємо JWT токени
         tokens = AuthService.create_token_pair(user)
@@ -127,20 +123,9 @@ class AuthService:
                 # samesite не встановлюємо для localhost розробки
                 max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60  # в секундах
             )
-            # response.set_cookie(
-            #     key="refresh_token",
-            #     value=tokens.refresh_token,
-            #     httponly=True,  # Захищено від XSS атак
-            #     secure=True,  # HTTPS only в production
-            #     samesite="strict",
-            #     max_age=REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60  # в секундах
-            # )
             
         user_dict = dict(user)
         user_dict.pop('hashed_password', None)
-        print('--------------------------------')
-        print('reuser_dictsponse', user_dict)
-        print('--------------------------------')
         
         return AuthResponse(
             access_token=tokens.access_token,
@@ -150,23 +135,39 @@ class AuthService:
         )
 
     @staticmethod
-    def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security), connection = None):
+    def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
         """Отримати поточного користувача через JWT токен"""
-        credentials_exception = HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Не вдалося підтвердити облікові дані",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+        
+        print('--------------------------------')
+        print('credentials', credentials)
+        print('--------------------------------')
         
         token_data = AuthService.verify_jwt_token(credentials.credentials, "access")
         
-        if not token_data:
-            raise credentials_exception
-        # Отримуємо актуальні дані користувача через UserService
+        print('--------------------------------')
+        print('token_data', token_data)
+        print('--------------------------------')
         
+        if not token_data:
+            raise ResponseException(
+                status_code=status.HTTP_401_UNAUTHORIZED, 
+                message="Не вдалося підтвердити облікові дані", 
+                headers={"WWW-Authenticate": "Bearer"}
+            )
+        
+        # Повертаємо тільки token_data, бо підключення до БД буде в роутері
+        return token_data
+
+    @staticmethod
+    def get_current_user_with_db(token_data: TokenData, connection):
+        """Отримати повні дані користувача з бази даних"""
         user = UserService.get_users_by_id(token_data.user_id, connection)
         if not user:
-            raise credentials_exception
+            raise ResponseException(
+                status_code=status.HTTP_401_UNAUTHORIZED, 
+                message="Користувач не знайдений", 
+                headers={"WWW-Authenticate": "Bearer"}
+            )
         
         return UserResponse(
             id=user['id'],
@@ -180,17 +181,11 @@ class AuthService:
         """Оновити access токен за JWT refresh токеном"""
         token_data = AuthService.verify_jwt_token(refresh_token, "refresh")
         if not token_data:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Недійсний refresh токен"
-            )
+            raise ResponseException(status_code=status.HTTP_401_UNAUTHORIZED, message="Недійсний refresh токен", headers={"WWW-Authenticate": "Bearer"})
         # Отримуємо актуальні дані користувача через UserService
         user = UserService.get_user_by_email(token_data.email, connection)
         if not user:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Користувач не знайдений"
-            )
+            raise ResponseException(status_code=status.HTTP_401_UNAUTHORIZED, message="Користувач не знайдений", headers={"WWW-Authenticate": "Bearer"})
         new_tokens = AuthService.create_token_pair(user)
         return {
             "access_token": new_tokens.access_token,

@@ -2,10 +2,12 @@ from fastapi import APIRouter, Depends
 from app.database import get_db_connection
 from app.services.users import UserService
 from app.models import UserModel
+from app.services.auth import AuthService
 
 router = APIRouter(
     prefix="/users",
     tags=["Users"],
+    dependencies=[Depends(AuthService.get_current_user)]
 )
 
 @router.post("/")

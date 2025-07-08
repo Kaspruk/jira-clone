@@ -2,11 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException
 from app.database import get_db_connection
 from app.services.workspaces import WorkspaceService
 from app.models import WorkspaceModel
-from typing import List
+from app.services.auth import AuthService
 
 router = APIRouter(
     prefix="/workspaces",
-    tags=["workspaces"]
+    tags=["workspaces"],
+    dependencies=[Depends(AuthService.get_current_user)]
 )
 
 @router.get("/")

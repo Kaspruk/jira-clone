@@ -22,3 +22,18 @@ default_priorities = [
     { "name": 'Minor', "description": 'Monor priority tasks', "icon": 'keyboard_arrow_down', "color": '#0c66e4' },
     { "name": 'Trivial', "description": 'Trivial priority tasks', "icon": 'radio_button_unchecked', "color": '#172b4d' },
 ]
+
+class ErrorCodes:
+    UNKNOWN_ERROR = 0
+    FAILED_TO_CREATE_USER = 1
+    USER_ALREADY_EXISTS = 2
+    INVALID_EMAIL = 3
+    INVALID_PASSWORD = 4
+
+ErrorMessages = {
+    ErrorCodes.UNKNOWN_ERROR: "Unknown error",
+    ErrorCodes.FAILED_TO_CREATE_USER: "Failed to create user",
+    ErrorCodes.USER_ALREADY_EXISTS: "User already exists",
+    ErrorCodes.INVALID_EMAIL: "Cannot authenticate user by provided email",
+    ErrorCodes.INVALID_PASSWORD: "Password is incorrect",
+}

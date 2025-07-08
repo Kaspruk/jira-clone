@@ -3,10 +3,12 @@ from fastapi import APIRouter, Depends
 from app.database import get_db_connection
 from app.services.projects import ProjectService
 from app.models import ProjectModel
+from app.services.auth import AuthService
 
 router = APIRouter(
     prefix="/projects",
     tags=["Projects"],
+    dependencies=[Depends(AuthService.get_current_user)]
 )
 
 @router.post("/", summary="Create project")
@@ -30,7 +32,7 @@ def update_project_router(project: ProjectModel, project_id: int, db=Depends(get
         return ProjectService.update_project(project_id, project, connection)
 
 @router.delete("/{project_id}/", summary="Delete project by id")
-def update_project_router(project_id: int, db=Depends(get_db_connection)):
+def delete_project_router(project_id: int, db=Depends(get_db_connection)):
     with db as connection:
         return ProjectService.delete_project(project_id, connection)
     

@@ -6,11 +6,11 @@ from app.schemas.task_priorities import TaskPrioritySchemes
 from app.schemas.task_priority_relations import TaskPriorityRelationSchemes
 from app.schemas.task_types import TaskTypeSchemes
 from app.schemas.task_type_relations import TaskTypeRelationSchemes
-from fastapi import HTTPException
 from app.schemas.workspaces import WorkspaceSchemes
 from app.services.task_statuses import TaskStatusService
 from app.services.task_priorities import TaskPriorityService
 from app.services.task_types import TaskTypeService
+from app.models import ResponseException
 
 # Припускаємо, що існує якась база даних або ORM для роботи з даними
 
@@ -33,7 +33,7 @@ class WorkspaceService:
                 return { "id": workspace_id, **workspace.model_dump() }
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
 
     @staticmethod
     def get_workspaces(connection):
@@ -43,7 +43,7 @@ class WorkspaceService:
                 return cur.fetchall()
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
 
     @staticmethod
     def get_workspace_by_id(workspace_id, connection):
@@ -53,7 +53,7 @@ class WorkspaceService:
                 return cur.fetchone()
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
 
     @staticmethod
     def update_workspace(workspace_id: int, workspace: WorkspaceModel, connection):
@@ -70,7 +70,7 @@ class WorkspaceService:
                 return { **workspace_dict, "id": workspace_id }
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
 
     @staticmethod
     def delete_workspace(workspace_id, connection):
@@ -81,7 +81,7 @@ class WorkspaceService:
                 return workspace_id
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
 
     @staticmethod
     def get_workspace_statuses(workspace_id, project_id, connection):
@@ -107,7 +107,7 @@ class WorkspaceService:
                 return sortedStatuses
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
 
     @staticmethod
     def get_workspace_priorities(workspace_id, project_id, connection):
@@ -133,7 +133,7 @@ class WorkspaceService:
                 return sortedPriorities
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
 
     @staticmethod
     def get_workspace_types(workspace_id, project_id, connection):
@@ -159,6 +159,6 @@ class WorkspaceService:
                 return sortedTypes
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
 
 

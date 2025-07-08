@@ -3,10 +3,12 @@ from app.database import get_db_connection
 from app.services.task_types import TaskTypeService
 from app.services.projects import ProjectService
 from app.models import TaskTypeModel
+from app.services.auth import AuthService
 
 router = APIRouter(
     prefix="/task-types",
     tags=["Task types"],
+    dependencies=[Depends(AuthService.get_current_user)]
 )
 
 @router.post("/{project_id}/", summary="Create task type")

@@ -1,10 +1,12 @@
 from fastapi import APIRouter, Depends
 from app.database import get_db_connection
+from app.services.auth import AuthService
 from app.services.dashboard import DashboardService
 
 router = APIRouter(
     prefix="/dashboard",
     tags=["Dashboard"],
+    dependencies=[Depends(AuthService.get_current_user)]
 )
 
 @router.get("/workspaces", summary="Get all dashboard workspaces")

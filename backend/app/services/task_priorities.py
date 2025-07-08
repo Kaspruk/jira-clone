@@ -1,4 +1,3 @@
-from fastapi import HTTPException
 from psycopg2 import Error
 from app.schemas.task_priority_relations import TaskPriorityRelationSchemes
 from app.services.projects import ProjectService
@@ -6,6 +5,7 @@ from app.schemas.task_priorities import TaskPrioritySchemes
 from app.models import TaskPriorityModel
 from app.constants import default_priorities
 from app.utils import generate_db_query
+from app.models import ResponseException
 
 class TaskPriorityService:
     """Сервіс для управління пріоритетами завдань"""
@@ -18,7 +18,7 @@ class TaskPriorityService:
                 return cur.fetchall()
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
         
     @staticmethod
     def get_task_priority_by_id(task_priority_id, connection):
@@ -28,7 +28,7 @@ class TaskPriorityService:
                 return cur.fetchone()
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
 
     @staticmethod
     def create_task_priority(task_priority: TaskPriorityModel, connection):
@@ -47,7 +47,7 @@ class TaskPriorityService:
                 return { "id": task_priority_id, **task_priority.model_dump() }
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
         
     @staticmethod
     def update_task_priority(task_priority_id: int, task_priority: TaskPriorityModel, connection):
@@ -63,7 +63,7 @@ class TaskPriorityService:
                 return { **task_priority_dict, "id": task_priority_id }
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
         
     @staticmethod
     def delete_task_priority(task_priority_id, connection):
@@ -76,7 +76,7 @@ class TaskPriorityService:
                 task_priority = cur.fetchone()
                 
                 if task_priority is None:
-                    raise HTTPException(status_code=404, detail="Task priority not found")
+                    raise ResponseException(status_code=404, detail="Task priority not found")
                 
                 cur.execute(TaskPriorityRelationSchemes.GET_TASK_PRIORITY_RELATIONS_BY_PROJECT_ID, [task_priority['project_id']])
                 task_priority_relations = cur.fetchall()
@@ -94,7 +94,7 @@ class TaskPriorityService:
                 return task_priority_id
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e)) 
+            raise ResponseException(message=str(e)) 
         
     @staticmethod
     def create_default_task_priorities(workspace_id, connection, cursor):
@@ -109,6 +109,6 @@ class TaskPriorityService:
                 ])
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
 
  

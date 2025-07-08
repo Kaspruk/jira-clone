@@ -1,9 +1,14 @@
+from typing import Callable
+from urllib.request import Request
 import uvicorn
 from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+
 from app.database import get_db_connection
 from app.schemas import SCHEMAS
 from app.routers import users, workspaces, projects, tasks, task_statuses, task_priorities, task_types, dashboard, auth
+from app.models import ResponseException
 
 app = FastAPI()
 app.include_router(auth.router)
@@ -36,6 +41,28 @@ app.add_middleware(
         "Access-Control-Request-Headers",
     ],
     expose_headers=["*"],
+)
+
+def creaate_exception_handler() -> Callable[[Request, ResponseException], JSONResponse]:
+    content = {
+        "code": ResponseException.UNKNOWN_ERROR,
+        "message": ResponseException.messages[ResponseException.UNKNOWN_ERROR],
+    }
+
+    async def custom_exception_handler(_: Request, exc: ResponseException) -> JSONResponse:
+        if exc.message:
+            content["message"] = exc.message
+            
+        if exc.code:
+            content["code"] = exc.code
+
+        return JSONResponse(status_code=exc.status_code, headers=exc.headers, content=content)
+    
+    return custom_exception_handler
+
+app.add_exception_handler(
+    exc_class_or_status_code=ResponseException,
+    handler=creaate_exception_handler()
 )
 
 @app.on_event("startup")

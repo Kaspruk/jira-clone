@@ -1,5 +1,4 @@
 from psycopg2 import Error
-from fastapi import HTTPException
 from app.schemas.projects import ProjectSchemes
 from app.models import ProjectModel
 from app.schemas.task_statuses import TaskStatusSchemes
@@ -10,6 +9,7 @@ from app.schemas.task_types import TaskTypeSchemes
 from app.schemas.task_type_relations import TaskTypeRelationSchemes
 from app.constants import default_statuses, default_priorities, default_types
 from app.utils import update_order_map
+from app.models import ResponseException
 
 class ProjectService:
     """Сервіс для управління проєктами"""
@@ -71,7 +71,7 @@ class ProjectService:
                 return { "id": project_id, **project.model_dump() }
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
         
     @staticmethod
     def get_projects(connection, workspace_id=None):
@@ -84,7 +84,7 @@ class ProjectService:
                 return cur.fetchall()
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
         
     @staticmethod
     def get_project_by_id(project_id, connection):
@@ -94,7 +94,7 @@ class ProjectService:
                 return cur.fetchone()
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
         
     @staticmethod
     def update_project(project_id: int, project: ProjectModel, connection):
@@ -111,7 +111,7 @@ class ProjectService:
                 return { **project_dict, "id": project_id }
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
         
     @staticmethod
     def delete_project(project_id, connection):
@@ -122,7 +122,7 @@ class ProjectService:
                 return project_id
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
         
     @staticmethod
     def get_project_task_types(project_id, connection):
@@ -132,7 +132,7 @@ class ProjectService:
                 return cur.fetchall()
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
         
     @staticmethod
     def update_project_task_statuses(project_id: int, status_id: int, value: bool, connection):
@@ -147,7 +147,7 @@ class ProjectService:
                     status_index = next((index for index, status in enumerate(statuses) if status['task_status_id'] == status_id), None)
                     
                     if status_index is None:
-                        raise HTTPException(status_code=400, detail="Cannot find status index")
+                        raise ResponseException(message="Cannot find status index")
                     
                     cur.execute(TaskStatusRelationSchemes.DELETE_TASK_STATUS_RELATION_BY_ID, [str(statuses[status_index]['id'])])
 
@@ -161,7 +161,7 @@ class ProjectService:
                 return value
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
         
     @staticmethod
     def update_project_task_statuses_order(project_id: int, oldIndex: int, newIndex: int, connection):
@@ -186,7 +186,7 @@ class ProjectService:
         except Error as e:
             print('Error', e)
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
 
     @staticmethod
     def update_project_task_priorities(project_id: int, priority_id: int, value: bool, connection):
@@ -201,7 +201,7 @@ class ProjectService:
                     priority_index = next((index for index, priority in enumerate(priorities) if priority['task_priority_id'] == priority_id), None)
                     
                     if priority_index is None:
-                        raise HTTPException(status_code=400, detail="Cannot find priority index")
+                        raise ResponseException(message="Cannot find priority index")
                     
                     cur.execute(TaskPriorityRelationSchemes.DELETE_TASK_PRIORITY_RELATION_BY_ID, [str(priorities[priority_index]['id'])])
 
@@ -215,7 +215,7 @@ class ProjectService:
                 return value
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
 
     @staticmethod
     def update_project_task_priorities_order(project_id: int, oldIndex: int, newIndex: int, connection):
@@ -243,7 +243,7 @@ class ProjectService:
         except Error as e:
             print('Error', e)
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
 
     @staticmethod
     def update_project_task_types(project_id: int, type_id: int, value: bool, connection):
@@ -258,7 +258,7 @@ class ProjectService:
                     type_index = next((index for index, task_type in enumerate(types) if task_type['task_type_id'] == type_id), None)
                     
                     if type_index is None:
-                        raise HTTPException(status_code=400, detail="Cannot find type index")
+                        raise ResponseException(message="Cannot find type index")
                     
                     cur.execute(TaskTypeRelationSchemes.DELETE_TASK_TYPE_RELATION_BY_ID, [str(types[type_index]['id'])])
 
@@ -272,7 +272,7 @@ class ProjectService:
                 return value
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
 
     @staticmethod
     def update_project_task_types_order(project_id: int, oldIndex: int, newIndex: int, connection):
@@ -298,5 +298,5 @@ class ProjectService:
         except Error as e:
             print('Error', e)
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
 

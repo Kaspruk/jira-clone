@@ -3,10 +3,12 @@ from app.database import get_db_connection
 from app.services.task_statuses import TaskStatusService
 from app.services.projects import ProjectService
 from app.models import TaskStatusModel
+from app.services.auth import AuthService
 
 router = APIRouter(
     prefix="/task-statuses",
     tags=["Task statuses"],
+    dependencies=[Depends(AuthService.get_current_user)]
 )
 
 @router.post("/{project_id}/", summary="Create task status")

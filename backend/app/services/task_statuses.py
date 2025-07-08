@@ -1,4 +1,3 @@
-from fastapi import HTTPException
 from psycopg2 import Error
 from app.schemas.task_status_relations import TaskStatusRelationSchemes
 from app.services.projects import ProjectService
@@ -6,6 +5,7 @@ from app.schemas.task_statuses import TaskStatusSchemes
 from app.models import TaskStatusModel
 from app.constants import default_statuses
 from app.utils import generate_db_query
+from app.models import ResponseException
 
 class TaskStatusService:
     """Сервіс для управління статусами завдань"""
@@ -18,7 +18,7 @@ class TaskStatusService:
                 return cur.fetchall()
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
         
     @staticmethod
     def get_task_status_by_id(task_status_id, connection):
@@ -28,7 +28,7 @@ class TaskStatusService:
                 return cur.fetchone()
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
 
     @staticmethod
     def create_task_status(task_status: TaskStatusModel, connection):
@@ -47,7 +47,7 @@ class TaskStatusService:
                 return { "id": task_status_id, **task_status.model_dump() }
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
         
     @staticmethod
     def update_task_status(task_status_id: int, task_status: TaskStatusModel, connection):
@@ -63,7 +63,7 @@ class TaskStatusService:
                 return { **task_status_dict, "id": task_status_id }
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
         
     @staticmethod
     def delete_task_status(task_status_id, connection):
@@ -76,7 +76,7 @@ class TaskStatusService:
                 task_status = cur.fetchone()
                 
                 if task_status is None:
-                    raise HTTPException(status_code=404, detail="Task status not found")
+                    raise ResponseException(status_code=404, detail="Task status not found")
                 
                 cur.execute(TaskStatusRelationSchemes.GET_TASK_STATUS_RELATIONS_BY_PROJECT_ID, [task_status['project_id']])
                 task_status_relations = cur.fetchall()
@@ -95,7 +95,7 @@ class TaskStatusService:
             
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e)) 
+            raise ResponseException(message=str(e)) 
         
     @staticmethod
     def create_default_task_statuses(workspace_id, connection, cursor):
@@ -110,5 +110,5 @@ class TaskStatusService:
                 ])
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
 

@@ -1,7 +1,7 @@
 from psycopg2 import Error
-from fastapi import HTTPException
 from app.schemas.tasks import TaskSchemes
 from app.models import TaskModel
+from app.models import ResponseException
 
 class TaskService:
     """Сервіс для управління завданнями"""
@@ -30,7 +30,7 @@ class TaskService:
                 return cur.fetchone()
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(message=str(e))
         
     @staticmethod
     def get_tasks(connection, projectId):
@@ -45,7 +45,7 @@ class TaskService:
                 return cur.fetchall()
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(status_code=400, message=str(e))
         
     @staticmethod
     def get_task_by_id(task_id: int, connection):
@@ -56,7 +56,7 @@ class TaskService:
         except Error as e:
             print('get_task_by_id error', e)
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(status_code=400, message=str(e))
         
     @staticmethod
     def update_task(task_id: int, task: TaskModel, connection):
@@ -73,7 +73,7 @@ class TaskService:
                 return { **task_dict, "id": task_id }
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(status_code=400, message=str(e))
         
     @staticmethod
     def delete_task(task_id: int, connection):
@@ -84,6 +84,6 @@ class TaskService:
                 return True
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(status_code=400, message=str(e))
 
 

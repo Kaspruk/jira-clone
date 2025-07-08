@@ -1,6 +1,6 @@
 from psycopg2 import Error
-from fastapi import HTTPException
 from app.schemas.dashboard import DashboardSchemes
+from app.models import ResponseException
 
 
 class DashboardService:
@@ -22,7 +22,7 @@ class DashboardService:
                     
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e)) 
+            raise ResponseException(message=str(e)) 
     
     @staticmethod
     def get_dashboard_workspace_by_id(workspace_id, connection):
@@ -34,4 +34,4 @@ class DashboardService:
                 return result
         except Error as e:
             connection.rollback()
-            raise HTTPException(status_code=400, detail=str(e))
+            raise ResponseException(status_code=400, message=str(e))
