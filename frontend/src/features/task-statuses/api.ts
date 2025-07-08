@@ -1,6 +1,7 @@
 import { useMutation, UseMutationResult, useQueryClient } from '@tanstack/react-query';
 import { TaskStatusType } from '@/features/types';
-import { BASE_URL, QueriesKeys } from '@/lib/constants';
+import { QueriesKeys } from '@/lib/constants';
+import axiosClient from '@/lib/axios';
 
 // Hook to handle API interaction for creating or updating task statuses
 type CreateTaskStatusPayload = {task_status: Omit<TaskStatusType, 'id'>, project_id: number};
@@ -9,19 +10,8 @@ export function useCreateTaskStatus(): UseMutationResult<any, Error, CreateTaskS
     
     return useMutation<any, Error, CreateTaskStatusPayload>({
         mutationFn: async (data: CreateTaskStatusPayload) => {
-            const response = await fetch(`${BASE_URL}/task-statuses/${data.project_id}/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data.task_status),
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to create task status');
-            }
-
-            return response.json();
+            const response = await axiosClient.post(`/task-statuses/${data.project_id}/`, data.task_status);
+            return response.data;
         },
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({
@@ -36,19 +26,8 @@ export function useUpdateTaskStatus(): UseMutationResult<any, Error, TaskStatusT
     
     return useMutation<any, Error, TaskStatusType>({
         mutationFn: async (data: TaskStatusType) => {
-            const response = await fetch(`${BASE_URL}/task-statuses/${data.id}/`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to update task status');
-            }
-
-            return response.json();
+            const response = await axiosClient.put(`/task-statuses/${data.id}/`, data);
+            return response.data;
         },
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.WorkspaceStatuses, variables.workspace_id] });
@@ -65,15 +44,8 @@ export function useRemoveTaskStatus(): UseMutationResult<any, Error, RemoveTaskS
     
     return useMutation<any, Error, RemoveTaskStatusPayload>({
         mutationFn: async (data: RemoveTaskStatusPayload) => {
-            const response = await fetch(`${BASE_URL}/task-statuses/${data.task_status_id}/`, {
-                method: 'DELETE',
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to remove task status');
-            }
-
-            return response.json();
+            const response = await axiosClient.delete(`/task-statuses/${data.task_status_id}/`);
+            return response.data;
         },
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.WorkspaceStatuses, variables.workspace_id] });

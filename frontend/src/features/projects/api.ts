@@ -1,20 +1,21 @@
 import { queryOptions, useQueryClient, useMutation } from '@tanstack/react-query';
-import { BASE_URL, QueriesKeys } from '@/lib/constants';
+import { QueriesKeys } from '@/lib/constants';
 import { type ProjectType } from '../types';
+import axiosClient from '@/lib/axios';
 
 export const getProjects = (workspaceId: number) => queryOptions<ProjectType[]>({
     queryKey: [QueriesKeys.Projects, workspaceId],
     queryFn: async () => {
-        const response = await fetch(`${BASE_URL}/projects/?workspace_id=${workspaceId}`)
-        return response.json()
+        const response = await axiosClient.get('/projects/', { params: { workspace_id: workspaceId } });
+        return response.data;
     },
 });
 
 export const getProject = (projectId: number) => queryOptions<ProjectType>({
     queryKey: [QueriesKeys.Project, projectId],
     queryFn: async () => {
-        const response = await fetch(`${BASE_URL}/projects/${projectId}/`)
-        return response.json()
+        const response = await axiosClient.get(`/projects/${projectId}/`);
+        return response.data;
     },
 });
 
@@ -23,27 +24,17 @@ export const useCreateProject = () => {
 
     const mutation = useMutation<ProjectType, Error, Omit<ProjectType, 'id' | 'statuses' | 'priorities' | 'types'>>({
         mutationFn: async (project) => {
-            const response = await fetch(`${BASE_URL}/projects/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    ...project,
-                    statuses: [],
-                    priorities: [],
-                    types: [],
-                }),
+            const response = await axiosClient.post('/projects/', {
+                ...project,
+                statuses: [],
+                priorities: [],
+                types: [],
             });
-
-            if (!response.ok) {
-                throw new Error("Failed to create project");
-            }
-
-            return await response.json();
+            return response.data;
         },
         onSuccess: (data) => {
             //   toast.success("Workspace created");
+            queryClient.invalidateQueries({ queryKey: [QueriesKeys.WorkspacesDashboard] });
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.Projects, data.workspace_id] });
         },
         onError: () => {
@@ -59,20 +50,14 @@ export const useDeleteProject = (workspaceId: number) => {
 
     const mutation = useMutation<ProjectType['id'], Error, ProjectType['id']>({
         mutationFn: async (project_id) => {
-            const response = await fetch(`${BASE_URL}/projects/${project_id}`, {
-                method: 'DELETE'
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to delete project");
-            }
-
-            return await response.json();
+            const response = await axiosClient.delete(`/projects/${project_id}`);
+            return response.data;
         },
         onSuccess: (project_id) => {
             //   toast.success("Project deleted");
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.Projects, workspaceId] });
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.Project, project_id] });
+            queryClient.invalidateQueries({ queryKey: [QueriesKeys.WorkspacesDashboard] });
         },
         onError: () => {
             //   toast.error("Failed to delete project");
@@ -87,22 +72,12 @@ export const useUpdateProject = (projectId: number) => {
 
     return useMutation<ProjectType, Error, ProjectType>({
         mutationFn: async (task) => {
-            const response = await fetch(`${BASE_URL}/projects/${projectId}/`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(task),
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to update project");
-            }
-
-            return await response.json();
+            const response = await axiosClient.put(`/projects/${projectId}/`, task);
+            return response.data;
         },
         onSuccess: (data) => {
             queryClient.setQueryData([QueriesKeys.Project, projectId], data);
+            queryClient.invalidateQueries({ queryKey: [QueriesKeys.WorkspacesDashboard] });
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.Projects, data.workspace_id] });
         },
         onError: () => {
@@ -123,19 +98,11 @@ export const useUpdateProjectStatusesOrder = () => {
 
     const mutation = useMutation<UpdateProjectInstanceOrderType, Error, UpdateProjectInstanceOrderType>({
         mutationFn: async (data) => {
-            const response = await fetch(`${BASE_URL}/projects/${data.project_id}/statuses/order`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ oldIndex: data.oldIndex, newIndex: data.newIndex }),
+            const response = await axiosClient.put(`/projects/${data.project_id}/statuses/order`, { 
+                oldIndex: data.oldIndex, 
+                newIndex: data.newIndex 
             });
-
-            if (!response.ok) {
-                throw new Error("Failed to update project statuses order");
-            }
-
-            return response.json();
+            return response.data;
         },
         onSuccess: (_, variables) => {
             //   toast.success("Project deleted");
@@ -157,19 +124,11 @@ export const useSelectProjectStatus = () => {
 
     const mutation = useMutation<SelectProjectStatus, Error, SelectProjectStatus>({
         mutationFn: async (data) => {
-            const response = await fetch(`${BASE_URL}/projects/${data.project_id}/statuses/select`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ status_id: data.status_id, value: data.value }),
+            const response = await axiosClient.put(`/projects/${data.project_id}/statuses/select`, { 
+                status_id: data.status_id, 
+                value: data.value 
             });
-
-            if (!response.ok) {
-                throw new Error("Failed to update project statuses order");
-            }
-
-            return response.json();
+            return response.data;
         },
         onSuccess: (_, variables) => {
             //   toast.success("Project deleted");
@@ -185,21 +144,14 @@ export const useUpdateProjectPrioritiesOrder = () => {
 
     const mutation = useMutation<UpdateProjectInstanceOrderType, Error, UpdateProjectInstanceOrderType>({
         mutationFn: async (data) => {
-            const response = await fetch(`${BASE_URL}/projects/${data.project_id}/priorities/order`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ oldIndex: data.oldIndex, newIndex: data.newIndex }),
+            const response = await axiosClient.put(`/projects/${data.project_id}/priorities/order`, { 
+                oldIndex: data.oldIndex, 
+                newIndex: data.newIndex 
             });
-
-            if (!response.ok) {
-                throw new Error("Failed to update project priorities order");
-            }
-
-            return response.json();
+            return response.data;
         },
         onSuccess: (_, variables) => {
+            //   toast.success("Project deleted");
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.Project, variables.project_id] });
         },
     });
@@ -218,21 +170,14 @@ export const useSelectProjectPriority = () => {
 
     const mutation = useMutation<SelectProjectPriority, Error, SelectProjectPriority>({
         mutationFn: async (data) => {
-            const response = await fetch(`${BASE_URL}/projects/${data.project_id}/priorities/select`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ priority_id: data.priority_id, value: data.value }),
+            const response = await axiosClient.put(`/projects/${data.project_id}/priorities/select`, { 
+                priority_id: data.priority_id, 
+                value: data.value 
             });
-
-            if (!response.ok) {
-                throw new Error("Failed to update project priorities");
-            }
-
-            return response.json();
+            return response.data;
         },
         onSuccess: (_, variables) => {
+            //   toast.success("Project deleted");
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.Project, variables.project_id] });
         },
     });
@@ -245,21 +190,14 @@ export const useUpdateProjectTypesOrder = () => {
 
     const mutation = useMutation<UpdateProjectInstanceOrderType, Error, UpdateProjectInstanceOrderType>({
         mutationFn: async (data) => {
-            const response = await fetch(`${BASE_URL}/projects/${data.project_id}/types/order`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ oldIndex: data.oldIndex, newIndex: data.newIndex }),
+            const response = await axiosClient.put(`/projects/${data.project_id}/types/order`, { 
+                oldIndex: data.oldIndex, 
+                newIndex: data.newIndex 
             });
-
-            if (!response.ok) {
-                throw new Error("Failed to update project types order");
-            }
-
-            return response.json();
+            return response.data;
         },
         onSuccess: (_, variables) => {
+            //   toast.success("Project deleted");
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.Project, variables.project_id] });
         },
     });
@@ -278,21 +216,14 @@ export const useSelectProjectType = () => {
 
     const mutation = useMutation<SelectProjectType, Error, SelectProjectType>({
         mutationFn: async (data) => {
-            const response = await fetch(`${BASE_URL}/projects/${data.project_id}/types/select`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ type_id: data.type_id, value: data.value }),
+            const response = await axiosClient.put(`/projects/${data.project_id}/types/select`, { 
+                type_id: data.type_id, 
+                value: data.value 
             });
-
-            if (!response.ok) {
-                throw new Error("Failed to update project types");
-            }
-
-            return response.json();
+            return response.data;
         },
         onSuccess: (_, variables) => {
+            //   toast.success("Project deleted");
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.Project, variables.project_id] });
         },
     });

@@ -89,3 +89,16 @@ export function buildRoute(routePattern: string, params: Record<string, string>)
   
   return result;
 };
+
+export class ResponseError extends Error {
+  code: string | number;
+  constructor(message: string, code: string | number = 'custom') {
+    super(message);
+    this.code = code;
+    this.name = 'ResponseError';
+  }
+
+  toString() {
+    return JSON.stringify(this);
+  } 
+}

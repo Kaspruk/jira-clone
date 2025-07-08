@@ -1,36 +1,43 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { signIn, signOut, getSession } from "next-auth/react";
+import { toast } from "sonner";
+
+import { ResponseError } from "@/lib/utils";
 import { QueriesKeys } from "@/lib/constants";
-import { AuthResponse, LoginDataType } from "../types";
+import { AuthResponse, LoginDataType, RegisterDataType } from "../types";
 import { getUser } from "../users";
+import axiosClient, { setTokens } from "@/lib/axios";
 
 export const useLogin = () => {
     const queryClient = useQueryClient();
-    return useMutation<AuthResponse, Error, LoginDataType>({
-        mutationFn: async (data: LoginDataType): Promise<AuthResponse> => {
+    return useMutation<AuthResponse, ResponseError, LoginDataType>({
+        mutationFn: async (data) => {
             const result = await signIn("credentials", {
                 email: data.email,
                 password: data.password,
                 redirect: false,
             });
-
+            
             if (!result?.ok) {
-                throw new Error(result?.error || 'Помилка входу');
+                try {
+                    const error = JSON.parse(result?.error || '{}');
+                    throw new ResponseError(error.message, error.code);
+                } catch (error) {
+                    if (error instanceof ResponseError) {
+                        throw error;
+                    }
+
+                    throw new Error(result?.error || 'Помилка входу');
+                }
             }
 
             const session = await getSession();
 
             if (!session) {
-                throw new Error('Помилка входу');
+                throw new ResponseError('Помилка входу');
             }
 
-            console.log('session', session.user.id);
-
-            const user = await queryClient.fetchQuery({
-                ...getUser(Number(session.user.id))
-            });
-
-            console.log('user', user);
+            const user = await queryClient.fetchQuery(getUser(Number(session.user.id)));
 
             return {
                 expires: session.expires || '',
@@ -40,11 +47,11 @@ export const useLogin = () => {
             }
         },
         onSuccess: async (session) => {
-            console.log('session', session);
+            toast.success("Ви увійшли в систему!");
             queryClient.setQueryData([QueriesKeys.User], session.user);
         },
         onError: (error) => {
-            console.error('Login error:', error);
+            toast.error(error.message);
         }
     })
 };
@@ -56,10 +63,27 @@ export const useLogout = () => {
             await signOut({ redirect: true });
         },
         onSuccess: () => {
+            setTokens('', '');
+            toast.success("Ви вийшли з системи!");
             queryClient.clear();
         },
-        onError: (error) => {
-            console.error('Logout error:', error);
+        onError: () => {
+            toast.error("Помилка виходу!");
         }
     })
 };
+
+export const useRegister = () => {
+    return useMutation<RegisterDataType, ResponseError, RegisterDataType>({
+        mutationFn: async (data) => {
+            const response = await axiosClient.post("/auth/register", data);
+            return response.data;
+        },
+        onSuccess: () => {
+            toast.success("Реєстрація успішна!");
+        },
+        onError: (error) => {
+            toast.error(error.message || "Помилка реєстрації!");
+        }
+    })
+}

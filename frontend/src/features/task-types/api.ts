@@ -1,6 +1,7 @@
 import { useMutation, UseMutationResult, useQueryClient } from '@tanstack/react-query';
 import { TaskTypeType } from '@/features/types';
-import { BASE_URL, QueriesKeys } from '@/lib/constants';
+import { QueriesKeys } from '@/lib/constants';
+import axiosClient from '@/lib/axios';
 
 // Hook to handle API interaction for creating or updating task types
 type CreateTaskTypePayload = {task_type: Omit<TaskTypeType, 'id'>, project_id: number};
@@ -9,19 +10,8 @@ export function useCreateTaskType(): UseMutationResult<any, Error, CreateTaskTyp
     
     return useMutation<any, Error, CreateTaskTypePayload>({
         mutationFn: async (data: CreateTaskTypePayload) => {
-            const response = await fetch(`${BASE_URL}/task-types/${data.project_id}/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data.task_type),
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to create task type');
-            }
-
-            return response.json();
+            const response = await axiosClient.post(`/task-types/${data.project_id}/`, data.task_type);
+            return response.data;
         },
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({
@@ -36,19 +26,8 @@ export function useUpdateTaskType(): UseMutationResult<any, Error, TaskTypeType>
     
     return useMutation<any, Error, TaskTypeType>({
         mutationFn: async (data: TaskTypeType) => {
-            const response = await fetch(`${BASE_URL}/task-types/${data.id}/`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to update task type');
-            }
-
-            return response.json();
+            const response = await axiosClient.put(`/task-types/${data.id}/`, data);
+            return response.data;
         },
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.WorkspaceTypes, variables.workspace_id] });
@@ -65,15 +44,8 @@ export function useRemoveTaskType(): UseMutationResult<any, Error, RemoveTaskTyp
     
     return useMutation<any, Error, RemoveTaskTypePayload>({
         mutationFn: async (data: RemoveTaskTypePayload) => {
-            const response = await fetch(`${BASE_URL}/task-types/${data.task_type_id}/`, {
-                method: 'DELETE',
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to remove task type');
-            }
-
-            return response.json();
+            const response = await axiosClient.delete(`/task-types/${data.task_type_id}/`);
+            return response.data;
         },
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.WorkspaceTypes, variables.workspace_id] });

@@ -1,20 +1,21 @@
 import { queryOptions, useMutation, useQueryClient } from '@tanstack/react-query';
-import { BASE_URL, QueriesKeys } from '@/lib/constants';
+import { QueriesKeys } from '@/lib/constants';
 import { type TaskType } from '../types';
+import axiosClient from '@/lib/axios';
 
 export const getTasks = (projectId: number) => queryOptions<TaskType[]>({
     queryKey: [QueriesKeys.Tasks, projectId],
     queryFn: async () => {
-        const response = await fetch(`${BASE_URL}/tasks/?projectId=${projectId}`)
-        return response.json()
+        const response = await axiosClient.get(`/tasks/`, { params: { projectId } });
+        return response.data;
     },
 });
 
 export const getTask = (taskId: number) => queryOptions<TaskType>({
     queryKey: [QueriesKeys.Task, taskId],
     queryFn: async () => {
-        const response = await fetch(`${BASE_URL}/tasks/${taskId}/`)
-        return response.json()
+        const response = await axiosClient.get(`/tasks/${taskId}/`);
+        return response.data;
     },
 });
 
@@ -24,19 +25,8 @@ export const useCreateTask = (projectId: number) => {
 
     const mutation = useMutation<TaskType, Error, CreateTaskType>({
         mutationFn: async (project) => {
-            const response = await fetch(`${BASE_URL}/tasks/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(project),
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to create project");
-            }
-
-            return await response.json();
+            const response = await axiosClient.post("/tasks/", project);
+            return response.data;
         },
         onSuccess: () => {
             //   toast.success("Task created");
@@ -55,19 +45,8 @@ export const useUpdateTask = (taskId: number) => {
 
     const mutation = useMutation<TaskType, Error, TaskType>({
         mutationFn: async (task) => {
-            const response = await fetch(`${BASE_URL}/tasks/${taskId}/`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(task),
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to update task");
-            }
-
-            return await response.json();
+            const response = await axiosClient.put(`/tasks/${taskId}/`, task);
+            return response.data;
         },
         onSuccess: (data) => {
             queryClient.setQueryData([QueriesKeys.Task, taskId], data);
@@ -86,15 +65,8 @@ export const useDeleteTask = () => {
 
     const mutation = useMutation<boolean, Error, number>({
         mutationFn: async (taskId) => {
-            const response = await fetch(`${BASE_URL}/tasks/${taskId}/`, {
-                method: 'DELETE',
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to delete task");
-            }
-
-            return response.json();
+            const response = await axiosClient.delete(`/tasks/${taskId}/`);
+            return response.data;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.Tasks] });
