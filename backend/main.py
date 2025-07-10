@@ -2,6 +2,7 @@ from typing import Callable
 from urllib.request import Request
 import os
 import uvicorn
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -11,7 +12,22 @@ from app.schemas import SCHEMAS
 from app.routers import users, workspaces, projects, tasks, task_statuses, task_priorities, task_types, dashboard, auth
 from app.models import ResponseException
 
-app = FastAPI()
+def setup_database():
+    """Ініціалізація бази даних при запуску сервера."""
+    with get_db_connection() as conn:
+        with conn.cursor() as cur:
+            for schema in SCHEMAS:
+                cur.execute(SCHEMAS[schema])
+            conn.commit()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    setup_database()
+    yield
+    # Shutdown - тут можна додати логіку очищення ресурсів
+
+app = FastAPI(lifespan=lifespan)
 app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(workspaces.router)
@@ -73,15 +89,6 @@ app.add_exception_handler(
     exc_class_or_status_code=ResponseException,
     handler=creaate_exception_handler()
 )
-
-@app.on_event("startup")
-def setup_database():
-    """Ініціалізація бази даних при запуску сервера."""
-    with get_db_connection() as conn:
-        with conn.cursor() as cur:
-            for schema in SCHEMAS:
-                cur.execute(SCHEMAS[schema])
-            conn.commit()
 
 if __name__ == "__main__":
     uvicorn.run('main:app', reload=True)
