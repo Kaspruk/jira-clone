@@ -84,20 +84,64 @@ axiosClient.interceptors.response.use(
     return response;
   },
   async (error) => {
+    const originalRequest = error.config;
+    
     // Обробка помилок авторизації
     if (error.response?.status === 401) {
+      const errorData = error.response?.data;
+      
+      // Якщо access токен прострочений (код 5), спробуємо оновити його
+      if (errorData?.code === 5 && !originalRequest._retry) {
+        originalRequest._retry = true;
+        
+        try {
+          // Викликаємо refresh endpoint
+          const refreshResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/auth/refresh`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              refresh_token: tokens.refreshToken
+            }),
+          });
+          
+          if (refreshResponse.ok) {
+            const refreshData = await refreshResponse.json();
+            
+            // Оновлюємо токени
+            setTokens(refreshData.access_token, refreshData.refresh_token);
+            
+            // Повторюємо оригінальний запит з новим токеном
+            originalRequest.headers.Authorization = `Bearer ${refreshData.access_token}`;
+            return axiosClient(originalRequest);
+          }
+        } catch (refreshError) {
+          console.error('Error refreshing token:', refreshError);
+        }
+      }
+      
+      // Якщо refresh не спрацював або це інша помилка 401
       console.error('Unauthorized access - logging out user');
       
+      // Очищаємо токени
+      setTokens('', '');
+      
       try {
-        // Викликаємо logout з NextAuth
-        await signOut({ 
-          callbackUrl: '/login',
-          redirect: true 
-        });
+        // Перевіряємо чи ми в браузері
+        if (getIsClient()) {
+          // Викликаємо logout з NextAuth
+          await signOut({ 
+            callbackUrl: '/login',
+            redirect: true 
+          });
+        }
       } catch (logoutError) {
         console.error('Error during logout:', logoutError);
         // Якщо logout не спрацював, перенаправляємо вручну
-        window.location.href = '/login';
+        if (getIsClient()) {
+          window.location.href = '/login';
+        }
       }
     }
     

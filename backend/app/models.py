@@ -92,6 +92,7 @@ class ResponseException(Exception):
     USER_ALREADY_EXISTS = 2
     INVALID_EMAIL = 3
     INVALID_PASSWORD = 4
+    ACCESS_TOKEN_EXPIRED = 5
     
     messages = {
         UNKNOWN_ERROR: "Unknown error",
@@ -99,6 +100,7 @@ class ResponseException(Exception):
         USER_ALREADY_EXISTS: "User already exists",
         INVALID_EMAIL: "Cannot authenticate user by provided email",
         INVALID_PASSWORD: "Password is incorrect",
+        ACCESS_TOKEN_EXPIRED: "Access token has expired",
     }
     
     def __init__(self, status_code: int = 400, code: int = UNKNOWN_ERROR, message: str = None, headers: dict = None):
