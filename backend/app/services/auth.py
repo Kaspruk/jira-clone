@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Optional
 from jose import JWTError, jwt
+from jose.exceptions import ExpiredSignatureError
 from passlib.context import CryptContext
 from fastapi import status, Depends, Response
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -59,10 +60,6 @@ class AuthService:
         try:
             payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
             
-            print('--------------------------------')
-            print('payload', payload)
-            print('--------------------------------')
-            
             # Перевіряємо тип токену
             if payload.get("type") != token_type:
                 return None
@@ -74,6 +71,7 @@ class AuthService:
                 
             return TokenData(user_id=int(user_id))
         except JWTError:
+            # Інші помилки JWT (невірний формат, підпис тощо)
             return None
 
     @staticmethod
@@ -138,15 +136,15 @@ class AuthService:
     def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
         """Отримати поточного користувача через JWT токен"""
         
-        print('--------------------------------')
-        print('credentials', credentials)
-        print('--------------------------------')
-        
-        token_data = AuthService.verify_jwt_token(credentials.credentials, "access")
-        
-        print('--------------------------------')
-        print('token_data', token_data)
-        print('--------------------------------')
+        try:
+            token_data = AuthService.verify_jwt_token(credentials.credentials, "access")
+        except ExpiredSignatureError:
+            # Токен прострочений - викидаємо спеціальну помилку
+            raise ResponseException(
+                status_code=status.HTTP_401_UNAUTHORIZED, 
+                code=ResponseException.ACCESS_TOKEN_EXPIRED,
+                headers={"WWW-Authenticate": "Bearer"}
+            )
         
         if not token_data:
             raise ResponseException(
@@ -179,13 +177,31 @@ class AuthService:
     @staticmethod
     def refresh_access_token(refresh_token: str, connection):
         """Оновити access токен за JWT refresh токеном"""
-        token_data = AuthService.verify_jwt_token(refresh_token, "refresh")
+        try:
+            token_data = AuthService.verify_jwt_token(refresh_token, "refresh")
+        except ExpiredSignatureError:
+            raise ResponseException(
+                status_code=status.HTTP_401_UNAUTHORIZED, 
+                code=ResponseException.ACCESS_TOKEN_EXPIRED,
+                headers={"WWW-Authenticate": "Bearer"}
+            )
+            
         if not token_data:
-            raise ResponseException(status_code=status.HTTP_401_UNAUTHORIZED, message="Недійсний refresh токен", headers={"WWW-Authenticate": "Bearer"})
+            raise ResponseException(
+                status_code=status.HTTP_401_UNAUTHORIZED, 
+                message="Недійсний refresh токен", 
+                headers={"WWW-Authenticate": "Bearer"}
+            )
+        
         # Отримуємо актуальні дані користувача через UserService
-        user = UserService.get_user_by_email(token_data.email, connection)
+        user = UserService.get_users_by_id(token_data.user_id, connection)
         if not user:
-            raise ResponseException(status_code=status.HTTP_401_UNAUTHORIZED, message="Користувач не знайдений", headers={"WWW-Authenticate": "Bearer"})
+            raise ResponseException(
+                status_code=status.HTTP_401_UNAUTHORIZED, 
+                message="Користувач не знайдений", 
+                headers={"WWW-Authenticate": "Bearer"}
+            )
+            
         new_tokens = AuthService.create_token_pair(user)
         return {
             "access_token": new_tokens.access_token,
@@ -198,16 +214,3 @@ class AuthService:
                 created_at=str(user['created_at'])
             )
         }
-
-    @staticmethod
-    def logout_user(token: str = None):
-        """Вийти з системи (з JWT це просто повертає успіх)"""
-        # З JWT токенами logout - це просто видалення токену на клієнті
-        # Сервер не може "відкликати" JWT токен до закінчення його терміну дії
-        return {"message": "Успішно вийшли з системи"}
-
-    @staticmethod
-    def validate_token(token: str):
-        """Перевірити JWT токен"""
-        token_data = AuthService.verify_jwt_token(token, "access")
-        return token_data is not None

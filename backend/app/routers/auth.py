@@ -24,19 +24,6 @@ def login(
     with db as connection:
         return AuthService.login_user(user_data, connection, response)
 
-@router.get("/me", response_model=UserResponse, summary="Отримати поточного користувача")
-def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(AuthService.security),
-    db=Depends(get_db_connection)
-):
-    """
-    Отримати інформацію про поточного авторизованого користувача
-    
-    Потрібен Bearer JWT токен в заголовку Authorization
-    """
-    with db as connection:
-        return AuthService.get_current_user(credentials, connection)
-
 @router.post("/refresh", summary="Оновити access токен")
 def refresh_token(
     response: Response,
@@ -68,7 +55,7 @@ def refresh_token(
         result = AuthService.refresh_access_token(refresh_token, connection)
         
         # Встановлюємо оновлені токени в cookies
-        from app.services.auth import REFRESH_TOKEN_EXPIRE_DAYS, ACCESS_TOKEN_EXPIRE_MINUTES
+        from app.services.auth import ACCESS_TOKEN_EXPIRE_MINUTES
         
         # Оновлюємо access_token в куках
         response.set_cookie(
@@ -80,44 +67,4 @@ def refresh_token(
             max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60  # в секундах
         )
         
-        # Оновлюємо refresh_token в куках
-        # response.set_cookie(
-        #     key="refresh_token",
-        #     value=result["refresh_token"],
-        #     httponly=True,  # Захищено від XSS атак
-        #     secure=False,  # False для localhost, True для production
-        #     samesite="lax",  # Змінив з strict на lax
-        #     max_age=REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60  # в секундах
-        # )
-        
         return result
-
-@router.post("/logout", summary="Вихід з системи")
-def logout(
-    response: Response,
-    credentials: HTTPAuthorizationCredentials = Depends(AuthService.security),
-):
-    """
-    Вийти з поточної сесії
-    
-    З JWT токенами це видаляє refresh токен з cookies
-    """
-    result = AuthService.logout_user()
-    
-    # Видаляємо refresh токен з cookies
-    response.delete_cookie(key="refresh_token")
-        
-    return result
-
-@router.get("/validate", summary="Перевірити токен")
-def validate_token(
-    credentials: HTTPAuthorizationCredentials = Depends(AuthService.security),
-):
-    """
-    Перевірити чи дійсний поточний JWT токен
-    
-    Повертає true якщо токен валідний
-    """
-    is_valid = AuthService.validate_token(credentials.credentials)
-    
-    return {"valid": is_valid} 
