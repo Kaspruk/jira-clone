@@ -1,5 +1,7 @@
-import { QueriesKeys } from "@/lib/constants";
+import { toast } from "sonner";
 import { queryOptions, useMutation, useQueryClient } from "@tanstack/react-query";
+import axiosClient, { getAxiosClient } from "@/lib/axios";
+import { QueriesKeys } from "@/lib/constants";
 import { 
     WorkspaceTaskStatusType, 
     WorkspaceTaskPriorityType, 
@@ -7,8 +9,7 @@ import {
     WorkspaceDashboardData, 
     WorkspaceType 
 } from "../types";
-import axiosClient, { getAxiosClient } from "@/lib/axios";
-import { toast } from "sonner";
+
 
 export const getWorkspaceStatuses = (workspaceId: number, projectId?: number) => queryOptions<WorkspaceTaskStatusType[]>({
     queryKey: [QueriesKeys.WorkspaceStatuses, workspaceId],
@@ -55,14 +56,9 @@ export const getWorkspaceTypes = (workspaceId: number, projectId?: number) => qu
 export const getWorkspaces = queryOptions<WorkspaceType[]>({
     queryKey: [QueriesKeys.Workspaces],
     queryFn: async (): Promise<WorkspaceType[]> => {
-        try {
-            const client = getAxiosClient();
-            const response = await client.get("/workspaces/");
-            return response.data;
-        } catch (error) {
-            console.error('Failed to fetch workspaces:', error);
-            return [];
-        }
+        const client = getAxiosClient();
+        const response = await client.get("/workspaces/");
+        return response.data;
     },
 });
 
@@ -83,11 +79,12 @@ export const useCreateWorkspace = () => {
             return response.data;
         },
         onSuccess: () => {
+            toast.success("Workspace created");
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.Workspaces] });
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.WorkspacesDashboard] });
         },
         onError: (error) => {
-            toast.error(error.message);
+            toast.error(error.message || "Failed to create workspace");
         }
     });
 };
@@ -101,13 +98,14 @@ export const useUpdateWorkspace = () => {
             return response.data;
         },
         onSuccess: (updatedWorkspace) => {
+            toast.success("Workspace updated");
             queryClient.setQueryData([QueriesKeys.Workspaces], (old: WorkspaceType[]) => {
                 return old.map((workspace) => workspace.id === updatedWorkspace.id ? updatedWorkspace : workspace);
             });
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.WorkspacesDashboard] });
         },
         onError: (error) => {
-            toast.error(error.message);
+            toast.error(error.message || "Failed to update workspace");
         }
     });
 };
@@ -120,6 +118,7 @@ export const useDeleteWorkspace = () => {
             return response.data;
         },
         onSuccess: (_, workspaceId) => {
+            toast.success("Workspace deleted");
             queryClient.setQueryData([QueriesKeys.Workspaces], (old: WorkspaceType[]) => {
                 return old.filter((workspace) => workspace.id !== workspaceId);
             });
@@ -130,7 +129,7 @@ export const useDeleteWorkspace = () => {
             });
         },
         onError: (error) => {
-            toast.error(error.message);
+            toast.error(error.message || "Failed to delete workspace");
         }
     });
 };

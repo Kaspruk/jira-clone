@@ -80,7 +80,10 @@ export const UserPreview = ({ className, isCollapsed = false, onOpenChange }: Us
                     )}
                 </div>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuContent 
+                align="start" 
+                className="w-56"
+            >
                 <DropdownMenuItem 
                     onClick={() => null}
                     className="cursor-pointer"

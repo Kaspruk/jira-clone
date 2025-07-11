@@ -1,4 +1,5 @@
 import { queryOptions, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import { QueriesKeys } from '@/lib/constants';
 import { type TaskType } from '../types';
 import axiosClient, { getAxiosClient } from '@/lib/axios';
@@ -31,11 +32,11 @@ export const useCreateTask = (projectId: number) => {
             return response.data;
         },
         onSuccess: () => {
-            //   toast.success("Task created");
+            toast.success("Task created");
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.Tasks, projectId] });
         },
         onError: () => {
-            //   toast.error("Failed to create Task");
+            toast.error("Failed to create Task");
         }
     }, queryClient);
 
@@ -51,11 +52,12 @@ export const useUpdateTask = (taskId: number) => {
             return response.data;
         },
         onSuccess: (data) => {
+            toast.success("Task updated");
             queryClient.setQueryData([QueriesKeys.Task, taskId], data);
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.Tasks] });
         },
         onError: () => {
-            //   toast.error("Failed to update Task");
+            toast.error("Failed to update Task");
         }
     }, queryClient);
 
@@ -71,10 +73,11 @@ export const useDeleteTask = () => {
             return response.data;
         },
         onSuccess: () => {
+            toast.success("Task deleted");
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.Tasks] });
         },
         onError: () => {
-            //   toast.error("Failed to delete Task");
+            toast.error("Failed to delete Task");
         }
     }, queryClient);
 

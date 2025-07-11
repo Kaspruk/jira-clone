@@ -95,7 +95,7 @@ export const TaskForm = (props: TaskFormType) => {
 
     return (
         <form className={props.className} onSubmit={handleSubmit(onSubmit)}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 row-auto h-fit overflow-y-auto flex-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 row-auto h-fit flex-1">
                 <div>
                     <Label htmlFor="project_id">Project name</Label>
                     <Controller

@@ -1,4 +1,5 @@
 import { useMutation, UseMutationResult, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import { TaskStatusType } from '@/features/types';
 import { QueriesKeys } from '@/lib/constants';
 import axiosClient from '@/lib/axios';
@@ -14,9 +15,13 @@ export function useCreateTaskStatus(): UseMutationResult<any, Error, CreateTaskS
             return response.data;
         },
         onSuccess: (_, variables) => {
+            toast.success("Task status created");
             queryClient.invalidateQueries({
                 queryKey: [QueriesKeys.WorkspaceStatuses, variables.task_status.workspace_id]
             });
+        },
+        onError: () => {
+            toast.error("Failed to create task status");
         }
     });
 };
@@ -30,7 +35,11 @@ export function useUpdateTaskStatus(): UseMutationResult<any, Error, TaskStatusT
             return response.data;
         },
         onSuccess: (_, variables) => {
+            toast.success("Task status updated");
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.WorkspaceStatuses, variables.workspace_id] });
+        },
+        onError: () => {
+            toast.error("Failed to update task status");
         }
     });
 };
@@ -48,7 +57,11 @@ export function useRemoveTaskStatus(): UseMutationResult<any, Error, RemoveTaskS
             return response.data;
         },
         onSuccess: (_, variables) => {
+            toast.success("Task status removed");
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.WorkspaceStatuses, variables.workspace_id] });
+        },
+        onError: () => {
+            toast.error("Failed to remove task status");
         }
     });
 };

@@ -52,7 +52,8 @@ export const WorkspaceSwitcher = ({ isMobile = false, isReadonly = false, isColl
                 className={cn(
                     "bg-neutral-50 hover:bg-neutral-100 border-neutral-200 font-medium h-auto transition-all duration-300",
                     isReadonly && "pointer-events-none ml-0",
-                    isCollapsed ? "p-1 ml-0 w-8 h-8" : "p-1.5"
+                    isCollapsed ? "p-1 ml-0 w-8 h-8" : "p-1.5",
+                    isMobile && "min-w-8 min-h-8"
                 )}
             >
                 <SelectValue 

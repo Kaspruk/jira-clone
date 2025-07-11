@@ -43,6 +43,18 @@ const config: Config = {
           DEFAULT: 'hsl(var(--destructive))',
           foreground: 'hsl(var(--destructive-foreground))'
         },
+        success: {
+          DEFAULT: 'hsl(142 76% 36%)',
+          foreground: 'hsl(355 100% 98%)'
+        },
+        warning: {
+          DEFAULT: 'hsl(48 96% 53%)',
+          foreground: 'hsl(26 83% 14%)'
+        },
+        info: {
+          DEFAULT: 'hsl(217 91% 60%)',
+          foreground: 'hsl(210 40% 98%)'
+        },
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',

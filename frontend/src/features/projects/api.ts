@@ -1,6 +1,8 @@
+import { toast } from 'sonner';
 import { queryOptions, useQueryClient, useMutation } from '@tanstack/react-query';
-import { QueriesKeys } from '@/lib/constants';
+
 import { type ProjectType } from '../types';
+import { QueriesKeys } from '@/lib/constants';
 import axiosClient, { getAxiosClient } from '@/lib/axios';
 
 export const getProjects = (workspaceId: number) => queryOptions<ProjectType[]>({
@@ -35,12 +37,12 @@ export const useCreateProject = () => {
             return response.data;
         },
         onSuccess: (data) => {
-            //   toast.success("Workspace created");
+            toast.success("Project created");
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.WorkspacesDashboard] });
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.Projects, data.workspace_id] });
         },
         onError: () => {
-            //   toast.error("Failed to create workspace");
+            toast.error("Failed to create project");
         }
     }, queryClient);
 
@@ -56,13 +58,13 @@ export const useDeleteProject = (workspaceId: number) => {
             return response.data;
         },
         onSuccess: (project_id) => {
-            //   toast.success("Project deleted");
+            toast.success("Project deleted");
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.Projects, workspaceId] });
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.Project, project_id] });
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.WorkspacesDashboard] });
         },
         onError: () => {
-            //   toast.error("Failed to delete project");
+            toast.error("Failed to delete project");
         }
     }, queryClient);
 
@@ -78,12 +80,13 @@ export const useUpdateProject = (projectId: number) => {
             return response.data;
         },
         onSuccess: (data) => {
+            toast.success("Project updated");
             queryClient.setQueryData([QueriesKeys.Project, projectId], data);
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.WorkspacesDashboard] });
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.Projects, data.workspace_id] });
         },
         onError: () => {
-            //   toast.error("Failed to update Task");
+            toast.error("Failed to update project");
         }
     }, queryClient);
 }
@@ -107,9 +110,12 @@ export const useUpdateProjectStatusesOrder = () => {
             return response.data;
         },
         onSuccess: (_, variables) => {
-            //   toast.success("Project deleted");
+            toast.success("Project statuses order updated");
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.Project, variables.project_id] });
         },
+        onError: () => {
+            toast.error("Failed to update project statuses order");
+        }
     });
 
     return mutation;
@@ -133,9 +139,12 @@ export const useSelectProjectStatus = () => {
             return response.data;
         },
         onSuccess: (_, variables) => {
-            //   toast.success("Project deleted");
+            toast.success("Project status selected");
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.Project, variables.project_id] });
         },
+        onError: () => {
+            toast.error("Failed to select project status");
+        }
     });
 
     return mutation;
@@ -153,9 +162,12 @@ export const useUpdateProjectPrioritiesOrder = () => {
             return response.data;
         },
         onSuccess: (_, variables) => {
-            //   toast.success("Project deleted");
+            toast.success("Project priorities order updated");
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.Project, variables.project_id] });
         },
+        onError: () => {
+            toast.error("Failed to update project priorities order");
+        }
     });
 
     return mutation;
@@ -179,9 +191,12 @@ export const useSelectProjectPriority = () => {
             return response.data;
         },
         onSuccess: (_, variables) => {
-            //   toast.success("Project deleted");
+            toast.success("Project priorities selected");
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.Project, variables.project_id] });
         },
+        onError: () => {
+            toast.error("Failed to select project priorities");
+        }
     });
 
     return mutation;
@@ -199,9 +214,12 @@ export const useUpdateProjectTypesOrder = () => {
             return response.data;
         },
         onSuccess: (_, variables) => {
-            //   toast.success("Project deleted");
+            toast.success("Project types order updated");
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.Project, variables.project_id] });
         },
+        onError: () => {
+            toast.error("Failed to update project types order");
+        }
     });
 
     return mutation;
@@ -225,9 +243,12 @@ export const useSelectProjectType = () => {
             return response.data;
         },
         onSuccess: (_, variables) => {
-            //   toast.success("Project deleted");
+            toast.success("Project types selected");
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.Project, variables.project_id] });
         },
+        onError: () => {
+            toast.error("Failed to select project types");
+        }
     });
 
     return mutation;

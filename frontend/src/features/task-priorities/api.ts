@@ -1,7 +1,9 @@
 import { useMutation, UseMutationResult, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+
+import axiosClient from '@/lib/axios';
 import { TaskPriorityType } from '@/features/types';
 import { QueriesKeys } from '@/lib/constants';
-import axiosClient from '@/lib/axios';
 
 // Hook to handle API interaction for creating task priorities
 type CreateTaskPriorityPayload = {task_priority: Omit<TaskPriorityType, 'id'>, project_id: number};
@@ -14,9 +16,13 @@ export function useCreateTaskPriority(): UseMutationResult<any, Error, CreateTas
             return response.data;
         },
         onSuccess: (_, variables) => {
+            toast.success("Task priority created");
             queryClient.invalidateQueries({
                 queryKey: [QueriesKeys.WorkspacePriorities, variables.task_priority.workspace_id]
             });
+        },
+        onError: () => {
+            toast.error("Failed to create task priority");
         }
     });
 };
@@ -30,7 +36,11 @@ export function useUpdateTaskPriority(): UseMutationResult<any, Error, TaskPrior
             return response.data;
         },
         onSuccess: (_, variables) => {
+            toast.success("Task priority updated");
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.WorkspacePriorities, variables.workspace_id] });
+        },
+        onError: () => {
+            toast.error("Failed to update task priority");
         }
     });
 };
@@ -48,7 +58,11 @@ export function useRemoveTaskPriority(): UseMutationResult<any, Error, RemoveTas
             return response.data;
         },
         onSuccess: (_, variables) => {
+            toast.success("Task priority removed");
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.WorkspacePriorities, variables.workspace_id] });
+        },
+        onError: () => {
+            toast.error("Failed to remove task priority");
         }
     });
 }; 

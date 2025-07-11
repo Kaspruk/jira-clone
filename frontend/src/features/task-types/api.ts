@@ -1,4 +1,5 @@
 import { useMutation, UseMutationResult, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import { TaskTypeType } from '@/features/types';
 import { QueriesKeys } from '@/lib/constants';
 import axiosClient from '@/lib/axios';
@@ -14,9 +15,13 @@ export function useCreateTaskType(): UseMutationResult<any, Error, CreateTaskTyp
             return response.data;
         },
         onSuccess: (_, variables) => {
+            toast.success("Task type created");
             queryClient.invalidateQueries({
                 queryKey: [QueriesKeys.WorkspaceTypes, variables.task_type.workspace_id]
             });
+        },
+        onError: () => {
+            toast.error("Failed to create task type");
         }
     });
 };
@@ -30,7 +35,11 @@ export function useUpdateTaskType(): UseMutationResult<any, Error, TaskTypeType>
             return response.data;
         },
         onSuccess: (_, variables) => {
+            toast.success("Task type updated");
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.WorkspaceTypes, variables.workspace_id] });
+        },
+        onError: () => {
+            toast.error("Failed to update task type");
         }
     });
 };
@@ -48,7 +57,11 @@ export function useRemoveTaskType(): UseMutationResult<any, Error, RemoveTaskTyp
             return response.data;
         },
         onSuccess: (_, variables) => {
+            toast.success("Task type removed");
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.WorkspaceTypes, variables.workspace_id] });
+        },
+        onError: () => {
+            toast.error("Failed to remove task type");
         }
     });
 }; 
