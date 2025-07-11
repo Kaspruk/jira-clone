@@ -6,18 +6,31 @@ import { getProject, getProjects } from "@/features/projects";
 import { BackButton } from "@/components/navigation";
 import { getUsers } from "@/features/users/api";
 
-export default async function Task({ params }: { params: { taskId: string } }) {
+// Робимо сторінку динамічною для підтримки автентифікації
+export const dynamic = 'force-dynamic';
+
+export default async function Task({ params }: { params: Promise<{ taskId: string }> }) {
     const data = await params;
     const taskId = Number(data.taskId);
 
-    // Fetch task data on the server using React Query
     const queryClient = getQueryClient();
-    const task = await queryClient.ensureQueryData(getTask(taskId));
-    const [project] = await Promise.all([
-        queryClient.ensureQueryData(getProject(task.project_id)),
-        queryClient.prefetchQuery(getUsers),
-        queryClient.prefetchQuery(getProjects(task.workspace_id))
-    ])
+    let project = null;
+
+    try {
+        const task = await queryClient.ensureQueryData(getTask(taskId));
+        
+        // Prefetch related data
+        await Promise.all([
+            queryClient.ensureQueryData(getProject(task.project_id)),
+            queryClient.prefetchQuery(getUsers),
+            queryClient.prefetchQuery(getProjects(task.workspace_id))
+        ]);
+        
+        project = queryClient.getQueryData(getProject(task.project_id).queryKey) || null;
+    } catch (error) {
+        console.log('Server-side task fetch failed:', error);
+        // Дані будуть завантажені на клієнті
+    }
     
     const dehydratedState = dehydrate(queryClient);
     
@@ -28,7 +41,7 @@ export default async function Task({ params }: { params: { taskId: string } }) {
                     <BackButton />
                     <ViewTitle>Back to tasks</ViewTitle>
                 </div>
-                <TaskDetail taskId={taskId} workspaceId={project.workspace_id} />
+                <TaskDetail taskId={taskId} workspaceId={project?.workspace_id} />
             </View>
         </HydrationBoundary>
     );

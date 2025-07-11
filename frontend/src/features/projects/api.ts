@@ -1,12 +1,13 @@
 import { queryOptions, useQueryClient, useMutation } from '@tanstack/react-query';
 import { QueriesKeys } from '@/lib/constants';
 import { type ProjectType } from '../types';
-import axiosClient from '@/lib/axios';
+import axiosClient, { getAxiosClient } from '@/lib/axios';
 
 export const getProjects = (workspaceId: number) => queryOptions<ProjectType[]>({
     queryKey: [QueriesKeys.Projects, workspaceId],
     queryFn: async () => {
-        const response = await axiosClient.get('/projects/', { params: { workspace_id: workspaceId } });
+        const client = getAxiosClient();
+        const response = await client.get('/projects/', { params: { workspace_id: workspaceId } });
         return response.data;
     },
 });
@@ -14,7 +15,8 @@ export const getProjects = (workspaceId: number) => queryOptions<ProjectType[]>(
 export const getProject = (projectId: number) => queryOptions<ProjectType>({
     queryKey: [QueriesKeys.Project, projectId],
     queryFn: async () => {
-        const response = await axiosClient.get(`/projects/${projectId}/`);
+        const client = getAxiosClient();
+        const response = await client.get(`/projects/${projectId}/`);
         return response.data;
     },
 });

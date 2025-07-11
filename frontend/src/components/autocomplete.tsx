@@ -20,7 +20,7 @@ type AutocompleteProps<T> = {
 const genericMemo: <T>(component: T) => T = memo;
 
 const Component = <T,>(props: AutocompleteProps<T>) => {
-  const { items, getItem, getItemData } = props;
+  const { items } = props;
 
   const [value, setValue] = useState();
 
@@ -40,11 +40,11 @@ const Component = <T,>(props: AutocompleteProps<T>) => {
         </div>
         <DottedSeparator className="my-2" /> */}
         {items.map((item) => {
-          if (getItem) {
-            return getItem(item);
+          if ('getItem' in props) {
+            return props.getItem(item);
           }
 
-          const {title, value} = getItemData(item);
+          const {title, value} = props.getItemData(item);
           return (
             <SelectItem key={title} value={value}>
               <div className="flex justify-start items-center gap-3 font-medium">

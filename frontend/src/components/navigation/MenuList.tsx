@@ -76,7 +76,6 @@ export const MenuList = memo(({ isMobile = false, isCollapsed = false }: MenuLis
     <div className="overflow-hidden w-full">
       <AnimatePresence mode="popLayout">
         <motion.ul
-          key={NavigationState}
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0 }}

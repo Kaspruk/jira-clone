@@ -25,7 +25,7 @@ export const TaskPrioritiesList: React.FC<TaskPrioritiesListProps> = (props) => 
   
     const { data: originalPriorities } = useSuspenseQuery(getWorkspacePriorities(workspaceId, projectId));
 
-    const [isPending, startTransition] = useTransition();
+    const [, startTransition] = useTransition();
     const [priorities, setPriorities] = useState<WorkspaceTaskPriorityType[]>(originalPriorities);
     const [_, setIsOpen] = useTaskPriorityModalState();
     const [editedTaskPriority, setEditedTaskPriority] = useState<WorkspaceTaskPriorityType | null>(null);

@@ -9,14 +9,23 @@ import { Confirm } from "@/components/Confirm";
 import { getQueryClient } from "@/lib/react-query";
 import { TopBar, Sidebar, BottomBar } from "@/components/navigation";
 
-import { authOptions } from "../api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
 };
 
-const DashboardLayout = async (props: DashboardLayoutProps) => {
+export default async function DashboardLayout(props: DashboardLayoutProps) {
   const session = await getServerSession(authOptions);
+  console.log('DashboardLayout session', session);
+
+  if (!session) {
+    redirect('/login');
+    return null;
+  }
+
+
   const queryClient = getQueryClient();
 
   const userId = session?.user?.id;
@@ -50,5 +59,3 @@ const DashboardLayout = async (props: DashboardLayoutProps) => {
     </HydrationBoundary>
   );
 };
-
-export default DashboardLayout;

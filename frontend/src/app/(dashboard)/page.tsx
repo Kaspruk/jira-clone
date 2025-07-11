@@ -6,10 +6,19 @@ import { UserPreview } from "@/features/users";
 
 import { WorkspaceList } from "./client";
 
+// Робимо сторінку динамічною для підтримки автентифікації
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {  
   const queryClient = getQueryClient();
-  await queryClient.ensureQueryData(getWorkspaces);
-  await queryClient.ensureQueryData(getWorkspaceDashboardData);
+  
+  try {
+    await queryClient.ensureQueryData(getWorkspaces);
+    await queryClient.ensureQueryData(getWorkspaceDashboardData);
+  } catch (error) {
+    console.log('Server-side data fetching failed:', error);
+    // Дані будуть завантажені на клієнті
+  }
 
   return (
     <View>

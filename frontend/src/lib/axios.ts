@@ -1,8 +1,19 @@
 import axios from 'axios';
 import { getSession, signOut } from 'next-auth/react';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from './auth';
 
 // Створюємо екземпляр axios з базовою конфігурацією
 const axiosClient = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8000',
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Серверний клієнт для API запитів на server-side
+const serverAxiosClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8000',
   timeout: 10000,
   headers: {
@@ -54,6 +65,33 @@ export const setTokens = (accessToken: string, refreshToken: string) => {
 
 const publicPaths = ['/auth/login', '/auth/logout', '/auth/register'];
 
+// Серверний interceptor
+serverAxiosClient.interceptors.request.use(
+  async (config) => {
+    const url = config.url || '';
+    const isPublicPath = publicPaths.some(path => url.indexOf(path) !== -1);
+
+    if (!isPublicPath) {
+      try {
+        const session = await getServerSession(authOptions);
+        if (session?.accessToken) {
+          config.headers.Authorization = `Bearer ${session.accessToken}`;
+        }
+      } catch (error) {
+        console.log('Failed to get server session:', error);
+        // Під час помилки - відхиляємо запит
+        return Promise.reject(error);
+      }
+    }
+    
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Клієнтський interceptor
 axiosClient.interceptors.request.use(
   async (config) => {
     const url = config.url || '';
@@ -61,6 +99,8 @@ axiosClient.interceptors.request.use(
 
     if (!tokens.accessToken && getIsClient()) {
       const session = await getSession();
+
+      console.log('session', session);
 
       if (session) {
         setTokens(session?.accessToken || '', session?.refreshToken || '');
@@ -86,16 +126,13 @@ axiosClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     
-    // Обробка помилок авторизації
     if (error.response?.status === 401) {
       const errorData = error.response?.data;
-      
-      // Якщо access токен прострочений (код 5), спробуємо оновити його
-      if (errorData?.code === 5 && !originalRequest._retry) {
+     
+      if (errorData?.code === 5 && !originalRequest._retry && tokens.refreshToken) {
         originalRequest._retry = true;
         
         try {
-          // Викликаємо refresh endpoint
           const refreshResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/auth/refresh`, {
             method: 'POST',
             headers: {
@@ -108,38 +145,30 @@ axiosClient.interceptors.response.use(
           
           if (refreshResponse.ok) {
             const refreshData = await refreshResponse.json();
-            
-            // Оновлюємо токени
             setTokens(refreshData.access_token, refreshData.refresh_token);
             
-            // Повторюємо оригінальний запит з новим токеном
             originalRequest.headers.Authorization = `Bearer ${refreshData.access_token}`;
             return axiosClient(originalRequest);
+          } else {
+            console.log('Token refresh failed:', refreshResponse.status);
           }
         } catch (refreshError) {
           console.error('Error refreshing token:', refreshError);
         }
       }
       
-      // Якщо refresh не спрацював або це інша помилка 401
-      console.error('Unauthorized access - logging out user');
+      console.log('Logging out user due to auth failure');
       
-      // Очищаємо токени
       setTokens('', '');
-      
-      try {
-        // Перевіряємо чи ми в браузері
-        if (getIsClient()) {
-          // Викликаємо logout з NextAuth
+
+      if (getIsClient()) {
+        try {
           await signOut({ 
             callbackUrl: '/login',
             redirect: true 
           });
-        }
-      } catch (logoutError) {
-        console.error('Error during logout:', logoutError);
-        // Якщо logout не спрацював, перенаправляємо вручну
-        if (getIsClient()) {
+        } catch (logoutError) {
+          console.log('logoutError', logoutError);
           window.location.href = '/login';
         }
       }
@@ -149,4 +178,10 @@ axiosClient.interceptors.response.use(
   }
 );
 
+// Функція для отримання правильного клієнта залежно від середовища
+export const getAxiosClient = () => {
+  return getIsClient() ? axiosClient : serverAxiosClient;
+};
+
 export default axiosClient;
+export { serverAxiosClient };

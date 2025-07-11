@@ -25,7 +25,7 @@ export const TaskDetail = (props: TaskDetailProps) => {
     const workspaceId = props.workspaceId;
 
     const [taskData, projectsData, usersData] = useSuspenseQueries({
-        queries: [getTask(taskId), getProjects(workspaceId), getUsers]
+        queries: [getTask(taskId), getProjects(workspaceId!), getUsers]
     });
 
     const {data: task} = taskData;
@@ -55,7 +55,7 @@ export const TaskDetail = (props: TaskDetailProps) => {
         }
     };
 
-    if (!task) return null;
+    if (!task || !workspaceId) return null;
 
     return (
         <div className="flex sm:flex-row flex-col gap-4">

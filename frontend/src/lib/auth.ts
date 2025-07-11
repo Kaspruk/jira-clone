@@ -1,48 +1,8 @@
-import { NextRequest } from 'next/server';
-import { getToken } from 'next-auth/jwt';
-import { getServerSession, NextAuthOptions, Session } from "next-auth"
+import { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
-import { getSession } from 'next-auth/react';
-import { isServer } from '@tanstack/react-query';
 
 import { setTokens } from './axios';
 import { ResponseError } from './utils';
-
-export interface AuthMiddlewareConfig {
-    publicPaths: string[];
-    loginPath: string;
-    homePath: string;
-    enableLogging?: boolean;
-}
-
-export const defaultConfig: AuthMiddlewareConfig = {
-    publicPaths: ['/login', '/register', '/restore-password', '/not-found'],
-    loginPath: '/login',
-    homePath: '/',
-};
-
-export async function getAuthStatus(request: NextRequest) {
-    const { pathname } = request.nextUrl;
-    
-    // Отримуємо NextAuth JWT токен
-    const token = await getToken({ 
-        req: request,
-        secret: process.env.NEXTAUTH_SECRET 
-    });
-    
-    const isAuthenticated = Boolean(token);
-    
-    return {
-        token,
-        isAuthenticated,
-        user: token ? {
-            id: token.id as string,
-            email: token.email,
-            name: token.name,
-        } : null,
-        pathname,
-    };
-}
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -108,8 +68,6 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async signIn(data) {
-      console.log('signIn data', data);
-
       if (data.user instanceof ResponseError) {
         throw data.user
       }

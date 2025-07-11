@@ -1,12 +1,13 @@
 import { queryOptions, useMutation, useQueryClient } from '@tanstack/react-query';
 import { QueriesKeys } from '@/lib/constants';
 import { type TaskType } from '../types';
-import axiosClient from '@/lib/axios';
+import axiosClient, { getAxiosClient } from '@/lib/axios';
 
 export const getTasks = (projectId: number) => queryOptions<TaskType[]>({
     queryKey: [QueriesKeys.Tasks, projectId],
     queryFn: async () => {
-        const response = await axiosClient.get(`/tasks/`, { params: { projectId } });
+        const client = getAxiosClient();
+        const response = await client.get(`/tasks/`, { params: { projectId } });
         return response.data;
     },
 });
@@ -14,7 +15,8 @@ export const getTasks = (projectId: number) => queryOptions<TaskType[]>({
 export const getTask = (taskId: number) => queryOptions<TaskType>({
     queryKey: [QueriesKeys.Task, taskId],
     queryFn: async () => {
-        const response = await axiosClient.get(`/tasks/${taskId}/`);
+        const client = getAxiosClient();
+        const response = await client.get(`/tasks/${taskId}/`);
         return response.data;
     },
 });

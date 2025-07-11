@@ -1,19 +1,35 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { getAuthStatus, defaultConfig } from '@/lib/auth';
+
+export interface AuthMiddlewareConfig {
+    publicPaths: string[];
+    loginPath: string;
+    homePath: string;
+}
+
+export const defaultConfig: AuthMiddlewareConfig = {
+    publicPaths: ['/login', '/register', '/restore-password', '/not-found'],
+    loginPath: '/login',
+    homePath: '/',
+};
 
 export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
     
-    const authStatus = await getAuthStatus(request);
-
+    // Перевіряємо наявність next-auth session token в cookies
+    const sessionToken = request.cookies.get('next-auth.session-token') || 
+                        request.cookies.get('__Secure-next-auth.session-token');
+    
+    const isAuthenticated = Boolean(sessionToken);
     const isPublic = defaultConfig.publicPaths.some(path => pathname.startsWith(path));
     
-    if (!authStatus.isAuthenticated && !isPublic) {
+    // Якщо користувач не автентифікований і намагається зайти на приватну сторінку
+    if (!isAuthenticated && !isPublic) {
         return NextResponse.redirect(new URL(defaultConfig.loginPath, request.url));
     }
     
-    if (authStatus.isAuthenticated && isPublic) {
+    // Якщо користувач автентифікований і намагається зайти на публічну сторінку
+    if (isAuthenticated && isPublic) {
         return NextResponse.redirect(new URL(defaultConfig.homePath, request.url));
     }
     
