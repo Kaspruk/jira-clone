@@ -7,7 +7,7 @@ import { ProjectType, UserType } from "@/features/types";
 import { useUpdateTask, getTask } from "@/features/tasks/api";
 
 import { Label } from "@/components/ui/label";
-import { Select } from "@/components/Select";
+import { Select } from "@/components/select";
 import { EditableInput, EditableEditor } from "@/components/editable";
 import { TaskTypeSelect } from "./TaskTypeSelect";
 import { TaskStatusSelect } from "./TaskStatusSelect";

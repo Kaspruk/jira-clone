@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import dynamic from "next/dynamic";
 
-import { Select } from "@/components/Select";
+import { Select } from "@/components/select";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

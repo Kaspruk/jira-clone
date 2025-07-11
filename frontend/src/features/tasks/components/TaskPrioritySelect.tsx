@@ -1,5 +1,5 @@
 import { ComponentProps } from "react";
-import { Select } from "@/components/Select";
+import { Select } from "@/components/select";
 import { SelectItem } from "@/components/ui/select";
 import { getProject } from "@/features/projects";
 import { useQuery } from "@tanstack/react-query";
