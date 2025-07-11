@@ -46,6 +46,7 @@ export const TaskTypeListItem = (props: TaskTypeListItemProps) => {
             left={(
                 <div className="flex gap-2 items-center">
                     <Button
+                        // @ts-ignore
                         ref={setActivatorNodeRef}
                         variant="ghost"
                         size="icon"

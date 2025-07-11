@@ -7,7 +7,7 @@ import {
     WorkspaceDashboardData, 
     WorkspaceType 
 } from "../types";
-import axiosClient from "@/lib/axios";
+import axiosClient, { getAxiosClient } from "@/lib/axios";
 import { toast } from "sonner";
 
 export const getWorkspaceStatuses = (workspaceId: number, projectId?: number) => queryOptions<WorkspaceTaskStatusType[]>({
@@ -18,7 +18,8 @@ export const getWorkspaceStatuses = (workspaceId: number, projectId?: number) =>
             params.set('project_id', projectId.toString());
         }
 
-        const response = await axiosClient.get(`/workspaces/${workspaceId}/statuses/`, { params });
+        const client = getAxiosClient();
+        const response = await client.get(`/workspaces/${workspaceId}/statuses/`, { params });
         return response.data;
     },
 });
@@ -31,7 +32,8 @@ export const getWorkspacePriorities = (workspaceId: number, projectId?: number) 
             params.set('project_id', projectId.toString());
         }
 
-        const response = await axiosClient.get(`/workspaces/${workspaceId}/priorities/`, { params });
+        const client = getAxiosClient();
+        const response = await client.get(`/workspaces/${workspaceId}/priorities/`, { params });
         return response.data;
     },
 });
@@ -44,7 +46,8 @@ export const getWorkspaceTypes = (workspaceId: number, projectId?: number) => qu
             params.set('project_id', projectId.toString());
         }
 
-        const response = await axiosClient.get(`/workspaces/${workspaceId}/types/`, { params });
+        const client = getAxiosClient();
+        const response = await client.get(`/workspaces/${workspaceId}/types/`, { params });
         return response.data;
     },
 });
@@ -53,10 +56,11 @@ export const getWorkspaces = queryOptions<WorkspaceType[]>({
     queryKey: [QueriesKeys.Workspaces],
     queryFn: async (): Promise<WorkspaceType[]> => {
         try {
-            const response = await axiosClient.get("/workspaces/");
+            const client = getAxiosClient();
+            const response = await client.get("/workspaces/");
             return response.data;
         } catch (error) {
-            console.error(error);
+            console.error('Failed to fetch workspaces:', error);
             return [];
         }
     },
@@ -65,7 +69,8 @@ export const getWorkspaces = queryOptions<WorkspaceType[]>({
 export const getWorkspaceDashboardData = queryOptions<{[key: number]: WorkspaceDashboardData}>({
     queryKey: [QueriesKeys.WorkspacesDashboard],
     queryFn: async (): Promise<{[key: number]: WorkspaceDashboardData}> => {
-        const response = await axiosClient.get("/dashboard/workspaces/");
+        const client = getAxiosClient();
+        const response = await client.get("/dashboard/workspaces/");
         return response.data;
     },
 });

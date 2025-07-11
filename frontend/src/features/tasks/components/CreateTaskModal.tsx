@@ -2,7 +2,7 @@
 
 import { ResponsiveModal } from "@/components/ResponsiveModal";
 import { DialogTitle } from "@/components/ui/dialog";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button"
 
 import { DottedSeparator } from "@/components/DottedSeparator";

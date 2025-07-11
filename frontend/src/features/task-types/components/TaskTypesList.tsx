@@ -25,7 +25,7 @@ export const TaskTypesList: React.FC<TaskTypesListProps> = (props) => {
   
     const { data: originalTypes } = useSuspenseQuery(getWorkspaceTypes(workspaceId, projectId));
 
-    const [isPending, startTransition] = useTransition();
+    const [, startTransition] = useTransition();
     const [types, setTypes] = useState<WorkspaceTaskTypeType[]>(originalTypes);
     const [_, setIsOpen] = useTaskTypeModalState();
     const [editedTaskType, setEditedTaskType] = useState<WorkspaceTaskTypeType | null>(null);

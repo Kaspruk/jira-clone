@@ -136,6 +136,13 @@ class AuthService:
     def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
         """Отримати поточного користувача через JWT токен"""
         
+        if not credentials:
+            raise ResponseException(
+                status_code=status.HTTP_401_UNAUTHORIZED, 
+                message="Не вдалося підтвердити облікові дані", 
+                headers={"WWW-Authenticate": "Bearer"}
+            )
+            
         try:
             token_data = AuthService.verify_jwt_token(credentials.credentials, "access")
         except ExpiredSignatureError:

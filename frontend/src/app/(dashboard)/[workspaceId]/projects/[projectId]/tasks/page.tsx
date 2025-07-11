@@ -2,18 +2,28 @@ import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { getQueryClient } from "@/lib/react-query";
 import { getProject } from '@/features/projects/api';
 import { BackButton } from "@/components/navigation";
-import { View,ViewTitle } from "@/components/ui/view";
+import { View, ViewTitle } from "@/components/ui/view";
 
 import { TasksTable } from "./client";
 import { CreateTaskButton } from "./client";
 
+// Робимо сторінку динамічною для підтримки автентифікації
+export const dynamic = 'force-dynamic';
 
-export default async function Tasks(props: { params: { projectId: number } }) {
+export default async function Tasks(props: { params: Promise<{ projectId: string }> }) {
     const data = await props.params;
     const projectId = Number(data.projectId); 
 
     const queryClient = getQueryClient();
-    const project = await queryClient.ensureQueryData(getProject(projectId));
+    let project = null;
+    
+    try {
+        project = await queryClient.ensureQueryData(getProject(projectId));
+    } catch (error) {
+        console.log('Server-side project fetch failed:', error);
+        // Дані будуть завантажені на клієнті
+    }
+    
     const dehydratedState = dehydrate(queryClient);
     
     return (
@@ -21,7 +31,7 @@ export default async function Tasks(props: { params: { projectId: number } }) {
             <View>
                 <div className='flex items-center gap-2 mb-5'>
                     <BackButton />
-                    <ViewTitle>{project.name}</ViewTitle>
+                    <ViewTitle>{project?.name || 'Loading...'}</ViewTitle>
                     <div className="flex-1" />
                     <CreateTaskButton />
                 </div>

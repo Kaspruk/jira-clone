@@ -3,28 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Icon } from "@/components/ui/icon";
 
 export default function RestorePasswordPage() {
     const [email, setEmail] = useState("");
-    const [loading, setLoading] = useState(false);
     const [submitted, setSubmitted] = useState(false);
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-        
-        // TODO: Додати логіку відновлення пароля
-        console.log("Email для відновлення:", email);
-        
-        // Симулюємо запит
-        setTimeout(() => {
-            setLoading(false);
-            setSubmitted(true);
-        }, 2000);
-    };
 
     if (submitted) {
         return (

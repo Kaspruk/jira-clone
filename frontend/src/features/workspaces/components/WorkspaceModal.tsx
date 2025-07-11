@@ -40,7 +40,7 @@ export const WorkspaceModal = () => {
     handleSubmit,
     reset,
     setValue,
-    formState: { errors, isValid }
+    formState: { errors }
   } = useForm<WorkspaceFormData>({
     defaultValues: {
       name: "",

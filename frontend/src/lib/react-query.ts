@@ -16,7 +16,7 @@ function makeQueryClient() {
         // Встановлюємо час зберігання кешу
         gcTime: 1000 * 60 * 60 * 24, // 24 години
         // Налаштування повторних спроб
-        retry: (failureCount, error) => {
+        retry: (failureCount) => {
           if (failureCount < 3) {
             console.log(`Спроба ${failureCount + 1} невдала, повторюємо...`);
             return true;

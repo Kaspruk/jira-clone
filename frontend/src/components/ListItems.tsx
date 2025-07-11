@@ -44,8 +44,7 @@ const listItemVariants = tv({
     },
 });
 
-export type ListItemProps = React.HTMLAttributes<HTMLLIElement> & VariantProps<typeof listItemVariants> & {
-    ref?: React.RefObject<HTMLElement>;
+export type ListItemProps = Omit<React.HTMLAttributes<HTMLLIElement>, 'ref'> & VariantProps<typeof listItemVariants> & {
     left?: React.ReactNode;
     right?: React.ReactNode;
     children?: React.ReactNode;
@@ -55,9 +54,8 @@ export type ListItemProps = React.HTMLAttributes<HTMLLIElement> & VariantProps<t
     isDragging?: boolean;
 }
 
-export const ListItem: React.FC<ListItemProps> = (props) => {
+export const ListItem = React.forwardRef<HTMLLIElement, ListItemProps>((props, ref) => {
     const {
-        ref,
         left,
         title,
         subtitle,
@@ -83,4 +81,6 @@ export const ListItem: React.FC<ListItemProps> = (props) => {
             {right && <div className={classes.right()}>{right}</div>}
         </li>
     );
-};
+});
+
+ListItem.displayName = 'ListItem';

@@ -2,12 +2,13 @@ import { useSession } from "next-auth/react";
 import { queryOptions, useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { QueriesKeys } from "@/lib/constants";
 import { UserType } from "../types";
-import axiosClient from "@/lib/axios";
+import { getAxiosClient } from "@/lib/axios";
 
 export const getUser = (userId: number) => queryOptions<UserType>({
     queryKey: [QueriesKeys.User],
     queryFn: async () => {
-        const response = await axiosClient.get(`/users/${userId}/`);
+        const client = getAxiosClient();
+        const response = await client.get(`/users/${userId}/`);
         return response.data;
     },
 });
@@ -20,7 +21,8 @@ export const useUser = () => {
 export const getUsers = queryOptions<UserType[]>({
     queryKey: [QueriesKeys.Users],
     queryFn: async () => {
-        const response = await axiosClient.get("/users/");
+        const client = getAxiosClient();
+        const response = await client.get("/users/");
         return response.data;
     },
 });
