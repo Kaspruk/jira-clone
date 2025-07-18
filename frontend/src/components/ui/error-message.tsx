@@ -7,7 +7,7 @@ const ErrorMessage = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <span
     ref={ref}
-    className={cn('text-red-600 text-xs leading-none', className)}
+    className={cn('text-destructive text-xs leading-none', className)}
     {...props}
   />
 ))

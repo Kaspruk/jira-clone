@@ -12,6 +12,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+      },
       colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
@@ -51,25 +54,32 @@ const config: Config = {
           DEFAULT: 'hsl(48 96% 53%)',
           foreground: 'hsl(26 83% 14%)'
         },
-        info: {
-          DEFAULT: 'hsl(217 91% 60%)',
-          foreground: 'hsl(210 40% 98%)'
+        border: {
+          DEFAULT: 'hsl(var(--border))',
+          sm: 'hsl(var(--border-sm))',
         },
-        border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
-        chart: {
-          '1': 'hsl(var(--chart-1))',
-          '2': 'hsl(var(--chart-2))',
-          '3': 'hsl(var(--chart-3))',
-          '4': 'hsl(var(--chart-4))',
-          '5': 'hsl(var(--chart-5))'
-        }
+        text: {
+          main: 'hsl(var(--text-main))',
+          muted: 'hsl(var(--text-muted))',
+          heading: 'hsl(var(--text-heading))',
+          subtle: 'hsl(var(--text-subtle))',
+          inverse: 'hsl(var(--text-inverse))',
+          error: 'hsl(var(--text-error))',
+        },
       },
       borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)'
+        lg: '1rem',
+        md: '0.75rem',
+        sm: '0.5rem',
+        DEFAULT: '0.75rem',
+      },
+      blur: {
+        xs: '2px',
+        sm: '6px',
+        md: '12px',
+        lg: '24px',
       },
       spacing: {
         'top-bar': 'var(--top-bar-height)',
@@ -93,16 +103,7 @@ const config: Config = {
         'aside-md': 'var(--aside-width-md)',
         'aside-lg': 'var(--aside-width-lg)',
       },
-      keyframes: {
-        bubble: {
-          '0%': { transform: 'scale(1)' },
-          '50%': { transform: 'scale(1.3)' },
-          '100%': { transform: 'scale(1)' },
-        },
-      },
-      animation: {
-        'bubble': 'bubble 500ms ease-in',
-      },
+
       fontFamily: {
         mi: ['var(--font-material-icons)'],
       },
@@ -120,23 +121,8 @@ const config: Config = {
         },
       });
     }),
-    plugin(function({ addUtilities }) {
-      addUtilities({
-        '.translate-x-var': {
-          transform: 'translateX(var(--translate-x, 0))',
-        },
-        '.translate-y-var': {
-          transform: 'translateY(var(--translate-y, 0))',
-        },
-        '.scale-x-var': {
-          transform: 'scaleX(var(--scale-x, 1))',
-        },
-        '.scale-y-var': {
-          transform: 'scaleY(var(--scale-y, 1))',
-        },
-      });
-    }),
+
   ],
-  safelist: ['lg:-ml-aside-md', 'lg:w-aside-md', 'lg:hover:w-aside-lg', 'translate-y-(--translate-y)', 'cursor-pointer', 'text-left', 'text-center', 'text-right', 'color-red', 'animate-bubble']
+  safelist: ['cursor-pointer', 'text-left', 'text-center', 'text-right', 'animate-bounce-in']
 };
 export default config;

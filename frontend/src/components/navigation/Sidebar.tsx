@@ -25,6 +25,7 @@ const SidebarComponent = memo(() => {
   
   const navigationState = getNavidationStateKey(params as Record<string, string>);
   const isHome = navigationState === NavigationState.Home;
+  const isTask = navigationState === NavigationState.Task;
   const isHomeRef = useRef(false);
   isHomeRef.current = isHome;
 
@@ -78,14 +79,14 @@ const SidebarComponent = memo(() => {
   return (
     <aside
       className={cn(
-        "lg:block min-w-aside-md lg:min-w-aside-lg h-vh overflow-y-auto transition-all duration-300 bg-neutral-50/50 ",
+        "lg:block min-w-aside-md lg:min-w-aside-lg h-vh overflow-y-auto transition-all duration-300",
         isHome && "-ml-aside-md lg:-ml-aside-lg"
       )}
     >
       <div 
         ref={sidebarRef}
         className={cn(
-          "fixed top-0 h-full pt-10 p-4 z-20 transition-all duration-300 bg-white shadow overflow-hidden",
+          "fixed top-0 h-full pt-10 p-4 z-20 transition-all duration-300 bg-background overflow-hidden",
           // Базова ширина для планшетів і десктопа
           "w-aside-md lg:w-aside-lg",
           // При hover на планшетах розширюємо до повної ширини
@@ -96,8 +97,13 @@ const SidebarComponent = memo(() => {
         <div className="flex flex-col h-full">
           <UserPreview isCollapsed={!isHovered} onOpenChange={handleOpenChange} />
           <DottedSeparator className="my-4" />
-          <WorkspaceSwitcher isCollapsed={!isHovered} onOpenChange={handleOpenChange} />
-          <DottedSeparator className="my-4" />
+
+          {!isTask && (
+            <>
+              <WorkspaceSwitcher isCollapsed={!isHovered} onOpenChange={handleOpenChange} />
+              <DottedSeparator className="my-4" />
+            </>
+          )}
 
           {/* Основна навігація */}
           <div className="flex-1 overflow-y-auto">
@@ -105,8 +111,8 @@ const SidebarComponent = memo(() => {
           </div>
 
           {/* Футер сайдбару */}
-          <div className="pt-4 border-t border-neutral-200">
-            <div className="text-xs text-neutral-400 text-center">
+          <div className="pt-4 border-t border-border">
+            <div className="text-xs text-muted-foreground text-center">
               Jira Clone v1.0
             </div>
           </div>

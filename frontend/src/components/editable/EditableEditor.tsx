@@ -32,16 +32,17 @@ export const EditableEditor = ({
                         placeholder={placeholder}
                         defaultValue={value}
                     />
-                    <div className="mt-2 flex justify-start space-x-2">
+                    <div className="mt-3 flex justify-start gap-2">
                         <Button
                             variant="secondary"
                             onClick={handleCancel}
+                            size="sm"
                         >
                             Cancel
                         </Button>
                         <Button
-                            variant="secondary"
                             onClick={handleSave}
+                            size="sm"
                         >
                             Save
                         </Button>
@@ -51,7 +52,7 @@ export const EditableEditor = ({
                 <div
                     onClick={handleClick}
                     className={cn(
-                        "cursor-pointer hover:bg-gray-100 p-2 -ml-2 hover:ml-0 rounded-md transition-all",
+                        "cursor-pointer hover:bg-muted p-2 -ml-2 hover:ml-0 rounded-lg transition-all duration-200",
                         className
                     )}
                     role="button"

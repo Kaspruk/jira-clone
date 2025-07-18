@@ -14,17 +14,17 @@ export const Toaster = (props: ToasterProps) => {
       toastOptions={{
         classNames: {
           toast:
-            "group toast bg-card text-card-foreground border border-border shadow-lg rounded-md p-4 font-medium",
-          description: "text-muted-foreground text-sm opacity-90",
+            "group toast bg-gray-100 text-gray-10 border border-gray-40 shadow-lg rounded-md p-4 font-medium",
+          description: "text-gray-50 text-sm opacity-90",
           actionButton:
-            "bg-primary text-primary-foreground hover:bg-primary/90 h-8 px-3 text-xs font-medium rounded-md transition-colors",
+            "bg-blue text-gray-100 hover:bg-blue/90 h-8 px-3 text-xs font-medium rounded-md transition-colors",
           cancelButton:
-            "bg-muted text-muted-foreground hover:bg-muted/80 h-8 px-3 text-xs font-medium rounded-md transition-colors",
-          success: "bg-success text-success-foreground border-success [&>svg]:text-success-foreground",
-          error: "bg-destructive text-destructive-foreground border-destructive [&>svg]:text-destructive-foreground", 
-          warning: "bg-warning text-warning-foreground border-warning [&>svg]:text-warning-foreground",
-          info: "bg-info text-info-foreground border-info [&>svg]:text-info-foreground",
-          closeButton: "text-muted-foreground hover:text-foreground transition-colors",
+            "bg-gray-90 text-gray-50 hover:bg-gray-80 h-8 px-3 text-xs font-medium rounded-md transition-colors",
+          success: "bg-green text-gray-100 border-green [&>svg]:text-gray-100",
+          error: "bg-red text-gray-100 border-red [&>svg]:text-gray-100",
+          warning: "bg-yellow text-gray-100 border-yellow [&>svg]:text-gray-100",
+          info: "bg-pink text-gray-100 border-pink [&>svg]:text-gray-100",
+          closeButton: "text-gray-50 hover:text-gray-10 transition-colors",
           icon: "shrink-0",
         },
       }}

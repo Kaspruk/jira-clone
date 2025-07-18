@@ -2,26 +2,33 @@ from fastapi import APIRouter, Depends
 from app.database import get_db_connection
 from app.services.auth import AuthService
 from app.services.dashboard import DashboardService
+from app.models import TokenData
 
 router = APIRouter(
     prefix="/dashboard",
-    tags=["Dashboard"],
-    dependencies=[Depends(AuthService.get_current_user)]
+    tags=["Dashboard"]
 )
 
 @router.get("/workspaces", summary="Get all dashboard workspaces")
-def get_dashboard_workspaces_router(db=Depends(get_db_connection)):
+def get_dashboard_workspaces_router(
+    current_user: TokenData = Depends(AuthService.get_current_user),
+    db=Depends(get_db_connection)
+):
     """
-    Отримати всі workspace-и з проектами та кількістю завдань для dashboard
+    Отримати всі workspace-и користувача з проектами та кількістю завдань для dashboard
     """
     with db as connection:
-        return DashboardService.get_dashboard_workspaces(connection)
+        return DashboardService.get_dashboard_workspaces(current_user.user_id, connection)
 
 @router.get("/workspaces/{workspace_id}", summary="Get dashboard workspace")
-def get_dashboard_workspace_router(workspace_id: int, db=Depends(get_db_connection)):
+def get_dashboard_workspace_router(
+    workspace_id: int, 
+    current_user: TokenData = Depends(AuthService.get_current_user),
+    db=Depends(get_db_connection)
+):
     """
-    Отримати всі workspace-и з проектами та кількістю завдань для dashboard
+    Отримати workspace користувача з проектами та кількістю завдань для dashboard
     """
     with db as connection:
-        return DashboardService.get_dashboard_workspace_by_id(workspace_id, connection)
+        return DashboardService.get_dashboard_workspace_by_id(workspace_id, current_user.user_id, connection)
 

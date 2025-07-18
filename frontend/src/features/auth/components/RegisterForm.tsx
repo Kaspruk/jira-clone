@@ -50,9 +50,9 @@ export const RegisterForm = () => {
     };
     
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div className="space-y-2">
-                <Label htmlFor="username">Ім'я користувача</Label>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 animate-slide-up">
+            <div className="space-y-3">
+                <Label htmlFor="username" className="text-foreground font-medium">Ім'я користувача</Label>
                 <Controller
                     name="username"
                     control={control}
@@ -69,8 +69,8 @@ export const RegisterForm = () => {
                 {errors.username && <ErrorMessage>{errors.username.message}</ErrorMessage>}
             </div>
 
-            <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+            <div className="space-y-3">
+                <Label htmlFor="email" className="text-foreground font-medium">Email</Label>
                 <Controller
                     name="email"
                     control={control}
@@ -87,8 +87,8 @@ export const RegisterForm = () => {
                 {errors.email && <ErrorMessage>{errors.email.message}</ErrorMessage>}
             </div>
 
-            <div className="space-y-2">
-                <Label htmlFor="password">Пароль</Label>
+            <div className="space-y-3">
+                <Label htmlFor="password" className="text-foreground font-medium">Пароль</Label>
                 <div className="relative">
                     <Controller
                         name="password"
@@ -112,15 +112,15 @@ export const RegisterForm = () => {
                         <Icon 
                             name={showPassword ? "visibility_off" : "visibility"} 
                             size={20}
-                            className="text-gray-400 hover:text-gray-600"
+                            className="text-muted-foreground hover:text-foreground transition-colors"
                         />
                     </button>
                 </div>
                 {errors.password && <ErrorMessage>{errors.password.message}</ErrorMessage>}
             </div>
 
-            <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Підтвердження пароля</Label>
+            <div className="space-y-3">
+                <Label htmlFor="confirmPassword" className="text-foreground font-medium">Підтвердження пароля</Label>
                 <div className="relative">
                     <Controller
                         name="confirmPassword"
@@ -144,7 +144,7 @@ export const RegisterForm = () => {
                         <Icon 
                             name={showConfirmPassword ? "visibility_off" : "visibility"} 
                             size={20}
-                            className="text-gray-400 hover:text-gray-600"
+                            className="text-muted-foreground hover:text-foreground transition-colors"
                         />
                     </button>
                 </div>

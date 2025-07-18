@@ -46,6 +46,16 @@ class WorkspaceService:
             raise ResponseException(message=str(e))
 
     @staticmethod
+    def get_workspaces_by_user_id(user_id: int, connection):
+        try:
+            with connection.cursor() as cur:
+                cur.execute(WorkspaceSchemes.GET_WORKSPACES_BY_USER_ID, [user_id])
+                return cur.fetchall()
+        except Error as e:
+            connection.rollback()
+            raise ResponseException(message=str(e))
+
+    @staticmethod
     def get_workspace_by_id(workspace_id, connection):
         try:
             with connection.cursor() as cur:

@@ -3,10 +3,9 @@
 import { useParams, useRouter } from "next/navigation";
 import { 
   LuTrash2 as TrashIcon,
-  LuExternalLink
+  LuExternalLink,
+  LuSettings
 } from "react-icons/lu";
-
-// import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
 
 import { useConfirm } from "@/hooks/use-confirm";
 import {
@@ -19,7 +18,6 @@ import {
 import { useDeleteProject } from "../api";
 
 interface TaskActionsProps {
-  // id: string;
   projectId: number;
   children: React.ReactNode;
 };
@@ -43,12 +41,12 @@ export const ProjectActions = ({ projectId, children }: TaskActionsProps) => {
     mutate(projectId);
   };
 
-  // const onOpenProjectDetail = () => {
-  //   router.push(`/projects/${projectId}/tasks/`);
-  // };
+  const onOpenProjectDetail = () => {
+    router.push(`/${workspaceId}/projects/${projectId}/settings`);
+  };
 
   const onOpenTask = () => {
-    router.push(`/projects/${projectId}/tasks/`);
+    router.push(`/${workspaceId}/projects/${projectId}/tasks`);
   };
   
   return (
@@ -66,20 +64,13 @@ export const ProjectActions = ({ projectId, children }: TaskActionsProps) => {
             <LuExternalLink className="size-4 mr-2 stroke-2" />
             Prtoject tasks
           </DropdownMenuItem>
-          {/* <DropdownMenuItem
-            onClick={onOpenProject}
-            className="font-medium p-[10px]"
-          >
-            <ExternalLinkIcon className="size-4 mr-2 stroke-2" />
-            Open Project
-          </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => open(id)}
-            className="font-medium p-[10px]"
+            onClick={onOpenProjectDetail}
+            className="cursor-pointer font-medium"
           >
-            <PencilIcon className="size-4 mr-2 stroke-2" />
-            Edit Task
-          </DropdownMenuItem> */}
+            <LuSettings className="size-4 mr-2 stroke-2" />
+            Settings
+          </DropdownMenuItem>
           <DropdownMenuItem
             onClick={onDelete}
             disabled={isPending}

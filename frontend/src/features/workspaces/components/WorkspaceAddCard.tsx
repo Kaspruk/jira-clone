@@ -13,12 +13,12 @@ export const WorkspaceAddCard = () => {
 
     return (
         <Card 
-            className="w-full h-full min-h-[200px] hover:shadow-md transition-shadow cursor-pointer border-2 border-dashed border-muted-foreground/30 hover:border-primary/50 bg-muted/30 hover:bg-muted/50"
+            className="w-full h-full min-h-[200px] cursor-pointer border-sm border-dashed border-muted-foreground/30 hover:border-primary/50 bg-muted/30 hover:bg-muted/50 card-hover animate-fade-scale"
             onClick={handleClick}
         >
             <CardContent className="flex flex-col items-center justify-center h-full p-6">
                 <div className="flex flex-col items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
-                    <div className="w-12 h-12 rounded-full border-2 border-dashed border-current flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-full border-sm border-dashed border-current flex items-center justify-center">
                         <IoAdd className="w-6 h-6" />
                     </div>
                     <div className="text-center">

@@ -4,20 +4,20 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const inputVariants = cva(
-  "flex w-full rounded-md transition-all",
+  "flex w-full rounded-lg border border-border bg-background px-4 py-2 text-base text-foreground placeholder:text-muted-foreground transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50",
   {
     variants: {
       size: {
-        default: "max-sm:h-10 h-12 px-3 py-1 text-sm file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
+        default: "max-sm:h-10 h-12 px-4 py-2 text-base",
         sm: "h-8 px-2 py-1 text-sm",
       },
       variant: {
-        simple: "border-none",
-        default: "border border-input bg-transparent shadow-sm",
-        preview: "cursor-pointer hover:bg-gray-100",
+        simple: "border-none bg-transparent",
+        default: "",
+        preview: "cursor-pointer border-none bg-transparent hover:bg-muted",
       },
       error: {
-        true: "border-red-500 outline-red-500",
+        true: "border-destructive bg-destructive/5 focus-visible:ring-destructive focus-visible:border-destructive placeholder:text-destructive",
         false: "",
       }
     },
@@ -27,7 +27,6 @@ const inputVariants = cva(
     },
   }
 )
-
 
 export type InputProps = React.InputHTMLAttributes<HTMLInputElement>
   & VariantProps<typeof inputVariants>;

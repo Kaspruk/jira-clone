@@ -53,7 +53,7 @@ export const TaskPriorityListItem = (props: TaskPriorityListItemProps) => {
                         disabled={!selected}
                         {...listeners}
                     >
-                        <Icon name="drag_handle" size={24} className="text-gray-500" />
+                        <Icon name="drag_handle" size={24} className="text-muted-foreground" />
                     </Button>
                     <Checkbox
                         checked={selected}
@@ -67,10 +67,10 @@ export const TaskPriorityListItem = (props: TaskPriorityListItemProps) => {
             right={(
                 <div className="flex gap-2 items-center">
                     <Button variant="ghost" size="icon" onClick={onEdit}>
-                        <Icon name="edit" size={20} className="text-gray-500" />
+                        <Icon name="edit" size={20} className="text-muted-foreground" />
                     </Button>
                     <Button variant="ghost" size="icon" onClick={onRemove}>
-                        <Icon name="close" size={20} className="text-red-500" />
+                        <Icon name="close" size={20} className="text-destructive" />
                     </Button>
                 </div>
             )}

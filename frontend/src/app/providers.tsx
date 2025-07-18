@@ -6,12 +6,15 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { SessionProvider } from 'next-auth/react';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { getQueryClient } from '@/lib/react-query';
+import { useColorTheme } from '@/components/ThemeToggle';
 
 interface ProviderProps {
   children: React.ReactNode;
 };
 
 export const Providers = ({ children }: ProviderProps) => {
+  const [theme] = useColorTheme();
+
   // NOTE: Avoid useState when initializing the query client if you don't
   //       have a suspense boundary between this and the code that may
   //       suspend because React will throw away the client on the initial

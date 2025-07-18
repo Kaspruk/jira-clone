@@ -28,6 +28,11 @@ export const viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
+  // Контролює поведінку віртуальної клавіатури
+  // "resizes-visual" - клавіатура зменшує viewport (posune контент вгору)
+  // "resizes-content" - клавіатура змінює розмір контенту
+  // "overlays-content" - клавіатура накладається поверх контенту (за замовчуванням)
+  interactiveWidget: "overlays-content",
 };
 
 export default function RootLayout({
@@ -41,7 +46,7 @@ export default function RootLayout({
         className={cn(
           inter.className,
           materialIcons.variable,
-          "flex antialiased min-h-screen bg-neutral-100 max-md:flex-col"
+          "flex antialiased min-h-svh bg-background max-md:flex-col"
         )}
       >
         <Providers>

@@ -7,11 +7,11 @@ class DashboardService:
     """Сервіс для управління панеллю управління"""
     
     @staticmethod
-    def get_dashboard_workspaces(connection):
-        """Отримати всі workspace-и з проектами та кількістю завдань"""
+    def get_dashboard_workspaces(user_id, connection):
+        """Отримати всі workspace-и користувача з проектами та кількістю завдань"""
         try:
             with connection.cursor() as cur:
-                cur.execute(DashboardSchemes.GET_DASHBOARD_WORKSPACES)
+                cur.execute(DashboardSchemes.GET_DASHBOARD_WORKSPACES, (user_id,))
                 result = cur.fetchone()
                 
                 # Якщо результат існує і workspaces_data не None, повертаємо його
@@ -25,11 +25,11 @@ class DashboardService:
             raise ResponseException(message=str(e)) 
     
     @staticmethod
-    def get_dashboard_workspace_by_id(workspace_id, connection):
-        """Отримати workspace з проектами та кількістю завдань"""
+    def get_dashboard_workspace_by_id(workspace_id, user_id, connection):
+        """Отримати workspace користувача з проектами та кількістю завдань"""
         try:
             with connection.cursor() as cur:
-                cur.execute(DashboardSchemes.GET_DASHBOARD_WORKSPACE_BY_ID, (workspace_id,))
+                cur.execute(DashboardSchemes.GET_DASHBOARD_WORKSPACE_BY_ID, (workspace_id, user_id))
                 result = cur.fetchone()
                 return result
         except Error as e:

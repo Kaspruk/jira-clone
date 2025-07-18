@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS task_statuses (
     color VARCHAR(50) NOT NULL,
     description VARCHAR(255) NOT NULL,
     workspace_id INT REFERENCES workspaces(id) ON DELETE CASCADE,
-    UNIQUE (name)
+    UNIQUE (name, workspace_id)
 );
 """
 

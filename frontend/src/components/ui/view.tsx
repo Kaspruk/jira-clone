@@ -9,7 +9,7 @@ const View = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "rounded-xl border bg-card shadow text-card-foreground w-full xl:p-10 lg:p-8 p-4",
+      "rounded-xl border border-border bg-card shadow text-card-foreground w-full xl:p-10 lg:p-8 p-4",
       className
     )}
     {...props}
@@ -23,7 +23,7 @@ const ViewTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <h1
     ref={ref}
-    className={cn("font-semibold leading-none tracking-tight text-xl max-sm:text-lg", className)}
+    className={cn("font-semibold leading-none tracking-tight text-xl max-sm:text-lg animate-slide-left delay-100", className)}
     {...props}
   />
 ))

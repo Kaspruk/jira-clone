@@ -155,7 +155,7 @@ export const TaskPrioritiesList: React.FC<TaskPrioritiesListProps> = (props) => 
     return (
       <>
         <div className="flex justify-between items-center">
-          <h5 className="sm:text-md text-sm font-bold sm:ml-2">Task Priorities:</h5>
+          <h5 className="sm:text-md text-sm font-bold text-muted-foreground sm:ml-2">Task Priorities:</h5>
           <Button
             size="sm"
             variant="ghost"

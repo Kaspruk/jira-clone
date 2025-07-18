@@ -62,6 +62,7 @@ export const EditableInput = ({
             {isEditing && (
                 <div className="absolute -bottom-9 right-0 flex space-x-2">
                     <Button
+                        size="iconSm"
                         variant="secondary"
                         className="w-8 h-8 rounded"
                         onMouseDown={handleSave}
@@ -69,6 +70,7 @@ export const EditableInput = ({
                         <FaCheck />
                     </Button>
                     <Button
+                        size="iconSm"
                         variant="secondary"
                         className="w-8 h-8 rounded"
                         onMouseDown={handleCancel}

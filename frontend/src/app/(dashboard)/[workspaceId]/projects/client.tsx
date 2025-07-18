@@ -70,8 +70,8 @@ export const ProjectsTable = () => {
     const { data } = useSuspenseQuery(getProjects(workspaceId));
 
     const onRowClick = useCallback((data: ProjectType) => {
-        router.push(`projects/${data.id}/tasks/`);
-    }, []);
+        router.push(`/${workspaceId}/projects/${data.id}/tasks/`);
+    }, [workspaceId]);
 
     return (
         <DataTable

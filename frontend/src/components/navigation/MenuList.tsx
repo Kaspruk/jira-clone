@@ -23,26 +23,40 @@ export const MenuList = memo(({ isMobile = false, isCollapsed = false }: MenuLis
   const pathname = usePathname();
   const queryClient = useQueryClient();
   const navigationState = getNavidationStateKey(params as Record<string, string>);
+  const isTaskPage = navigationState === NavigationState.Task;
 
   const menuItems = useMemo(() => {
     let items: RouteType[] = [];
 
     switch (navigationState) {
         case NavigationState.Task:
-          items = [RoutesMap[Routes.Home], RoutesMap[Routes.Project]];
+          items = [
+            RoutesMap[Routes.Home],
+            RoutesMap[Routes.Project],
+            RoutesMap[Routes.Task],
+          ];
           break;
         case NavigationState.Project:
-          items = [RoutesMap[Routes.Home], RoutesMap[Routes.Workspace], RoutesMap[Routes.ProjectSettings]];
+          items = [
+            RoutesMap[Routes.Home], 
+            RoutesMap[Routes.Workspace], 
+            RoutesMap[Routes.Project],
+            RoutesMap[Routes.ProjectSettings]
+          ];
+          break;
           break;
         case NavigationState.Workspace:
-          items = [RoutesMap[Routes.Home]];
+          items = [
+            RoutesMap[Routes.Home],
+            RoutesMap[Routes.Workspace],
+          ];
           break;
     }
 
     return items.map(route => {
       let href = buildRoute(route.href, params as Record<string, string>);
 
-      if (route.href === Routes.Project) {
+      if (isTaskPage && route.href === Routes.Project) {
         const task = queryClient.getQueryData<TaskType>([QueriesKeys.Task, Number(params.taskId)]);
 
         if (!task) {
@@ -64,7 +78,7 @@ export const MenuList = memo(({ isMobile = false, isCollapsed = false }: MenuLis
             href={href}
             isActive={isActive}
             isCollapsed={isCollapsed}
-            icon={<Icon className="size-5 text-neutral-500" />}
+            icon={<Icon className={cn("size-5 transition-colors duration-300", !isActive && "text-muted-foreground")} />}
             label={route.label}
             isMobile={isMobile}
           />
@@ -80,7 +94,7 @@ export const MenuList = memo(({ isMobile = false, isCollapsed = false }: MenuLis
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0 }}
           className={cn(
-            "flex flex-col",
+            "flex flex-col gap-1",
             isMobile && "flex-row justify-evenly"
           )}
         >
@@ -102,12 +116,12 @@ type MenuItemProps = {
   
 function MenuItem ({ href, isActive, isCollapsed, icon, label, isMobile = false }: MenuItemProps) {
     return (
-        <Link key={href} href={href}>
+        <Link href={href}>
           <div
             className={cn(
-              "flex items-center gap-2.5 p-2.5 rounded-md font-medium hover:text-primary transition-all duration-300 text-neutral-500 whitespace-nowrap",
-              isActive && "bg-white shadow-sm hover:opacity-100 text-primary",
-              // На планшетах у згорнутому стані центруємо іконку
+              "flex items-center gap-2.5 p-2.5 rounded-lg font-medium transition-all duration-300 text-muted-foreground hover:bg-muted/50 hover:text-foreground whitespace-nowrap",
+              isActive && "text-primary hover:text-primary/60",
+              (isActive && (!isCollapsed && !isMobile)) && "bg-primary/10 hover:bg-primary/15",
               isCollapsed && "max-lg:pl-1.5",
               isMobile && "max-md:p-1.5 flex-col gap-1"
             )}

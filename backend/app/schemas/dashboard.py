@@ -40,6 +40,7 @@ LEFT JOIN (
     ) task_counts ON projects.id = task_counts.project_id
     GROUP BY workspace_id
 ) projects_agg ON workspaces.id = projects_agg.workspace_id
+WHERE workspaces.owner_id = %s
 """
 
 GET_DASHBOARD_WORKSPACE_BY_ID = """
@@ -80,7 +81,7 @@ LEFT JOIN (
     ) task_counts ON projects.id = task_counts.project_id
     GROUP BY workspace_id
 ) projects_agg ON workspaces.id = projects_agg.workspace_id
-WHERE workspaces.id = %s
+WHERE workspaces.id = %s AND workspaces.owner_id = %s
 """
 
 class DashboardSchemes:

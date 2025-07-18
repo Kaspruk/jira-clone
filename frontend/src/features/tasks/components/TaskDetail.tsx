@@ -58,7 +58,7 @@ export const TaskDetail = (props: TaskDetailProps) => {
     if (!task || !workspaceId) return null;
 
     return (
-        <div className="flex sm:flex-row flex-col gap-4">
+        <div className="flex sm:flex-row flex-col gap-6">
             {/* Main Content */}
             <div className="flex-1">
                 <EditableInput
@@ -66,7 +66,7 @@ export const TaskDetail = (props: TaskDetailProps) => {
                     className="text-2xl font-bold"
                     onSave={handleUpdate('title')}
                 />
-                <Label className="block font-bold mt-4 mb-2">Description</Label>
+                <Label className="block font-semibold mt-6 mb-3 text-foreground">Description</Label>
                 <EditableEditor
                     value={task.description}
                     onSave={handleUpdate('description')}
@@ -77,12 +77,12 @@ export const TaskDetail = (props: TaskDetailProps) => {
             {/* Sidebar */}
             <div 
                 className={cn(
-                    "sm:w-[240px] sm:space-y-3 sm:pl-4 sm:border-l border-gray-200",
-                    "max-sm:grid max-sm:grid-cols-2 max-sm:gap-2"
+                    "sm:w-[260px] sm:space-y-4 sm:pl-6 sm:border-l border-border",
+                    "max-sm:grid max-sm:grid-cols-2 max-sm:gap-3"
                 )}
             >
                 <div>
-                    <Label className="text-gray-500">Project</Label>
+                    <Label className="text-muted-foreground font-medium">Project</Label>
                     <Select<ProjectType>
                         value={String(task.project_id)}
                         items={projects || []}
@@ -95,7 +95,7 @@ export const TaskDetail = (props: TaskDetailProps) => {
                     />
                 </div>
                 <div>
-                    <Label className="text-gray-500">Status</Label>
+                    <Label className="text-muted-foreground font-medium">Status</Label>
                     <TaskStatusSelect 
                         value={String(task.status_id)}
                         projectId={task.project_id}
@@ -104,7 +104,7 @@ export const TaskDetail = (props: TaskDetailProps) => {
                     />
                 </div>
                 <div>
-                    <Label className="text-gray-500">Type</Label>
+                    <Label className="text-muted-foreground font-medium">Type</Label>
                     <TaskTypeSelect
                         value={String(task.type_id)}
                         projectId={task.project_id}
@@ -113,7 +113,7 @@ export const TaskDetail = (props: TaskDetailProps) => {
                     />
                 </div>
                 <div>
-                    <Label className="text-gray-500">Priority</Label>
+                    <Label className="text-muted-foreground font-medium">Priority</Label>
                     <TaskPrioritySelect
                         value={String(task.priority_id)}
                         projectId={task.project_id}
@@ -122,7 +122,7 @@ export const TaskDetail = (props: TaskDetailProps) => {
                     />
                 </div>
                 <div>
-                    <Label className="text-gray-500">Assigned</Label>
+                    <Label className="text-muted-foreground font-medium">Assigned</Label>
                     <Select<UserType>
                         items={users || []}
                         value={String(task.assignee_id)}
@@ -135,8 +135,8 @@ export const TaskDetail = (props: TaskDetailProps) => {
                     />
                 </div>
                 <div>
-                    <Label className="text-gray-500">Author</Label>
-                    <div className="mt-1 text-sm">{author?.username || '-'}</div>
+                    <Label className="text-muted-foreground font-medium">Author</Label>
+                    <div className="mt-1 text-sm text-foreground">{author?.username || '-'}</div>
                 </div>
             </div>
         </div>

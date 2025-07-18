@@ -21,7 +21,7 @@ const BottomBarComponent = () => {
     >
       <div className={
         cn(
-          "fixed left-0 right-0 h-bottom-bar p-1.5 border-t border-neutral-200 bg-white z-20 transition-all duration-300",
+          "fixed left-0 right-0 h-bottom-bar p-1.5 border-t border-border bg-background/95 backdrop-blur-sm z-20 transition-all duration-300",
           isHome ? "-bottom-bottom-bar" : "bottom-0"
         )
       }>

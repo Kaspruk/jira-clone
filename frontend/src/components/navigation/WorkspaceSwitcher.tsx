@@ -50,7 +50,7 @@ export const WorkspaceSwitcher = ({ isMobile = false, isReadonly = false, isColl
             <SelectTrigger 
                 variant={(isCollapsed || isReadonly) ? "preview" : "default"}
                 className={cn(
-                    "bg-neutral-50 hover:bg-neutral-100 border-neutral-200 font-medium h-auto transition-all duration-300",
+                    "bg-muted/50 hover:bg-muted border-border font-medium h-auto transition-all duration-300",
                     isReadonly && "pointer-events-none ml-0",
                     isCollapsed ? "p-1 ml-0 w-8 h-8" : "p-1.5",
                     isMobile && "min-w-8 min-h-8"
@@ -58,7 +58,7 @@ export const WorkspaceSwitcher = ({ isMobile = false, isReadonly = false, isColl
             >
                 <SelectValue 
                     placeholder={
-                        <div className="flex items-center gap-2 text-neutral-500">
+                        <div className="flex items-center gap-2 text-muted-foreground">
                             <HiOutlineOfficeBuilding className="size-4" />
                             <span>Оберіть workspace</span>
                         </div>
@@ -102,10 +102,10 @@ export const WorkspaceSwitcher = ({ isMobile = false, isReadonly = false, isColl
                 )}
             >
                 <div className="flex items-center gap-2">
-                    <MdWorkspaces className="size-4 text-neutral-600" />
+                    <MdWorkspaces className="size-4 text-muted-foreground" />
                     <p 
                         className={cn(
-                            "text-xs font-semibold uppercase text-neutral-600 tracking-wider transition-opacity duration-300",
+                            "text-xs font-semibold uppercase text-muted-foreground tracking-wider transition-opacity duration-300",
                             isCollapsed && "max-lg:opacity-0 max-lg:pointer-events-none"
                         )}
                     >
@@ -115,7 +115,7 @@ export const WorkspaceSwitcher = ({ isMobile = false, isReadonly = false, isColl
                 <RiAddCircleFill
                     title="Створити новий workspace"
                     className={cn(
-                        "size-5 text-neutral-500 cursor-pointer hover:text-primary transition-all duration-300",
+                        "size-5 text-muted-foreground cursor-pointer hover:text-primary transition-all duration-300",
                         isCollapsed && "max-lg:opacity-0 max-lg:pointer-events-none"
                     )}
                     onClick={handleCreateWorkspace}
@@ -139,7 +139,7 @@ const WorkspaceDisplay = ({ workspace, isCollapsed = false }: WorkspaceDisplayPr
             "flex items-center gap-2 transition-all duration-300",
             isCollapsed && "max-lg:justify-center max-lg:gap-0"
         )}>
-            <div className="min-w-6 h-6 bg-gradient-to-br from-blue-400 to-blue-600 rounded text-white text-xs flex items-center justify-center font-semibold">
+            <div className="min-w-6 h-6 rounded bg-primary text-primary-foreground text-xs flex items-center justify-center font-semibold">
                 {workspace.name.charAt(0).toUpperCase()}
             </div>
             <div className={cn(
@@ -147,7 +147,7 @@ const WorkspaceDisplay = ({ workspace, isCollapsed = false }: WorkspaceDisplayPr
                 isCollapsed && "max-lg:opacity-0 max-lg:pointer-events-none max-lg:w-0 max-lg:overflow-hidden"
             )}>
                 <span className="font-medium text-sm">{workspace.name}</span>
-                <span className="text-xs text-neutral-500">{workspace.description}</span>
+                <span className="text-xs text-muted-foreground">{workspace.description}</span>
             </div>
         </div>
     );

@@ -6,26 +6,44 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:bg-neutral-100 disabled:from-neutral-100 disabled:to-neutral-100 disabled:text-netural-300 border border-neutral-200 shadow-sm relative",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-1 border relative disabled:pointer-events-none disabled:opacity-50 gap-2",
   {
     variants: {
       variant: {
-        primary: "disabled:text-zinc-500 bg-gradient-to-b from-blue-600 to-blue-700 text-primary-foreground hover:from-blue-700 hover:to-blue-700",
-        destructive: "bg-gradient-to-b from-destructive to-destructive text-destructive-foreground hover:from-destructive hover:to-destructive",
-        outline: "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
-        secondary: "bg-white text-black hover:bg-neutral-100",
-        ghost: "border-transparent shadow-none hover:bg-accent hover:text-accent-foreground",
-        muted: "bg-neutral-200 text-neutral-600 hover:bg-neutral-200/80",
-        teritary: "bg-blue-100 text-blue-600 border-transparent hover:bg-blue-200 shadow-none",
-        red: "bg-red-100 text-red-600 border-transparent hover:bg-red-200 shadow-none"
+        primary:
+          "bg-primary text-primary-foreground border-primary shadow-sm hover:bg-primary/90 active:scale-[0.98]",
+        outline:
+          "bg-background border-border text-foreground shadow-sm hover:bg-muted active:scale-[0.98]",
+        secondary:
+          "bg-secondary text-secondary-foreground border-secondary shadow-sm hover:bg-secondary/80 active:scale-[0.98]",
+        ghost:
+          "bg-transparent border-transparent text-primary hover:bg-primary/10 active:scale-[0.98]",
+        destructive:
+          "bg-destructive text-destructive-foreground border-destructive shadow-sm hover:bg-destructive/90 active:scale-[0.98]",
+        muted:
+          "bg-muted text-muted-foreground border-muted hover:bg-muted/80 active:scale-[0.98]",
+        yellow:
+          "bg-yellow text-foreground border-yellow shadow-sm hover:bg-yellow/90 active:scale-[0.98]",
+        orange:
+          "bg-orange text-primary-foreground border-orange shadow-sm hover:bg-orange/90 active:scale-[0.98]",
+        red:
+          "bg-red text-primary-foreground border-red shadow-sm hover:bg-red/90 active:scale-[0.98]",
+        blue:
+          "bg-blue text-primary-foreground border-blue shadow-sm hover:bg-blue/90 active:scale-[0.98]",
+        'cloud-green':
+          "bg-cloud-green text-primary-foreground border-cloud-green shadow-sm hover:bg-cloud-green/90 active:scale-[0.98]",
+        pink:
+          "bg-pink text-foreground border-pink shadow-sm hover:bg-pink/90 active:scale-[0.98]",
+        green:
+          "bg-green text-foreground border-green shadow-sm hover:bg-green/90 active:scale-[0.98]",
       },
       size: {
         default: "h-10 px-4 py-2",
-        sm: "h-8 rounded-md px-3",
-        xs: "h-7 rounded-md px-2 text-xs",
-        lg: "h-12 rounded-md px-8",
-        icon: "h-8 w-8",
-        iconSm: "h-7 w-7",
+        sm: "h-8 px-3 text-sm",
+        xs: "h-7 px-2 text-xs",
+        lg: "h-12 px-6 text-lg",
+        icon: "h-10 w-10 p-0",
+        iconSm: "h-8 w-8 p-0 text-sm font-normal",
       },
     },
     defaultVariants: {
@@ -43,7 +61,7 @@ const loaderVariants = cva(
         default: "text-base",
         sm: "text-sm",
         xs: "text-base",
-        lg: "text-base",
+        lg: "text-lg",
         icon: "text-sm",
         iconSm: "text-sm",
       },
@@ -75,7 +93,7 @@ const Button = (props: ButtonProps) => {
       <span
         className={cn(
           'absolute transition-opacity opacity-100 pointer-events-none duration-150', 
-          loading ? 'animate-bubble' : 'opacity-0'
+          loading ? 'animate-bounce-in' : 'opacity-0'
         )}
       >
         <LuLoader className={loaderVariants({ size })} />

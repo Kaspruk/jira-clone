@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
 @layer utilities {
   .text-balance {
     text-wrap: balance;
@@ -14,67 +10,118 @@ body {
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 272 100% 51%;
-    --primary-foreground: 256 100% 97%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
+    /* Brand Colors (нейтральні назви) */
+    --yellow: 48 100% 50%; /* #FFC400 */
+    --orange: 36 100% 50%; /* #FF9100 */
+    --red: 14 100% 43%; /* #DD2C00 */
+    --green: 75 100% 50%; /* #C6FF00 */
+    --pink: 315 96% 84%; /* #FDADEE */
+    --blue: 217 89% 61%; /* #4285F4 */
+    --red: 14 100% 43%;
+    --purple: 260 60% 45%; /* #6B46C1 */
+    --cloud-green: 142 52% 43%; /* #34A853 */
+    /* Grayscale */
+    --gray-0: 0 0% 0%;
+    --gray-10: 0 0% 12%; /* #1F1F1F */
+    --gray-20: 0 0% 19%; /* #303030 */
+    --gray-30: 0 0% 28%; /* #474747 */
+    --gray-40: 0 0% 37%; /* #5E5E5E */
+    --gray-50: 0 0% 46%; /* #757575 */
+    --gray-60: 0 0% 56%; /* #8F8F8F */
+    --gray-70: 0 0% 67%; /* #ABABAB */
+    --gray-80: 0 0% 78%; /* #C7C7C7 */
+    --gray-90: 0 0% 89%; /* #E3E3E3 */
+    --gray-95: 0 0% 95%; /* #F2F2F2 */
+    --gray-99: 44 20% 99%; /* #FDFCFB */
+    --gray-100: 0 0% 100%; /* #FFFFFF */
+    /* Computed - Light Theme */
+    --background: var(--gray-99);
+    --foreground: var(--gray-10);
+    --muted: var(--gray-95);
+    --muted-foreground: var(--gray-50);
+    --card: var(--gray-100);
+    --card-foreground: var(--gray-10);
+    --popover: var(--gray-100);
+    --popover-foreground: var(--gray-10);
+    --primary: 34 98% 49%;
+    --primary-foreground: var(--gray-100);
+    --secondary: var(--gray-95);
+    --secondary-foreground: var(--gray-20);
+    --accent: var(--red);
+    --accent-foreground: var(--gray-100);
+    --destructive: var(--red);
+    --destructive-foreground: var(--gray-100);
+    --border: var(--gray-80);
+    --border-sm: var(--gray-90);
   }
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --yellow: 48 100% 50%;
+    --orange: 36 100% 50%;
+    --red: 14 100% 43%;
+    --green: 75 100% 50%;
+    --pink: 315 96% 84%;
+    --blue: 217 89% 61%;
+    --purple: 260 60% 45%;
+    --red: 14 100% 43%;
+    --cloud-green: 142 52% 43%;
+    /* Grayscale */
+    --gray-0: 0 0% 0%;
+    --gray-10: 0 0% 12%;
+    --gray-20: 0 0% 19%;
+    --gray-30: 0 0% 28%;
+    --gray-40: 0 0% 37%;
+    --gray-50: 0 0% 46%;
+    --gray-60: 0 0% 56%;
+    --gray-70: 0 0% 67%;
+    --gray-80: 0 0% 78%;
+    --gray-90: 0 0% 89%;
+    --gray-95: 0 0% 95%;
+    --gray-99: 44 20% 99%;
+    --gray-100: 0 0% 100%;
+    /* Computed - Dark Theme */
+    --background: var(--gray-10);
+    --foreground: var(--gray-95);
+    --muted: var(--gray-30);
+    --muted-foreground: var(--gray-60);
+    --card: var(--gray-20);
+    --card-foreground: var(--gray-95);
+    --popover: var(--gray-20);
+    --popover-foreground: var(--gray-95);
+    --primary: var(--orange);
+    --primary-foreground: var(--gray-100);
+    --secondary: var(--gray-30);
+    --secondary-foreground: var(--gray-95);
+    --accent: var(--red);
+    --accent-foreground: var(--gray-95);
+    --destructive: var(--red);
+    --destructive-foreground: var(--gray-95);
+    --border: var(--gray-40);
+    --border-sm: var(--gray-50);
   }
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
   body {
     @apply bg-background text-foreground;
   }
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, Helvetica, sans-serif;
+}
+
+/* Card shadow - minimal Firebase Studio style */
+.card, .bg-card, .bg-popover {
+  box-shadow: 0 1px 3px 0 rgba(0,0,0,0.05), 0 1px 2px 0 rgba(0,0,0,0.03);
+}
+
+.dark .card, .dark .bg-card, .dark .bg-popover {
+  box-shadow: 0 1px 3px 0 rgba(0,0,0,0.2), 0 1px 2px 0 rgba(0,0,0,0.1);
+}
+
+/* Button shadow for primary */
+button.bg-primary, .btn-primary, .bg-primary {
+  box-shadow: 0 2px 8px 0 rgba(0,122,255,0.10);
 }
 
 .hide-scrollbar {
@@ -82,7 +129,7 @@ body {
   scrollbar-width: none;
 }
 
-.hide-scrollbar::--webkit-scrollbar {
+.hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
 
@@ -93,8 +140,18 @@ body {
 
 .ql-toolbar {
   border-bottom: none;
-  border-top-left-radius: calc(var(--radius)  - 2px);
-  border-top-right-radius: calc(var(--radius)  - 2px);
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.dark .ql-toolbar.ql-snow,
+.dark .ql-container.ql-snow {
+  border-color: hsl(var(--border));
+}
+
+.dark .ql-snow .ql-picker,
+.dark .ql-snow .ql-formats {
+  color: hsl(var(--foreground));
 }
 
 .material-symbols-outlined {
@@ -103,4 +160,86 @@ body {
   'wght' 400,
   'GRAD' 0,
   'opsz' 24
+}
+
+/* Анімації */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Класи анімацій */
+.animate-slide-up {
+  animation: slideInUp 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.animate-slide-left {
+  animation: slideInLeft 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.animate-fade-scale {
+  animation: fadeInScale 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.animate-bounce-in {
+  animation: bounceIn 0.6s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+/* Затримки анімацій */
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+
+/* Hover ефекти для карток */
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }

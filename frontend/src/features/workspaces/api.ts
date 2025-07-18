@@ -78,10 +78,14 @@ export const useCreateWorkspace = () => {
             const response = await axiosClient.post("/workspaces/", workspace);
             return response.data;
         },
-        onSuccess: () => {
+        onSuccess: async () => {
             toast.success("Workspace created");
             queryClient.invalidateQueries({ queryKey: [QueriesKeys.Workspaces] });
-            queryClient.invalidateQueries({ queryKey: [QueriesKeys.WorkspacesDashboard] });
+            
+            const timeout = setTimeout(() => {
+                queryClient.refetchQueries({ queryKey: [QueriesKeys.WorkspacesDashboard] });
+                clearTimeout(timeout);
+            }, 500);
         },
         onError: (error) => {
             toast.error(error.message || "Failed to create workspace");
@@ -102,7 +106,6 @@ export const useUpdateWorkspace = () => {
             queryClient.setQueryData([QueriesKeys.Workspaces], (old: WorkspaceType[]) => {
                 return old.map((workspace) => workspace.id === updatedWorkspace.id ? updatedWorkspace : workspace);
             });
-            queryClient.invalidateQueries({ queryKey: [QueriesKeys.WorkspacesDashboard] });
         },
         onError: (error) => {
             toast.error(error.message || "Failed to update workspace");

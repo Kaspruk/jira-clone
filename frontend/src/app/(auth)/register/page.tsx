@@ -5,10 +5,10 @@ export default function RegisterPage() {
     return (
         <div className="space-y-6">
             <div className="text-center">
-                <h2 className="text-xl font-semibold text-gray-900 mb-2">
+                <h2 className="text-xl font-semibold text-foreground mb-2">
                     Створити акаунт
                 </h2>
-                <p className="text-gray-600 text-sm">
+                <p className="text-muted-foreground text-sm">
                     Заповніть форму для реєстрації
                 </p>
             </div>
@@ -16,11 +16,11 @@ export default function RegisterPage() {
             <RegisterForm />
 
             <div className="text-center">
-                <span className="text-gray-600 text-sm">
+                <span className="text-muted-foreground text-sm">
                     Вже маєте акаунт?{" "}
                     <Link 
                         href="/login"
-                        className="text-blue-600 hover:text-blue-500 font-medium"
+                        className="text-primary hover:underline font-medium transition-colors"
                     >
                         Увійти
                     </Link>

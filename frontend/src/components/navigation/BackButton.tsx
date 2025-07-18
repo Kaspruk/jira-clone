@@ -40,8 +40,8 @@ const BackButtonComponent = memo(() => {
 
     return (
         <Button
-            variant="outline"
             size="iconSm"
+            variant="outline"
             onClick={handleBack}
         >
             <Icon name="arrow_back" size={18} />

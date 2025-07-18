@@ -12,11 +12,11 @@ import { tv, VariantProps } from "tailwind-variants"
 
 const listItemVariants = tv({
     slots: {
-        base: 'flex items-center gap-4 origin-center touch-manipulation bg-white shadow-sm rounded-md',
+        base: 'flex items-center gap-4 origin-center touch-manipulation bg-card border border-border-sm dark:border-border shadow-sm rounded-lg',
         left: 'flex',
         right: 'flex',
-        title: 'font-normal',
-        subtitle: 'text-gray-500',
+        title: 'font-normal text-foreground',
+        subtitle: 'text-muted-foreground',
     },
     variants: {
         variant: {
@@ -29,7 +29,7 @@ const listItemVariants = tv({
         },
         disabled: {
             true: {
-                base: 'bg-gray-100 opacity-50 cursor-default',
+                base: 'bg-muted opacity-50 cursor-default',
             },
         },
         isDragging: {

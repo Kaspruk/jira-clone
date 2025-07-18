@@ -66,7 +66,7 @@ export const SortableList = genericMemo(<T extends { id: UniqueIdentifier },>(pr
             }}
             onDragCancel={() => setActiveId(null)}
         >
-            <ul className="flex flex-col gap-2 bg-gray-50 rounded-lg p-2">
+            <ul className="flex flex-col gap-2 bg-muted/50 dark:bg-background rounded-lg p-2">
                 <SortableContext items={items} strategy={verticalListSortingStrategy}>
                     {items.map(renderItem)}
                 </SortableContext>

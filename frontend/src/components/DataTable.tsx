@@ -141,10 +141,10 @@ export const DataTable: React.NamedExoticComponent<DataTableProps> & {
     }, []);
 
     return (
-        <div className={cn("rounded-xl border bg-card shadow-sm overflow-hidden", className)}>
+        <div className={cn("rounded-lg border border-border-sm bg-card shadow-sm overflow-hidden", className)}>
             <Table className="relative">
                 <TableHeader className="bg-muted/30">
-                    <tr className="border-b border-border">
+                    <TableRow>
                         {columns.map((column) => {
                             const sortValue = sortState[column.key];
                             const onSort = () => onSortHandler(column.key);
@@ -162,7 +162,7 @@ export const DataTable: React.NamedExoticComponent<DataTableProps> & {
                                 )
                             )
                         })}
-                    </tr>
+                    </TableRow>
                 </TableHeader>
                 <TableBody>
                     {data.length ? (
@@ -173,11 +173,11 @@ export const DataTable: React.NamedExoticComponent<DataTableProps> & {
                                     key={row.id} 
                                     onClick={onClick}
                                     className={cn(
-                                        "border-b border-border/50 transition-all duration-200",
+                                        "transition-all duration-200 animate-slide-up",
                                         "hover:bg-muted/50 hover:shadow-sm",
                                         onClick && "cursor-pointer",
                                         "data-[state=selected]:bg-muted",
-                                        index % 2 === 0 ? "bg-background" : "bg-muted/20"
+                                        `delay-${Math.min(index * 100, 500)}`
                                     )}
                                 >
                                     {columns.map((column) => {

@@ -100,8 +100,6 @@ axiosClient.interceptors.request.use(
     if (!tokens.accessToken && getIsClient()) {
       const session = await getSession();
 
-      console.log('session', session);
-
       if (session) {
         setTokens(session?.accessToken || '', session?.refreshToken || '');
       }
@@ -172,6 +170,8 @@ axiosClient.interceptors.response.use(
           window.location.href = '/login';
         }
       }
+
+      return Promise.resolve(null);
     }
     
     return Promise.reject(error);

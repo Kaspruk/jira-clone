@@ -12,6 +12,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Icon } from "@/components/ui/icon";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { useUser } from "../api";
 
 interface UserPreviewProps {
@@ -48,7 +49,7 @@ export const UserPreview = ({ className, isCollapsed = false, onOpenChange }: Us
         <DropdownMenu onOpenChange={onOpenChange}>
             <DropdownMenuTrigger asChild>
                 <div className={cn(
-                    "flex items-center rounded-lg cursor-pointer hover:bg-neutral-100 transition-all duration-300",
+                    "flex items-center rounded-lg cursor-pointer hover:bg-muted transition-all duration-200",
                     isCollapsed 
                         ? "p-1.5 justify-center rounded-full"
                         : "gap-3 p-2",
@@ -56,7 +57,7 @@ export const UserPreview = ({ className, isCollapsed = false, onOpenChange }: Us
                 )}>
                     <Avatar className="h-8 w-8">
                         <AvatarImage src={user.avatar} alt={user.username} />
-                        <AvatarFallback className="bg-blue-500 text-white text-sm">
+                        <AvatarFallback className="bg-primary text-primary-foreground text-sm">
                             {getInitials(user.username)}
                         </AvatarFallback>
                     </Avatar>
@@ -64,17 +65,17 @@ export const UserPreview = ({ className, isCollapsed = false, onOpenChange }: Us
                     {!isCollapsed && (
                         <>
                             <div className="flex flex-col min-w-0 flex-1">
-                                <span className="text-sm font-medium text-neutral-900 truncate">
+                                <span className="text-sm font-medium text-foreground truncate">
                                     {user.username}
                                 </span>
-                                <span className="text-xs text-neutral-500 truncate">
+                                <span className="text-xs text-muted-foreground truncate">
                                     {user.email}
                                 </span>
                             </div>
                             <Icon 
                                 name="expand_more" 
                                 size={16} 
-                                className="text-neutral-400 transition-transform group-data-[state=open]:rotate-180" 
+                                className="text-muted-foreground transition-transform group-data-[state=open]:rotate-180" 
                             />
                         </>
                     )}
@@ -84,6 +85,10 @@ export const UserPreview = ({ className, isCollapsed = false, onOpenChange }: Us
                 align="start" 
                 className="w-56"
             >
+                <div className="px-2 py-1.5 justify-center">
+                    <ThemeToggle />
+                </div>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem 
                     onClick={() => null}
                     className="cursor-pointer"
@@ -91,10 +96,9 @@ export const UserPreview = ({ className, isCollapsed = false, onOpenChange }: Us
                     <Icon name="edit" size={16} className="mr-2" />
                     Редагувати профіль
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
                 <DropdownMenuItem 
                     onClick={handleLogout}
-                    className="cursor-pointer text-red-600 focus:text-red-600"
+                    className="cursor-pointer text-destructive focus:text-destructive"
                 >
                     <Icon name="logout" size={16} className="mr-2" />
                     Вийти
