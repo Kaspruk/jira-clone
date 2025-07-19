@@ -2,6 +2,7 @@ import axios from 'axios';
 import { getSession, signOut } from 'next-auth/react';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from './auth';
+import { getIsClient } from './utils';
 
 // Створюємо екземпляр axios з базовою конфігурацією
 const axiosClient = axios.create({
@@ -20,8 +21,6 @@ const serverAxiosClient = axios.create({
     'Content-Type': 'application/json',
   },
 });
-
-const getIsClient = () => typeof window !== 'undefined';
 
 const tokens = {
   _accessToken: '',

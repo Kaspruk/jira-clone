@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn, getIsClient } from "@/lib/utils";
 
 type Theme = "light" | "dark" | "system";
 
@@ -14,7 +14,12 @@ const themes = [
 ];
 
 export const useColorTheme = () => {
-  const [theme, setTheme] = useState<Theme>(() => localStorage.getItem("theme") as Theme || "system");
+  const [theme, setTheme] = useState<Theme>(() => {
+    if (getIsClient()) {
+      return localStorage.getItem("theme") as Theme || "system";
+    }
+    return "system";
+  });
 
   const applyTheme = useCallback((newTheme: Theme) => {
     const root = document.documentElement;
@@ -34,10 +39,14 @@ export const useColorTheme = () => {
     }
 
     setTheme(newTheme);
-    localStorage.setItem("theme", newTheme);
+    if (getIsClient()) {
+      localStorage.setItem("theme", newTheme);
+    }
   }, []);
 
   useEffect(() => {
+    if (!getIsClient()) return;
+    
     const localTheme = localStorage.getItem("theme") as Theme || "system";
     const matchDarkMedia = window.matchMedia("(prefers-color-scheme: dark)");
 

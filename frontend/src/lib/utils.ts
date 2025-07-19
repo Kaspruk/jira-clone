@@ -102,3 +102,5 @@ export class ResponseError extends Error {
     return JSON.stringify(this);
   } 
 }
+
+export const getIsClient = () => typeof window !== 'undefined';
