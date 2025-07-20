@@ -2,6 +2,8 @@ import { GoHome, GoHomeFill, GoProject } from "react-icons/go";
 import { AiFillProject } from "react-icons/ai";
 import { IoSettingsOutline, IoSettingsSharp } from "react-icons/io5";
 import { SiTask } from "react-icons/si";
+import { FaRegUser, FaUser } from "react-icons/fa";
+
 
 import { Routes } from "@/lib/constants";
 
@@ -43,6 +45,12 @@ export const RoutesMap: Record<string, RouteType> = {
         icon: SiTask,
         activeIcon: SiTask,
     },
+    [Routes.Profile]: {
+        label: "Profile",
+        href: Routes.Profile,
+        icon: FaRegUser,
+        activeIcon: FaUser,
+    },
 };
 
 export enum NavigationState {
@@ -50,5 +58,6 @@ export enum NavigationState {
     Workspace = 'workspace',
     Project = 'project',
     Task = 'task',
+    Profile = 'profile',
 }
 

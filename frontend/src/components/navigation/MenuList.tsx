@@ -22,7 +22,7 @@ export const MenuList = memo(({ isMobile = false, isCollapsed = false }: MenuLis
   const params = useParams();
   const pathname = usePathname();
   const queryClient = useQueryClient();
-  const navigationState = getNavidationStateKey(params as Record<string, string>);
+  const navigationState = getNavidationStateKey(params as Record<string, string>, pathname);
   const isTaskPage = navigationState === NavigationState.Task;
 
   const menuItems = useMemo(() => {
@@ -44,11 +44,16 @@ export const MenuList = memo(({ isMobile = false, isCollapsed = false }: MenuLis
             RoutesMap[Routes.ProjectSettings]
           ];
           break;
-          break;
         case NavigationState.Workspace:
           items = [
             RoutesMap[Routes.Home],
             RoutesMap[Routes.Workspace],
+          ];
+          break;
+        case NavigationState.Profile:
+          items = [
+            RoutesMap[Routes.Home],
+            RoutesMap[Routes.Profile],
           ];
           break;
     }

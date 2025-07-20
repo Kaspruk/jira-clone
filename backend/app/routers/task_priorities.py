@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from app.database import get_db_connection
 from app.services.task_priorities import TaskPriorityService
 from app.services.projects import ProjectService
-from app.models import TaskPriorityModel
+from app.models import TaskPriorityModel, ResponseException
 from app.services.auth import AuthService
 
 router = APIRouter(
@@ -13,10 +13,15 @@ router = APIRouter(
 
 @router.post("/{project_id}/", summary="Create task priority")
 def create_task_priority_router(task_priority: TaskPriorityModel, project_id: int, db=Depends(get_db_connection)):
-    with db as connection:
-        task_priority = TaskPriorityService.create_task_priority(task_priority, connection)
-        ProjectService.update_project_task_priorities(project_id, task_priority['id'], True, connection)
-        return task_priority
+    try:
+        with db as connection:
+            task_priority = TaskPriorityService.create_task_priority(task_priority, connection)
+            ProjectService.update_project_task_priorities(project_id, task_priority['id'], True, connection)
+            return task_priority
+    except ResponseException:
+        raise
+    except Exception as e:
+        raise ResponseException(message=f"Помилка при створенні пріоритету завдання: {str(e)}")
 
 @router.get("/{workspace_id}/", summary="Get all task priorities by workspace id")
 def get_task_priorities_by_workspace_id_router(workspace_id: int, db=Depends(get_db_connection)):

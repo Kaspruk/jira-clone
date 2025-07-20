@@ -6,6 +6,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.database import get_db_connection
 from app.schemas import SCHEMAS
@@ -37,6 +38,9 @@ app.include_router(task_statuses.router)
 app.include_router(task_priorities.router)
 app.include_router(task_types.router)
 app.include_router(dashboard.router)
+
+# Статичні файли для аватарів
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 # CORS налаштування для розробки та production
 allowed_origins = [

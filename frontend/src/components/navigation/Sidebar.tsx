@@ -2,7 +2,7 @@
 
 import { memo, useRef, useEffect, useState } from "react";
 import { useMediaQuery } from 'react-responsive'
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { UserPreview } from "@/features/users";
 
@@ -15,6 +15,8 @@ import { MediaQuery } from "./MediaQueryWrapper";
 
 const SidebarComponent = memo(() => {
   const params = useParams();
+  const pathname = usePathname();
+  console.log(pathname);
   
   const isTablet = useMediaQuery({ maxWidth: 1024 });
   const [isHovered, setIsHovered] = useState(() => !isTablet);
@@ -23,9 +25,10 @@ const SidebarComponent = memo(() => {
   const isSwitcherOpen = useRef(false);
   const isMouseOverSidebar = useRef(false);
   
-  const navigationState = getNavidationStateKey(params as Record<string, string>);
+  const navigationState = getNavidationStateKey(params as Record<string, string>, pathname);
   const isHome = navigationState === NavigationState.Home;
   const isTask = navigationState === NavigationState.Task;
+  const isProfile = navigationState === NavigationState.Profile;
   const isHomeRef = useRef(false);
   isHomeRef.current = isHome;
 
@@ -98,7 +101,7 @@ const SidebarComponent = memo(() => {
           <UserPreview isCollapsed={!isHovered} onOpenChange={handleOpenChange} />
           <DottedSeparator className="my-4" />
 
-          {!isTask && (
+          {(!isTask && !isProfile) && (
             <>
               <WorkspaceSwitcher isCollapsed={!isHovered} onOpenChange={handleOpenChange} />
               <DottedSeparator className="my-4" />

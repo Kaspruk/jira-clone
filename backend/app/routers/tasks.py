@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from app.database import get_db_connection
 from app.services.tasks import TaskService
-from app.models import TaskModel
+from app.models import TaskModel, ResponseException
 from app.services.auth import AuthService
 
 router = APIRouter(
@@ -12,8 +12,13 @@ router = APIRouter(
 
 @router.post("/", summary="Create task")
 def create_ptask_router(task: TaskModel, db=Depends(get_db_connection)):
-    with db as connection:
-        return TaskService.create_task(task, connection)
+    try:
+        with db as connection:
+            return TaskService.create_task(task, connection)
+    except ResponseException:
+        raise
+    except Exception as e:
+        raise ResponseException(message=f"Помилка при створенні завдання: {str(e)}")
     
 @router.get("/",  summary="Get all tasks")
 def get_tasks_router(db=Depends(get_db_connection), projectId: str | None = None):

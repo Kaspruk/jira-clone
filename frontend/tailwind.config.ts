@@ -54,6 +54,14 @@ const config: Config = {
           DEFAULT: 'hsl(48 96% 53%)',
           foreground: 'hsl(26 83% 14%)'
         },
+        red: 'hsl(var(--red))',
+        yellow: 'hsl(var(--yellow))',
+        orange: 'hsl(var(--orange))',
+        green: 'hsl(var(--green))',
+        pink: 'hsl(var(--pink))',
+        blue: 'hsl(var(--blue))',
+        purple: 'hsl(var(--purple))',
+        'cloud-green': 'hsl(var(--cloud-green))',
         border: {
           DEFAULT: 'hsl(var(--border))',
           sm: 'hsl(var(--border-sm))',

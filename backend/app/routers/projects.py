@@ -2,7 +2,7 @@ from typing import Dict
 from fastapi import APIRouter, Depends
 from app.database import get_db_connection
 from app.services.projects import ProjectService
-from app.models import ProjectModel
+from app.models import ProjectModel, ResponseException
 from app.services.auth import AuthService
 
 router = APIRouter(
@@ -13,8 +13,13 @@ router = APIRouter(
 
 @router.post("/", summary="Create project")
 def create_project_router(project: ProjectModel, db=Depends(get_db_connection)):
-    with db as connection:
-        return ProjectService.create_project(project, connection)
+    try:
+        with db as connection:
+            return ProjectService.create_project(project, connection)
+    except ResponseException:
+        raise
+    except Exception as e:
+        raise ResponseException(message=f"Помилка при створенні проекту: {str(e)}")
 
 @router.get("/",  summary="Get all projects")
 def get_projects_router(workspace_id: int = None, db=Depends(get_db_connection)):

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from app.database import get_db_connection
 from app.services.workspaces import WorkspaceService
-from app.models import WorkspaceModel, TokenData
+from app.models import WorkspaceModel, TokenData, ResponseException
 from app.services.auth import AuthService
 
 router = APIRouter(
@@ -14,9 +14,14 @@ def get_workspaces_route(
     current_user: TokenData = Depends(AuthService.get_current_user),
     db=Depends(get_db_connection)
 ):
-    # Логіка для отримання списку робочих просторів поточного користувача
-    with db as connection:
-        return WorkspaceService.get_workspaces_by_user_id(current_user.user_id, connection) 
+    try:
+        # Логіка для отримання списку робочих просторів поточного користувача
+        with db as connection:
+            return WorkspaceService.get_workspaces_by_user_id(current_user.user_id, connection)
+    except ResponseException:
+        raise
+    except Exception as e:
+        raise ResponseException(message=f"Помилка при отриманні робочих просторів: {str(e)}") 
 
 @router.get("/{workspace_id}")
 def get_workspace_by_id_route(

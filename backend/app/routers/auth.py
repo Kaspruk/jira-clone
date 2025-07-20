@@ -3,7 +3,7 @@ from fastapi.security import HTTPAuthorizationCredentials
 from typing import Optional
 from app.database import get_db_connection
 from app.services.auth import AuthService
-from app.models import UserModel, UserLoginModel, UserResponse, AuthResponse, RefreshTokenRequest
+from app.models import UserModel, UserLoginModel, UserResponse, AuthResponse, RefreshTokenRequest, ResponseException
 
 router = APIRouter(
     prefix="/auth",
@@ -12,8 +12,13 @@ router = APIRouter(
 
 @router.post("/register", response_model=UserResponse, summary="Реєстрація нового користувача")
 def register(user_data: UserModel, db=Depends(get_db_connection)):
-    with db as connection:
-        return AuthService.register_user(user_data, connection)
+    try:
+        with db as connection:
+            return AuthService.register_user(user_data, connection)
+    except ResponseException:
+        raise
+    except Exception as e:
+        raise ResponseException(message=f"Помилка при реєстрації: {str(e)}")
 
 @router.post("/login", response_model=AuthResponse, summary="Вхід в систему")
 def login(
@@ -21,8 +26,13 @@ def login(
     response: Response,
     db=Depends(get_db_connection)
 ):
-    with db as connection:
-        return AuthService.login_user(user_data, connection, response)
+    try:
+        with db as connection:
+            return AuthService.login_user(user_data, connection, response)
+    except ResponseException:
+        raise
+    except Exception as e:
+        raise ResponseException(message=f"Помилка при вході: {str(e)}")
 
 @router.post("/refresh", summary="Оновити access токен")
 def refresh_token(

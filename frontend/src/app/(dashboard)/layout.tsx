@@ -5,6 +5,7 @@ import { getUser } from "@/features/users";
 import { getWorkspaceDashboardData, getWorkspaces, WorkspaceModal } from "@/features/workspaces";
 import { CreateProjectModal } from "@/features/projects";
 import { CreateTaskModal } from "@/features/tasks";
+import { ChangePasswordModal } from "@/features/users";
 import { Confirm } from "@/components/Confirm";
 import { getQueryClient } from "@/lib/react-query";
 import { TopBar, Sidebar, BottomBar } from "@/components/navigation";
@@ -60,6 +61,7 @@ export default async function DashboardLayout(props: DashboardLayoutProps) {
       <WorkspaceModal />
       <CreateProjectModal />
       <CreateTaskModal />
+      <ChangePasswordModal />
       <Confirm />
     </HydrationBoundary>
   );

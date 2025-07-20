@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from app.database import get_db_connection
 from app.services.task_types import TaskTypeService
 from app.services.projects import ProjectService
-from app.models import TaskTypeModel
+from app.models import TaskTypeModel, ResponseException
 from app.services.auth import AuthService
 
 router = APIRouter(
@@ -13,10 +13,15 @@ router = APIRouter(
 
 @router.post("/{project_id}/", summary="Create task type")
 def create_task_type_router(task_type: TaskTypeModel, project_id: int, db=Depends(get_db_connection)):
-    with db as connection:
-        task_type = TaskTypeService.create_task_type(task_type, connection)
-        ProjectService.update_project_task_types(project_id, task_type['id'], True, connection)
-        return task_type
+    try:
+        with db as connection:
+            task_type = TaskTypeService.create_task_type(task_type, connection)
+            ProjectService.update_project_task_types(project_id, task_type['id'], True, connection)
+            return task_type
+    except ResponseException:
+        raise
+    except Exception as e:
+        raise ResponseException(message=f"Помилка при створенні типу завдання: {str(e)}")
 
 @router.get("/{workspace_id}/", summary="Get all task types by workspace id")
 def get_task_types_by_workspace_id_router(workspace_id: int, db=Depends(get_db_connection)):

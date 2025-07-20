@@ -16,6 +16,7 @@ export const QueriesKeys = {
 
 export const Routes = {
     Home: '/',
+    Profile: '/profile',
     Task: '/tasks/:taskId',
     Workspace: '/:workspaceId/projects',
     Project: '/:workspaceId/projects/:projectId/tasks',

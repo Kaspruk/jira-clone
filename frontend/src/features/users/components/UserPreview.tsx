@@ -90,7 +90,7 @@ export const UserPreview = ({ className, isCollapsed = false, onOpenChange }: Us
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem 
-                    onClick={() => null}
+                    onClick={() => router.push('/profile')}
                     className="cursor-pointer"
                 >
                     <Icon name="edit" size={16} className="mr-2" />

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from app.database import get_db_connection
 from app.services.task_statuses import TaskStatusService
 from app.services.projects import ProjectService
-from app.models import TaskStatusModel
+from app.models import TaskStatusModel, ResponseException
 from app.services.auth import AuthService
 
 router = APIRouter(
@@ -13,10 +13,15 @@ router = APIRouter(
 
 @router.post("/{project_id}/", summary="Create task status")
 def create_task_status_router(task_status: TaskStatusModel, project_id: int, db=Depends(get_db_connection)):
-    with db as connection:
-        task_status = TaskStatusService.create_task_status(task_status, connection)
-        ProjectService.update_project_task_statuses(project_id, task_status['id'], True, connection)
-        return task_status
+    try:
+        with db as connection:
+            task_status = TaskStatusService.create_task_status(task_status, connection)
+            ProjectService.update_project_task_statuses(project_id, task_status['id'], True, connection)
+            return task_status
+    except ResponseException:
+        raise
+    except Exception as e:
+        raise ResponseException(message=f"Помилка при створенні статусу завдання: {str(e)}")
 
 @router.get("/{workspace_id}/",  summary="Get all tasks statuses by workspace id")
 def get_tasks_statuses_by_workspace_id_router(workspace_id: int, db=Depends(get_db_connection)):

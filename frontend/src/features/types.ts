@@ -118,7 +118,7 @@ export enum TypeTask {
 
 export type UserType = {
   id: number;
-  avatar: string;
+  avatar?: string;
   username: string;
   email: string;
   created_at: number;

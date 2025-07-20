@@ -64,6 +64,14 @@ class UserResponse(BaseModel):
     email: EmailStr
     created_at: datetime
     
+class UserUpdateModel(BaseModel):
+    username: Optional[str] = None
+    email: Optional[EmailStr] = None
+
+class UserPasswordChangeModel(BaseModel):
+    current_password: str
+    new_password: str
+
 class TokenPair(BaseModel):
     access_token: str
     refresh_token: str
