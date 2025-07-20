@@ -9,8 +9,9 @@ import { useChangePasswordModalState } from '@/features/users/hooks';
 import { useUser } from '../api';
 import { useLogout } from '@/features/auth/api';
 import { useRouter } from 'next/navigation';
+import { memo } from 'react';
 
-export function UserStatus() {
+export const UserStatus = memo(() => {
   const { data: user } = useUser();
   const [_, setIsPasswordModalOpen] = useChangePasswordModalState();
   const { mutate: logout } = useLogout();
@@ -92,4 +93,4 @@ export function UserStatus() {
       </CardContent>
     </Card>
   );
-}
+});

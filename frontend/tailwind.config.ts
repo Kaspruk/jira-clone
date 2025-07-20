@@ -119,6 +119,7 @@ const config: Config = {
   },
   plugins: [
     require("tailwindcss-animate"),
+    require('tailwindcss-displaymodes'),
     plugin(({ addBase }) => {
       addBase({
         ':root': {

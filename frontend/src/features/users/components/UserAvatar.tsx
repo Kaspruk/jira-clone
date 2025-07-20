@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { toast } from "sonner";
 import * as motion from "motion/react-client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,7 +10,7 @@ import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import { useUser, useUpdateUser, useUploadAvatar } from "@/features/users/api";
 
-export function UserAvatar() {
+export const UserAvatar = memo(() => {
     const { data: user } = useUser();
     const { mutate: updateUser, isPending: isUpdating } = useUpdateUser();
     const { mutate: uploadAvatar, isPending: isUploadingAvatar } = useUploadAvatar();
@@ -174,4 +174,4 @@ export function UserAvatar() {
             </CardContent>
         </Card>
     );
-} 
+}); 

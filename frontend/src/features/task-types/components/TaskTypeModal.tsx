@@ -17,25 +17,26 @@ import { TaskTypeType } from "@/features/types";
 
 import { useTaskTypeModalState } from "../hooks";
 
-// Define the form data type
-type FormDataType = Omit<TaskTypeType, 'id'> & { id?: TaskTypeType['id'] | null };
-
-type TaskTypeModalProps = Partial<Omit<ResponsiveModalProps, 'children'>> & {
+type TaskTypeFormProps = {
     data?: TaskTypeType | null;
     workspaceId: number;
     onSubmit: (data: FormDataType) => void;
 }
 
-export const TaskTypeModal = memo((props: TaskTypeModalProps) => {
+// Define the form data type
+type FormDataType = Omit<TaskTypeType, 'id'> & { id?: TaskTypeType['id'] | null };
+
+type TaskTypeModalProps = Partial<Omit<ResponsiveModalProps, 'children'>> & Omit<TaskTypeFormProps, 'onClose'>
+
+const TaskTypeForm = memo((props: TaskTypeFormProps) => {
     const {
         data,
         workspaceId,
         onSubmit,
-        onOpenChange,
     } = props;
 
-    const [isOpen, setIsOpen] = useTaskTypeModalState();
     const isEdit = Boolean(data);
+    const [isOpen, setIsOpen] = useTaskTypeModalState();
 
     const {
         reset,
@@ -59,10 +60,6 @@ export const TaskTypeModal = memo((props: TaskTypeModalProps) => {
     const formValues = getValues();
 
     useEffect(() => {
-        if (isOpen) {
-            reset();
-        }
-
         if (data) {
             setValue('id', data.id);
             setValue('name', data.name);
@@ -72,69 +69,77 @@ export const TaskTypeModal = memo((props: TaskTypeModalProps) => {
         }
     }, [isOpen]);
 
-    const handleOpenChange = (isOpen: boolean) => {
-        setIsOpen(isOpen);
-        onOpenChange?.(isOpen);
+    const handleClose = () => {
+        setIsOpen(false);
+        reset();
     };
 
     return (
-        <ResponsiveModal open={isOpen} onOpenChange={handleOpenChange}>
-            <Card className="w-full p-4 h-full border-none shadow-none overflow-y-auto">
-                <CardHeader className="flex mb-4">
-                    <DialogTitle className="text-xl font-bold">
-                        {isEdit ? "Edit Task Type" : "Create Task Type"}
-                    </DialogTitle>
-                </CardHeader>
-                <div className="mb-4">
-                    <DottedSeparator />
-                </div>
-                <CardContent>
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <div className="space-y-2 mb-4">
-                            <Label htmlFor="typeName">Type Name</Label>
-                            <Controller
-                                name="name"
-                                control={control}
-                                rules={{ required: { value: true, message: 'Field is required' } }}
-                                render={({ field }) => (
-                                    <Input id="typeName" {...field} />
-                                )}
-                            />
-                            {errors.name && (<ErrorMessage>{errors.name.message}</ErrorMessage>)}
-                        </div>
-                        <div className="space-y-2 mb-2">
-                            <Label htmlFor="typeDescription">Description</Label>
-                            <Controller
-                                name="description"
-                                control={control}
-                                rules={{ required: { value: true, message: 'Field is required' } }}
-                                render={({ field }) => (
-                                    <Textarea id="typeDescription" {...field} />
-                                )}
-                            />
-                            {errors.description && (<ErrorMessage>{errors.description.message}</ErrorMessage>)}
-                        </div>
-                        <IconForm
+        <Card className="w-full p-4 h-full border-none shadow-none overflow-y-auto">
+            <CardHeader className="flex mb-4">
+                <DialogTitle className="text-xl font-bold">
+                    {isEdit ? "Edit Task Type" : "Create Task Type"}
+                </DialogTitle>
+            </CardHeader>
+            <div className="mb-4">
+                <DottedSeparator />
+            </div>
+            <CardContent>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <div className="space-y-2 mb-4">
+                        <Label htmlFor="typeName">Type Name</Label>
+                        <Controller
+                            name="name"
                             control={control}
-                            icon={formValues.icon}
-                            color={formValues.color}
+                            rules={{ required: { value: true, message: 'Field is required' } }}
+                            render={({ field }) => (
+                                <Input id="typeName" {...field} />
+                            )}
                         />
-                        <DottedSeparator className="my-4" />
-                        <div className="flex items-center justify-between">
-                            <Button
-                                type="button"
-                                variant="secondary"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                Cancel
-                            </Button>
-                            <Button type="submit">
-                                {isEdit ? "Update Type" : "Create Type"}
-                            </Button>
-                        </div>
-                    </form>
-                </CardContent>
-            </Card>
+                        {errors.name && (<ErrorMessage>{errors.name.message}</ErrorMessage>)}
+                    </div>
+                    <div className="space-y-2 mb-2">
+                        <Label htmlFor="typeDescription">Description</Label>
+                        <Controller
+                            name="description"
+                            control={control}
+                            rules={{ required: { value: true, message: 'Field is required' } }}
+                            render={({ field }) => (
+                                <Textarea id="typeDescription" {...field} />
+                            )}
+                        />
+                        {errors.description && (<ErrorMessage>{errors.description.message}</ErrorMessage>)}
+                    </div>
+                    <IconForm
+                        control={control}
+                        icon={formValues.icon}
+                        color={formValues.color}
+                    />
+                    <DottedSeparator className="my-4" />
+                    <div className="flex items-center justify-between">
+                        <Button
+                            type="button"
+                            variant="secondary"
+                            onClick={handleClose}
+                        >
+                            Cancel
+                        </Button>
+                        <Button type="submit">
+                            {isEdit ? "Update Type" : "Create Type"}
+                        </Button>
+                    </div>
+                </form>
+            </CardContent>
+        </Card>
+    )
+})
+
+export const TaskTypeModal = memo((props: TaskTypeModalProps) => {
+    const [isOpen, setIsOpen] = useTaskTypeModalState();
+
+    return (
+        <ResponsiveModal open={isOpen} onOpenChange={setIsOpen}>
+            <TaskTypeForm {...props} />
         </ResponsiveModal>
     );
 }); 

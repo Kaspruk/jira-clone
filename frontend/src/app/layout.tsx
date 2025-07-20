@@ -48,18 +48,6 @@ export const metadata: Metadata = {
   },
   applicationName: "Jira Clone",
   referrer: "origin-when-cross-origin",
-  colorScheme: "light dark",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#FF9100" },
-    { media: "(prefers-color-scheme: dark)", color: "#FFA500" },
-  ],
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-    interactiveWidget: "overlays-content",
-  },
   robots: {
     index: true,
     follow: true,
@@ -73,6 +61,20 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  interactiveWidget: "overlays-content",
+  colorScheme: "light dark",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#FF9100" },
+    { media: "(prefers-color-scheme: dark)", color: "#FFA500" },
+  ],
+  viewportFit: "cover",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -84,14 +86,14 @@ export default function RootLayout({
         className={cn(
           inter.className,
           materialIcons.variable,
-          "flex antialiased min-h-svh bg-background max-md:flex-col"
+          "flex antialiased min-h-screen-safe bg-background max-md:flex-col"
         )}
       >
         <Providers>
           {children}
         </Providers>
         <Toaster />
-        <script
+        {/* <script
           dangerouslySetInnerHTML={{
             __html: `
               if ('serviceWorker' in navigator) {
@@ -107,7 +109,7 @@ export default function RootLayout({
               }
             `,
           }}
-        />
+        /> */}
       </body>
     </html>
   );

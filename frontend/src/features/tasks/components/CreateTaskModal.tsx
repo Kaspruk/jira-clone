@@ -1,5 +1,6 @@
 'use client';
 
+import { memo } from "react";
 import { ResponsiveModal } from "@/components/ResponsiveModal";
 import { DialogTitle } from "@/components/ui/dialog";
 import { Card, CardHeader } from "@/components/ui/card";
@@ -11,7 +12,7 @@ import { useTaskModalState } from "../hooks";
 
 import { TaskForm } from "./TaskForm";
 
-export const CreateTaskModal = () => {
+export const CreateTaskModal = memo(() => {
     const [isOpen, setIsOpen] = useTaskModalState();
 
     return (
@@ -38,4 +39,4 @@ export const CreateTaskModal = () => {
             </Card>
         </ResponsiveModal>
     )
-};
+});

@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useMemo } from "react";
+import { memo, useCallback, useMemo } from "react";
 import { useRouter } from 'next/navigation'
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { LuEllipsisVertical as MoreVertical } from "react-icons/lu";
@@ -19,7 +19,7 @@ type TasksTableProps = {
     projectId: number;
 }
 
-export const TasksTable = ({ projectId }: TasksTableProps) => {
+export const TasksTable = memo(({ projectId }: TasksTableProps) => {
     const router = useRouter();
     const { data: project } = useSuspenseQuery(getProject(projectId));
     const { data: tasks } = useSuspenseQuery(getTasks(projectId));
@@ -104,7 +104,7 @@ export const TasksTable = ({ projectId }: TasksTableProps) => {
             onRowClick={onRowClick}
         />
     )
-};
+});
 
 export const CreateTaskButton = () => {
     const [_, setIsOpen] = useTaskModalState();

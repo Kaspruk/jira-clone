@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useTransition, useEffect, useCallback } from "react";
+import React, { useState, useTransition, useEffect, useCallback, memo } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { arrayMove } from "@dnd-kit/sortable";
 import { TaskStatusType, WorkspaceTaskStatusType } from "@/features/types";
@@ -20,7 +20,7 @@ interface TaskStatusesListProps {
   workspaceId: number;
 }
 
-export const TaskStatusesList: React.FC<TaskStatusesListProps> = (props) => {
+export const TaskStatusesList = memo((props: TaskStatusesListProps) => {
     const { projectId, workspaceId } = props;
   
     const { data: originalStatuses } = useSuspenseQuery(getWorkspaceStatuses(workspaceId, projectId));
@@ -69,7 +69,7 @@ export const TaskStatusesList: React.FC<TaskStatusesListProps> = (props) => {
       );
     };
   
-    const handleSelect = (id: number) => (value: boolean) => {
+    const handleSelect = useCallback((id: number) => (value: boolean) => {
       let oldIndex = 0;
       let newIndex = 0;
   
@@ -113,9 +113,9 @@ export const TaskStatusesList: React.FC<TaskStatusesListProps> = (props) => {
             });
           },
       })
-    };
+    }, [selectProjectStatus, projectId, workspaceId]);
 
-    const handleRemoveTaskStatus = (id: number) => () => {
+    const handleRemoveTaskStatus = useCallback((id: number) => () => {
       Confirm.onConfirm({
         title: 'Remove Task Status',
         message: 'Are you sure you want to remove this task status?',
@@ -128,7 +128,7 @@ export const TaskStatusesList: React.FC<TaskStatusesListProps> = (props) => {
           });
         }
       });
-    };
+    }, [removeTaskStatus, workspaceId]);
 
     const handleCreateTaskStatus = useCallback((data: Omit<TaskStatusType, 'id'> & { id?: TaskStatusType['id'] | null }) => {
       const onSuccess = () => {
@@ -151,6 +151,25 @@ export const TaskStatusesList: React.FC<TaskStatusesListProps> = (props) => {
         setEditedTaskStatus(null);
       }
     }, []);
+
+    const getIndex = useCallback((id: number) => {
+      return statuses.findIndex((status) => status.id === id);
+    }, [statuses]);
+
+    const renderItem = useCallback((data: WorkspaceTaskStatusType) => {
+      return (
+        <TaskStatusListItem
+          key={data.id}
+          {...data}
+          onEdit={() => {
+            setEditedTaskStatus(data);
+            setIsOpen(true);
+          }}
+          onSelect={handleSelect(data.id)}
+          onRemove={handleRemoveTaskStatus(data.id)}
+        />
+      )
+    }, [handleSelect, handleRemoveTaskStatus]);
   
     return (
       <>
@@ -172,22 +191,9 @@ export const TaskStatusesList: React.FC<TaskStatusesListProps> = (props) => {
         </div>
         <SortableList<WorkspaceTaskStatusType>
           items={statuses}
-          getIndex={(id) => statuses.findIndex((status) => status.id === id)}
+          getIndex={getIndex}
           onReorder={handleReorder}
-          renderItem={(data) => {
-            return (
-              <TaskStatusListItem
-                key={data.id}
-                {...data}
-                onEdit={() => {
-                  setEditedTaskStatus(data);
-                  setIsOpen(true);
-                }}
-                onSelect={handleSelect(data.id)}
-                onRemove={handleRemoveTaskStatus(data.id)}
-              />
-            );
-          }}
+          renderItem={renderItem}
         />
         <TasksStatusModal
           data={editedTaskStatus}
@@ -197,5 +203,5 @@ export const TaskStatusesList: React.FC<TaskStatusesListProps> = (props) => {
         />
       </>
     );
-  };
+  });
   

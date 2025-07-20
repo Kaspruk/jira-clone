@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { ResponsiveModal } from "./ResponsiveModal"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
@@ -14,7 +15,7 @@ type ConfirmModalProps = Omit<React.ComponentProps<typeof ResponsiveModal>, 'chi
     approveText?: string;
 };
 
-export const ConfirmDialog = (props: ConfirmModalProps) => {
+export const ConfirmDialog = memo((props: ConfirmModalProps) => {
     const {
         title = '',
         message = '',
@@ -60,4 +61,4 @@ export const ConfirmDialog = (props: ConfirmModalProps) => {
             </Card>
         </ResponsiveModal>
     )
-};
+});

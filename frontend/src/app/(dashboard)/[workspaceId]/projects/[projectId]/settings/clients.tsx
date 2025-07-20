@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { EditableEditor, EditableInput } from "@/components/editable";
 import { getProject } from "@/features/projects";
@@ -12,7 +13,7 @@ type ProjectFormProps = {
   onSave?: () => void;
 }
 
-export const ProjectForm = (props: ProjectFormProps) => {
+export const ProjectForm = memo((props: ProjectFormProps) => {
   const { projectId } = props;
   const { data: project } = useSuspenseQuery(getProject(projectId));
 
@@ -54,5 +55,5 @@ export const ProjectForm = (props: ProjectFormProps) => {
       />
     </>
   );
-};
+});
 

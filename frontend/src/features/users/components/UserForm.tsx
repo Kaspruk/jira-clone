@@ -1,16 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Icon } from '@/components/ui/icon';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Label } from '@/components/ui/label';
 import { useUser, useUpdateUser } from '@/features/users/api';
 import { toast } from 'sonner';
 import * as motion from 'motion/react-client';
 
-export function UserForm() {
+export const UserForm = memo(() => {
   const { data: user } = useUser();
   const { mutate: updateUser, isPending } = useUpdateUser();
   const [isEditing, setIsEditing] = useState(false);
@@ -160,4 +159,4 @@ export function UserForm() {
       </CardContent>
     </Card>
   );
-}
+});

@@ -1,15 +1,17 @@
 "use client";
 
+import { memo } from "react";
 import { MenuList } from "./MenuList";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { getNavidationStateKey } from "./utils";
 import { NavigationState } from "./constants";
 import { cn } from "@/lib/utils";
 import { MediaQuery } from "./MediaQueryWrapper";
 
-const BottomBarComponent = () => {
+const BottomBarComponent = memo(() => {
   const params = useParams();
-  const navigationState = getNavidationStateKey(params as Record<string, string>);
+  const pathname = usePathname();
+  const navigationState = getNavidationStateKey(params as Record<string, string>, pathname);
   const isHome = navigationState === NavigationState.Home;
 
   return (
@@ -22,6 +24,7 @@ const BottomBarComponent = () => {
       <div className={
         cn(
           "fixed left-0 right-0 h-bottom-bar p-1.5 border-t border-border bg-background/95 backdrop-blur-sm z-20 transition-all duration-300",
+          "standalone:pb-5 standalone:pt-2 standalone:h-auto standalone:min-h-bottom-bar",
           isHome ? "-bottom-bottom-bar" : "bottom-0"
         )
       }>
@@ -29,7 +32,8 @@ const BottomBarComponent = () => {
       </div>
     </footer>
   );
-};
+});
+
 export const BottomBar = () => {
   return (
     <MediaQuery maxWidth={768}>

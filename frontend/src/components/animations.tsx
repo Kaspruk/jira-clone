@@ -9,10 +9,9 @@ interface AnimatedContainerProps {
 }
 
 export const SlideUpContainer = ({ children, className = "" }: AnimatedContainerProps) => {
-  const pathname = usePathname();
   
   return (
-    <div key={pathname} className={`animate-slide-up ${className}`}>
+    <div className={`animate-slide-up ${className}`}>
       {children}
     </div>
   );

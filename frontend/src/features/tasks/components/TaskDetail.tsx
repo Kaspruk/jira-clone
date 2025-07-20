@@ -1,5 +1,6 @@
 'use client';
 
+import { memo } from "react";
 import { useSuspenseQueries } from "@tanstack/react-query";
 import { getUsers } from "@/features/users";
 import { getProjects } from "@/features/projects";
@@ -20,7 +21,7 @@ type TaskDetailProps = React.PropsWithChildren<{
     onSave?(): void;
 }>;
 
-export const TaskDetail = (props: TaskDetailProps) => {
+export const TaskDetail = memo((props: TaskDetailProps) => {
     const taskId = props.taskId;
     const workspaceId = props.workspaceId;
 
@@ -141,4 +142,4 @@ export const TaskDetail = (props: TaskDetailProps) => {
             </div>
         </div>
     );
-}; 
+}); 

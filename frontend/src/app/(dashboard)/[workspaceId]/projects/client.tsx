@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { memo, useCallback } from "react";
 import { useParams, useRouter } from 'next/navigation'
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { LuEllipsisVertical as MoreVertical } from "react-icons/lu";
@@ -63,7 +63,7 @@ const tableColumns: DataTableProps['columns'] = [
     }
 ];
 
-export const ProjectsTable = () => {
+export const ProjectsTable = memo(() => {
     const params = useParams();
     const workspaceId = Number(params.workspaceId);
     const router = useRouter();
@@ -80,4 +80,4 @@ export const ProjectsTable = () => {
             onRowClick={onRowClick}
         />
     )
-};
+});

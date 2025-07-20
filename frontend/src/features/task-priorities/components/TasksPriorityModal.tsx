@@ -17,25 +17,26 @@ import { TaskPriorityType } from "@/features/types";
 
 import { useTaskPriorityModalState } from "../hooks";
 
-// Define the form data type
-type FormDataType = Omit<TaskPriorityType, 'id'> & { id?: TaskPriorityType['id'] | null };
-
-type TasksPriorityModalProps = Partial<Omit<ResponsiveModalProps, 'children'>> & {
+type TasksPriorityFormProps = {
     data?: TaskPriorityType | null;
     workspaceId: number;
     onSubmit: (data: FormDataType) => void;
 }
 
-export const TasksPriorityModal = memo((props: TasksPriorityModalProps) => {
+// Define the form data type
+type FormDataType = Omit<TaskPriorityType, 'id'> & { id?: TaskPriorityType['id'] | null };
+
+type TasksPriorityModalProps = Partial<Omit<ResponsiveModalProps, 'children'>> & Omit<TasksPriorityFormProps, 'onClose'>
+
+const TasksPriorityForm = memo((props: TasksPriorityFormProps) => {
     const {
         data,
         workspaceId,
         onSubmit,
-        onOpenChange,
     } = props;
 
-    const [isOpen, setIsOpen] = useTaskPriorityModalState();
     const isEdit = Boolean(data);
+    const [isOpen, setIsOpen] = useTaskPriorityModalState();
 
     const {
         reset,
@@ -59,10 +60,6 @@ export const TasksPriorityModal = memo((props: TasksPriorityModalProps) => {
     const formValues = getValues();
 
     useEffect(() => {
-        if (isOpen) {
-            reset();
-        }
-
         if (data) {
             setValue('id', data.id);
             setValue('name', data.name);
@@ -72,69 +69,77 @@ export const TasksPriorityModal = memo((props: TasksPriorityModalProps) => {
         }
     }, [isOpen]);
 
-    const handleOpenChange = (isOpen: boolean) => {
-        setIsOpen(isOpen);
-        onOpenChange?.(isOpen);
+    const handleClose = () => {
+        setIsOpen(false);
+        reset();
     };
 
     return (
-        <ResponsiveModal open={isOpen} onOpenChange={handleOpenChange}>
-            <Card className="w-full p-4 h-full border-none shadow-none overflow-y-auto">
-                <CardHeader className="flex mb-4">
-                    <DialogTitle className="text-xl font-bold">
-                        {isEdit ? "Edit Task Priority" : "Create Task Priority"}
-                    </DialogTitle>
-                </CardHeader>
-                <div className="mb-4">
-                    <DottedSeparator />
-                </div>
-                <CardContent>
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <div className="space-y-2 mb-4">
-                            <Label htmlFor="priorityName">Priority Name</Label>
-                            <Controller
-                                name="name"
-                                control={control}
-                                rules={{ required: { value: true, message: 'Field is required' } }}
-                                render={({ field }) => (
-                                    <Input id="priorityName" {...field} />
-                                )}
-                            />
-                            {errors.name && (<ErrorMessage>{errors.name.message}</ErrorMessage>)}
-                        </div>
-                        <div className="space-y-2 mb-2">
-                            <Label htmlFor="priorityDescription">Description</Label>
-                            <Controller
-                                name="description"
-                                control={control}
-                                rules={{ required: { value: true, message: 'Field is required' } }}
-                                render={({ field }) => (
-                                    <Textarea id="priorityDescription" {...field} />
-                                )}
-                            />
-                            {errors.description && (<ErrorMessage>{errors.description.message}</ErrorMessage>)}
-                        </div>
-                        <IconForm
+        <Card className="w-full p-4 h-full border-none shadow-none overflow-y-auto">
+            <CardHeader className="flex mb-4">
+                <DialogTitle className="text-xl font-bold">
+                    {isEdit ? "Edit Task Priority" : "Create Task Priority"}
+                </DialogTitle>
+            </CardHeader>
+            <div className="mb-4">
+                <DottedSeparator />
+            </div>
+            <CardContent>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <div className="space-y-2 mb-4">
+                        <Label htmlFor="priorityName">Priority Name</Label>
+                        <Controller
+                            name="name"
                             control={control}
-                            icon={formValues.icon}
-                            color={formValues.color}
+                            rules={{ required: { value: true, message: 'Field is required' } }}
+                            render={({ field }) => (
+                                <Input id="priorityName" {...field} />
+                            )}
                         />
-                        <DottedSeparator className="my-4" />
-                        <div className="flex items-center justify-between">
-                            <Button
-                                type="button"
-                                variant="secondary"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                Cancel
-                            </Button>
-                            <Button type="submit">
-                                {isEdit ? "Update Priority" : "Create Priority"}
-                            </Button>
-                        </div>
-                    </form>
-                </CardContent>
-            </Card>
+                        {errors.name && (<ErrorMessage>{errors.name.message}</ErrorMessage>)}
+                    </div>
+                    <div className="space-y-2 mb-2">
+                        <Label htmlFor="priorityDescription">Description</Label>
+                        <Controller
+                            name="description"
+                            control={control}
+                            rules={{ required: { value: true, message: 'Field is required' } }}
+                            render={({ field }) => (
+                                <Textarea id="priorityDescription" {...field} />
+                            )}
+                        />
+                        {errors.description && (<ErrorMessage>{errors.description.message}</ErrorMessage>)}
+                    </div>
+                    <IconForm
+                        control={control}
+                        icon={formValues.icon}
+                        color={formValues.color}
+                    />
+                    <DottedSeparator className="my-4" />
+                    <div className="flex items-center justify-between">
+                        <Button
+                            type="button"
+                            variant="secondary"
+                            onClick={handleClose}
+                        >
+                            Cancel
+                        </Button>
+                        <Button type="submit">
+                            {isEdit ? "Update Priority" : "Create Priority"}
+                        </Button>
+                    </div>
+                </form>
+            </CardContent>
+        </Card>
+    )
+})
+
+export const TasksPriorityModal = memo((props: TasksPriorityModalProps) => {
+    const [isOpen, setIsOpen] = useTaskPriorityModalState();
+
+    return (
+        <ResponsiveModal open={isOpen} onOpenChange={setIsOpen}>
+            <TasksPriorityForm {...props} />
         </ResponsiveModal>
     );
 }); 

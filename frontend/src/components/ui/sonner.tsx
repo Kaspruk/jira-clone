@@ -1,11 +1,12 @@
 "use client"
 
+import { memo } from "react";
 import { Toaster as Sonner } from "sonner";
 import { useMediaQuery } from "react-responsive";
 
 type ToasterProps = React.ComponentProps<typeof Sonner>
 
-export const Toaster = (props: ToasterProps) => {
+export const Toaster = memo((props: ToasterProps) => {
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
 
   return (
@@ -54,4 +55,4 @@ export const Toaster = (props: ToasterProps) => {
       {...props}
     />
   )
-};
+});

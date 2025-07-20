@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useSyncExternalStore } from 'react';
+import React, { memo, useSyncExternalStore } from 'react';
 import { ConfirmDialog } from './ConfirmDialog';
 
 type ConfirmProps = Omit<React.ComponentProps<typeof ConfirmDialog>, 'open' | 'onOpenChange'>;
@@ -60,7 +60,8 @@ type ConfirmationType = React.FC & {
     onConfirm: typeof onConfirm;
 };
 
-export const Confirm: ConfirmationType = () => {
+// @ts-ignore
+export const Confirm: ConfirmationType = memo(() => {
     const { resolve, ...modalProps } = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 
     const onClose = () => {
@@ -85,6 +86,6 @@ export const Confirm: ConfirmationType = () => {
             onOpenChange={handleOpenChange}
         />
     );
-};
+});
 
 Confirm.onConfirm = onConfirm;

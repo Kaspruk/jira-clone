@@ -1,6 +1,7 @@
 'use client'
 // Since QueryClientProvider relies on useContext under the hood, we have to put 'use client' on top
 
+import { memo } from 'react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { SessionProvider } from 'next-auth/react';
@@ -12,7 +13,7 @@ interface ProviderProps {
   children: React.ReactNode;
 };
 
-export const Providers = ({ children }: ProviderProps) => {
+export const Providers = memo(({ children }: ProviderProps) => {
   const [theme] = useColorTheme();
 
   // NOTE: Avoid useState when initializing the query client if you don't
@@ -38,4 +39,4 @@ export const Providers = ({ children }: ProviderProps) => {
       </NuqsAdapter>
     </SessionProvider>
   )
-}
+});

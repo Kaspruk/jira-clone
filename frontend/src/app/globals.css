@@ -104,6 +104,48 @@
   body {
     @apply bg-background text-foreground;
   }
+  
+  /* PWA Safe Area Support */
+  html {
+    /* Забезпечуємо правильний фон для safe-area */
+    background-color: hsl(var(--background));
+  }
+  
+  /* Обробка safe-area для PWA */
+  @supports (padding: max(0px)) {
+    body {
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+  }
+  
+  /* Фон для safe-area зверху */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: env(safe-area-inset-top);
+    background-color: hsl(var(--background));
+    z-index: 9999;
+    pointer-events: none;
+  }
+  
+  /* Фон для safe-area знизу */
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: env(safe-area-inset-bottom);
+    background-color: hsl(var(--background));
+    z-index: 9999;
+    pointer-events: none;
+  }
 }
 
 body {
@@ -255,4 +297,42 @@ button.bg-primary, .btn-primary, .bg-primary {
 .card-hover:hover {
   transform: translateY(-2px) scale(1.01);
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* PWA Safe Area Utility Classes */
+.safe-area-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.safe-area-left {
+  padding-left: env(safe-area-inset-left);
+}
+
+.safe-area-right {
+  padding-right: env(safe-area-inset-right);
+}
+
+.safe-area-all {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* Фіксований елемент з safe-area */
+.fixed-safe-top {
+  top: env(safe-area-inset-top);
+}
+
+.fixed-safe-bottom {
+  bottom: env(safe-area-inset-bottom);
+}
+
+/* Висота з урахуванням safe-area */
+.min-h-screen-safe {
+  min-height: calc(100vh + env(safe-area-inset-top) + env(safe-area-inset-bottom));
 }

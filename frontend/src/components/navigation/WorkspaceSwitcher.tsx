@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { RiAddCircleFill } from "react-icons/ri";
 import { MdWorkspaces } from "react-icons/md";
@@ -23,7 +24,7 @@ interface WorkspaceSwitcherProps {
     onOpenChange?: (open: boolean) => void;
 }
 
-export const WorkspaceSwitcher = ({ isMobile = false, isReadonly = false, isCollapsed = false, onOpenChange }: WorkspaceSwitcherProps) => {
+export const WorkspaceSwitcher = memo(({ isMobile = false, isReadonly = false, isCollapsed = false, onOpenChange }: WorkspaceSwitcherProps) => {
     const router = useRouter();
     const params = useParams();
     const currentWorkspaceId = params.workspaceId as string;
@@ -124,7 +125,7 @@ export const WorkspaceSwitcher = ({ isMobile = false, isReadonly = false, isColl
             {selectEl}
         </div>
     );
-};
+});
 
 type WorkspaceDisplayProps = {
     workspace: WorkspaceType;

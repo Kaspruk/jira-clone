@@ -1,10 +1,11 @@
 'use client';
 
+import { memo, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { useParams } from "next/navigation";
 
 import { useUser } from "@/features/users";
-import { ResponsiveModal, type ResponsiveModalProps } from "@/components/ResponsiveModal";
+import { ResponsiveModal} from "@/components/ResponsiveModal";
 import { DialogTitle } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -22,7 +23,11 @@ type FormDataType = {
     description: string,
 };
 
-export const CreateProjectModal = (props: Partial<Omit<ResponsiveModalProps, 'children'>>) => {
+type CreateProjectFormProps = {
+    onClose: () => void;
+};
+
+const CreateProjectForm = memo<CreateProjectFormProps>(({ onClose }) => {
     const {
         register,
         handleSubmit,
@@ -51,7 +56,7 @@ export const CreateProjectModal = (props: Partial<Omit<ResponsiveModalProps, 'ch
         }, {
             onSuccess() {
                 setIsOpen(false);
-                props.onOpenChange?.(false)
+                onClose();
             }
         });
     };
@@ -107,4 +112,21 @@ export const CreateProjectModal = (props: Partial<Omit<ResponsiveModalProps, 'ch
             </Card>
         </ResponsiveModal>
     )
-};
+})
+
+export const CreateProjectModal = memo(() => {
+    const [isOpen, setIsOpen] = useProjectModalState();
+    const { isPending } = useCreateProject();
+
+    const handleClose = useCallback(() => {
+        if (!isPending) {
+            setIsOpen(false);
+        }
+    }, [isPending]);
+
+    return (
+        <ResponsiveModal open={isOpen} onOpenChange={setIsOpen}>
+            <CreateProjectForm onClose={handleClose} />
+        </ResponsiveModal>
+    )
+});

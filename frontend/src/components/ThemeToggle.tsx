@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import { cn, getIsClient } from "@/lib/utils";
@@ -74,7 +74,7 @@ export const useColorTheme = () => {
   return [theme, applyTheme] as const;
 }
 
-export const ThemeToggle = () => {
+export const ThemeToggle = memo(() => {
   const [theme, setTheme] = useColorTheme();
   const [isMounted, setIsMounted] = useState(false);
 
@@ -110,4 +110,4 @@ export const ThemeToggle = () => {
       ))}
     </div>
   );
-}; 
+}); 

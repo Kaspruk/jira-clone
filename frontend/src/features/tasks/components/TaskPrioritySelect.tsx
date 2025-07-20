@@ -1,4 +1,4 @@
-import { ComponentProps } from "react";
+import { ComponentProps, memo } from "react";
 import { Select } from "@/components/select";
 import { SelectItem } from "@/components/ui/select";
 import { getProject } from "@/features/projects";
@@ -8,7 +8,7 @@ import { Icon } from "@/components/ui/icon";
 type TaskPropertySelectProps = Omit<ComponentProps<typeof Select>, 'getItemData'> & {
     projectId: number;
 }
-export const TaskPrioritySelect = (props: TaskPropertySelectProps) => {
+export const TaskPrioritySelect = memo((props: TaskPropertySelectProps) => {
     const { projectId, ...selectProps } = props;
 
     const { data: project } = useQuery(getProject(projectId));
@@ -33,4 +33,4 @@ export const TaskPrioritySelect = (props: TaskPropertySelectProps) => {
             })}
         </Select>
     )
-};
+});

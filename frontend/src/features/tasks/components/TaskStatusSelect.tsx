@@ -1,4 +1,4 @@
-import { ComponentProps } from "react";
+import { ComponentProps, memo } from "react";
 import { Select } from "@/components/select";
 import { SelectItem } from "@/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
@@ -8,7 +8,7 @@ import { Icon } from "@/components/ui/icon";
 type TaskStatusSelectProps = Omit<ComponentProps<typeof Select>, 'getItemData'> & {
     projectId: number;
 }
-export const TaskStatusSelect = (props: TaskStatusSelectProps) => {
+export const TaskStatusSelect = memo((props: TaskStatusSelectProps) => {
     const { projectId, ...selectProps } = props;
 
     const { data: project } = useQuery(getProject(projectId));
@@ -31,4 +31,4 @@ export const TaskStatusSelect = (props: TaskStatusSelectProps) => {
             ))}
         </Select>
     )
-};
+});

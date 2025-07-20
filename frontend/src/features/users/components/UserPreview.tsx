@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useLogout } from "@/features/auth/api";
@@ -21,7 +22,7 @@ interface UserPreviewProps {
     onOpenChange?: (open: boolean) => void;
 }
 
-export const UserPreview = ({ className, isCollapsed = false, onOpenChange }: UserPreviewProps) => {
+export const UserPreview = memo(({ className, isCollapsed = false, onOpenChange }: UserPreviewProps) => {
     const router = useRouter();
     const { data: user } = useUser();
     const { mutate: logout } = useLogout();
@@ -106,4 +107,4 @@ export const UserPreview = ({ className, isCollapsed = false, onOpenChange }: Us
             </DropdownMenuContent>
         </DropdownMenu>
     );
-};
+});
