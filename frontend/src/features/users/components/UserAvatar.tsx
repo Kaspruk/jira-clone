@@ -17,7 +17,7 @@ export function UserAvatar() {
     const [isEditing, setIsEditing] = useState(false);
     const [avatarUrl, setAvatarUrl] = useState(user?.avatar || "");
 
-    // Оновлюємо локальний стан коли змінюється user
+    // Update local state when user changes
     React.useEffect(() => {
         if (user?.avatar) {
             setAvatarUrl(user.avatar);
@@ -27,24 +27,24 @@ export function UserAvatar() {
     const handleAvatarUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
-            // Перевіряємо тип файлу
+            // Check file type
             if (!file.type.startsWith('image/')) {
-                toast.error("Файл повинен бути зображенням");
+                toast.error("File must be an image");
                 return;
             }
             
-            // Перевіряємо розмір файлу (максимум 5MB)
+            // Check file size (maximum 5MB)
             if (file.size > 5 * 1024 * 1024) {
-                toast.error("Розмір файлу не може перевищувати 5MB");
+                toast.error("File size cannot exceed 5MB");
                 return;
             }
             
             uploadAvatar(file, {
                 onSuccess: () => {
-                    toast.success("Аватар успішно оновлено");
+                    toast.success("Avatar updated successfully");
                 },
                 onError: () => {
-                    toast.error("Помилка при завантаженні аватара");
+                    toast.error("Error uploading avatar");
                 }
             });
         }
@@ -56,25 +56,25 @@ export function UserAvatar() {
 
     const handleSaveAvatarUrl = () => {
         if (!avatarUrl.trim()) {
-            toast.error("URL аватара не може бути порожнім");
+            toast.error("Avatar URL cannot be empty");
             return;
         }
 
-        // Валідація URL
+        // URL validation
         try {
             new URL(avatarUrl);
         } catch {
-            toast.error("Введіть коректний URL зображення");
+            toast.error("Please enter a valid image URL");
             return;
         }
 
         updateUser({ avatar: avatarUrl }, {
             onSuccess: () => {
-                toast.success("Аватар успішно оновлено");
+                toast.success("Avatar updated successfully");
                 setIsEditing(false);
             },
             onError: () => {
-                toast.error("Помилка при оновленні аватара");
+                toast.error("Error updating avatar");
             }
         });
     };
@@ -98,10 +98,10 @@ export function UserAvatar() {
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                     <Icon name="account_box" />
-                    Фото профілю
+                    Profile Photo
                 </CardTitle>
                 <CardDescription>
-                    Завантажте нове фото для свого профілю
+                    Upload a new photo for your profile
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -136,7 +136,7 @@ export function UserAvatar() {
                             className="w-full space-y-2"
                         >
                             <Input
-                                placeholder="URL зображення"
+                                placeholder="Image URL"
                                 value={avatarUrl}
                                 onChange={(e) => handleAvatarUrlChange(e.target.value)}
                                 className="text-center"
@@ -148,7 +148,7 @@ export function UserAvatar() {
                                     onClick={handleCancelEdit}
                                     className="flex-1"
                                 >
-                                    Скасувати
+                                    Cancel
                                 </Button>
                                 <Button
                                     size="sm"
@@ -156,7 +156,7 @@ export function UserAvatar() {
                                     disabled={isUpdating}
                                     className="flex-1"
                                 >
-                                    {isUpdating ? "Збереження..." : "Зберегти"}
+                                    {isUpdating ? "Saving..." : "Save"}
                                 </Button>
                             </div>
                         </motion.div>
@@ -167,7 +167,7 @@ export function UserAvatar() {
                             onClick={() => setIsEditing(true)}
                             className="text-muted-foreground hover:text-foreground"
                         >
-                            Редагувати URL
+                            Edit URL
                         </Button>
                     )}
                 </div>

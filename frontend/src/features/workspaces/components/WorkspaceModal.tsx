@@ -86,7 +86,7 @@ export const WorkspaceModal = () => {
       setIsOpen(null);
       reset();
     } catch (error) {
-      console.error("Помилка при збереженні workspace:", error);
+      console.error("Error saving workspace:", error);
     } finally {
       setIsSubmitting(false);
     }

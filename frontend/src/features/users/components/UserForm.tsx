@@ -36,20 +36,20 @@ export function UserForm() {
   };
 
   const handleSave = () => {
-    // Валідація
+    // Validation
     if (!formData.username.trim()) {
-      toast.error("Ім'я користувача не може бути порожнім");
+      toast.error("Username cannot be empty");
       return;
     }
 
     if (!formData.email.trim()) {
-      toast.error('Email не може бути порожнім');
+      toast.error('Email cannot be empty');
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
-      toast.error('Введіть коректний email');
+      toast.error('Please enter a valid email');
       return;
     }
 
@@ -66,11 +66,11 @@ export function UserForm() {
     if (Object.keys(updateData).length > 0) {
       updateUser(updateData, {
         onSuccess: () => {
-          toast.success('Профіль успішно оновлено');
+          toast.success('Profile updated successfully');
           setIsEditing(false);
         },
         onError: () => {
-          toast.error('Помилка при оновленні профілю');
+          toast.error('Error updating profile');
         },
       });
     } else {
@@ -91,18 +91,18 @@ export function UserForm() {
       <CardHeader className="sm:px-0 px-0">
         <CardTitle className="flex items-center gap-2">
           <Icon name="info" />
-          Інформація профілю
+          Profile Information
         </CardTitle>
-        <CardDescription>Основна інформація про ваш акаунт</CardDescription>
+        <CardDescription>Basic information about your account</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4 sm:px-0 px-0">
         <div className="space-y-2">
-          <Label htmlFor="username">Ім'я користувача</Label>
+          <Label htmlFor="username">Username</Label>
           {isEditing ? (
             <Input
               value={formData.username}
               onChange={e => handleInputChange('username', e.target.value)}
-              placeholder="Введіть ім'я користувача"
+              placeholder="Enter username"
             />
           ) : (
             <div className="h-12 px-4 py-2 rounded-lg border border-border bg-background flex items-center">
@@ -118,7 +118,7 @@ export function UserForm() {
               type="email"
               value={formData.email}
               onChange={e => handleInputChange('email', e.target.value)}
-              placeholder="Введіть email"
+              placeholder="Enter email"
             />
           ) : (
             <div className="h-12 px-4 py-2 rounded-lg border border-border bg-background flex items-center">
@@ -137,14 +137,14 @@ export function UserForm() {
               onClick={handleCancel}
               className="px-4 py-2 text-sm border border-border rounded hover:bg-muted transition-colors"
             >
-              Скасувати
+              Cancel
             </button>
             <button
               onClick={handleSave}
               disabled={isPending}
               className="px-4 py-2 text-sm bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors disabled:opacity-50"
             >
-              {isPending ? 'Збереження...' : 'Зберегти'}
+              {isPending ? 'Saving...' : 'Save'}
             </button>
           </motion.div>
         )}
@@ -154,7 +154,7 @@ export function UserForm() {
             onClick={() => setIsEditing(true)}
             className="text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
-            Редагувати інформацію
+            Edit information
           </button>
         )}
       </CardContent>

@@ -94,14 +94,14 @@ export const UserPreview = ({ className, isCollapsed = false, onOpenChange }: Us
                     className="cursor-pointer"
                 >
                     <Icon name="edit" size={16} className="mr-2" />
-                    Редагувати профіль
+                    Edit Profile
                 </DropdownMenuItem>
                 <DropdownMenuItem 
                     onClick={handleLogout}
                     className="cursor-pointer text-destructive focus:text-destructive"
                 >
                     <Icon name="logout" size={16} className="mr-2" />
-                    Вийти
+                    Logout
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

@@ -64,7 +64,7 @@ export const WorkspaceCard = ({ data: workspace }: WorkspaceCardProps) => {
           <div className="space-y-2">
             <div className="flex items-center justify-between mb-3">
               <h4 className="text-sm font-medium text-muted-foreground">
-                Проекти ({dashboardData.projects?.length ?? 0})
+                Projects ({dashboardData.projects?.length ?? 0})
               </h4>
               <Button 
                 variant="ghost" 
@@ -72,7 +72,7 @@ export const WorkspaceCard = ({ data: workspace }: WorkspaceCardProps) => {
                 onClick={handleViewAllProjects}
                 className="text-xs h-6 px-2"
               >
-                Переглянути всі
+                View all
               </Button>
             </div>
             {dashboardData.projects?.map((project) => (
@@ -90,7 +90,7 @@ export const WorkspaceCard = ({ data: workspace }: WorkspaceCardProps) => {
                   )}
                 </div>
                 <Badge variant="secondary" className="ml-3 shrink-0">
-                  {project.task_count} {project.task_count === 1 ? 'задача' : 'задач'}
+                  {project.task_count} {project.task_count === 1 ? 'task' : 'tasks'}
                 </Badge>
               </div>
             ))}
@@ -98,7 +98,7 @@ export const WorkspaceCard = ({ data: workspace }: WorkspaceCardProps) => {
         ) : (
           <div className="text-center py-6 h-full flex items-center justify-center">
             <p className="text-sm text-muted-foreground">
-              У цьому workspace немає проектів
+              No projects in this workspace
             </p>
           </div>
         )}

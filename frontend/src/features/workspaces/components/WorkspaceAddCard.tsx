@@ -8,7 +8,7 @@ export const WorkspaceAddCard = () => {
     const [_, setWorkspaceId] = useWorkspaceModalState();
 
     const handleClick = () => {
-        setWorkspaceId(0); // 0 означає створення нового workspace
+        setWorkspaceId(0); // 0 means creating a new workspace
     };
 
     return (

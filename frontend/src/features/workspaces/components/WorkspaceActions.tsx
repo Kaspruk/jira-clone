@@ -59,11 +59,11 @@ export const WorkspaceActions = ({ workspaceId }: WorkspaceActionsProps) => {
                 size="sm"
                 className="h-8 w-8 p-0 hover:bg-muted-foreground/10"
                 onClick={(e) => {
-                    e.stopPropagation(); // Запобігаємо спрацьовуванню клікув на картці
+                    e.stopPropagation(); // Prevent card click events
                 }}
                 >
                 <HiDotsHorizontal className="h-4 w-4" />
-                <span className="sr-only">Відкрити меню дій</span>
+                <span className="sr-only">Open actions menu</span>
                 </Button>
             </DropdownMenuTrigger>
             
@@ -76,7 +76,7 @@ export const WorkspaceActions = ({ workspaceId }: WorkspaceActionsProps) => {
                     className="cursor-pointer"
                 >
                     <AiOutlineEye className="size-4 mr-2 stroke-2" />
-                    Переглянути
+                    View
                 </DropdownMenuItem>
                 
                 <DropdownMenuItem
@@ -87,7 +87,7 @@ export const WorkspaceActions = ({ workspaceId }: WorkspaceActionsProps) => {
                     className="cursor-pointer"
                 >
                     <AiOutlineEdit className="size-4 mr-2 stroke-2" />
-                    Редагувати
+                    Edit
                 </DropdownMenuItem>
                 
                 <DropdownMenuSeparator />
@@ -101,7 +101,7 @@ export const WorkspaceActions = ({ workspaceId }: WorkspaceActionsProps) => {
                     }}
                 >
                     <AiOutlineDelete className="size-4 mr-2 stroke-2" />
-                    Видалити
+                    Delete
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

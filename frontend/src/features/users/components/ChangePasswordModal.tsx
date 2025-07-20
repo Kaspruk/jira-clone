@@ -51,7 +51,7 @@ export function ChangePasswordModal() {
         if (data.newPassword !== data.confirmPassword) {
             setError("confirmPassword", {
                 type: "manual",
-                message: "Паролі не співпадають"
+                message: "Passwords do not match"
             });
             return;
         }
@@ -74,7 +74,7 @@ export function ChangePasswordModal() {
             <Card className="w-full p-4 h-full border-none shadow-none overflow-y-auto">
                 <CardHeader className="flex mb-4">
                     <DialogTitle className="text-xl font-bold">
-                        Зміна пароля
+                        Change Password
                     </DialogTitle>
                 </CardHeader>
                 <div className="mb-4">
@@ -83,18 +83,18 @@ export function ChangePasswordModal() {
                 <CardContent>
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="space-y-2 mb-4">
-                            <Label htmlFor="currentPassword">Поточний пароль</Label>
+                            <Label htmlFor="currentPassword">Current Password</Label>
                             <Input
                                 id="currentPassword"
                                 type="password"
                                 {...register("currentPassword", {
-                                    required: { value: true, message: "Введіть поточний пароль" },
+                                    required: { value: true, message: "Enter current password" },
                                     minLength: {
                                         value: 1,
-                                        message: "Поточний пароль не може бути порожнім"
+                                        message: "Current password cannot be empty"
                                     }
                                 })}
-                                placeholder="Введіть поточний пароль"
+                                placeholder="Enter current password"
                             />
                             {errors.currentPassword && (
                                 <ErrorMessage>{errors.currentPassword.message}</ErrorMessage>
@@ -102,22 +102,22 @@ export function ChangePasswordModal() {
                         </div>
                         
                         <div className="space-y-2 mb-4">
-                            <Label htmlFor="newPassword">Новий пароль</Label>
+                            <Label htmlFor="newPassword">New Password</Label>
                             <Input
                                 id="newPassword"
                                 type="password"
                                 {...register("newPassword", {
-                                    required: { value: true, message: "Введіть новий пароль" },
+                                    required: { value: true, message: "Enter new password" },
                                     minLength: {
                                         value: 6,
-                                        message: "Новий пароль повинен містити мінімум 6 символів"
+                                        message: "New password must contain at least 6 characters"
                                     },
                                     pattern: {
                                         value: /^(?=.*[a-zA-Z])(?=.*\d)/,
-                                        message: "Пароль повинен містити літери та цифри"
+                                        message: "Password must contain letters and numbers"
                                     }
                                 })}
-                                placeholder="Введіть новий пароль"
+                                placeholder="Enter new password"
                             />
                             {errors.newPassword && (
                                 <ErrorMessage>{errors.newPassword.message}</ErrorMessage>
@@ -125,20 +125,20 @@ export function ChangePasswordModal() {
                         </div>
                         
                         <div className="space-y-2">
-                            <Label htmlFor="confirmPassword">Підтвердіть новий пароль</Label>
+                            <Label htmlFor="confirmPassword">Confirm New Password</Label>
                             <Input
                                 id="confirmPassword"
                                 type="password"
                                 {...register("confirmPassword", {
-                                    required: { value: true, message: "Підтвердіть новий пароль" },
+                                    required: { value: true, message: "Confirm new password" },
                                     validate: (value) => {
                                         if (value !== newPassword) {
-                                            return "Паролі не співпадають";
+                                            return "Passwords do not match";
                                         }
                                         return true;
                                     }
                                 })}
-                                placeholder="Підтвердіть новий пароль"
+                                placeholder="Confirm new password"
                             />
                             {errors.confirmPassword && (
                                 <ErrorMessage>{errors.confirmPassword.message}</ErrorMessage>
@@ -153,13 +153,13 @@ export function ChangePasswordModal() {
                                 onClick={handleClose}
                                 disabled={isPending}
                             >
-                                Скасувати
+                                Cancel
                             </Button>
                             <Button
                                 type="submit"
                                 disabled={!isValid || isPending}
                             >
-                                {isPending ? "Зміна пароля..." : "Змінити пароль"}
+                                {isPending ? "Changing password..." : "Change Password"}
                             </Button>
                         </div>
                     </form>
