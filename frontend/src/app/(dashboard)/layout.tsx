@@ -40,7 +40,7 @@ export default async function DashboardLayout(props: DashboardLayoutProps) {
     <HydrationBoundary state={dehydratedState}>
       <TopBar />
       <Sidebar />
-      <main className="p-3 w-full relative max-md:flex-1">
+      <main className="p-3 w-full relative max-md:flex-1 overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
           <div className="absolute top-[5%] left-[2%] w-64 h-64 bg-primary/8 rounded-full blur-3xl" />
           <div className="absolute bottom-[10%] right-[5%] w-72 h-72 bg-primary/6 rounded-full blur-3xl" />

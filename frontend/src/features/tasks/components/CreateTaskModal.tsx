@@ -20,7 +20,7 @@ export const CreateTaskModal = () => {
             className="sm:min-w-[700px]"
             onOpenChange={setIsOpen}
         >
-            <Card className="p-4 flex flex-col gap-4 border-none shadow-none">
+            <Card className="p-4 flex flex-col gap-4 border-none shadow-none overflow-y-auto">
                 <CardHeader className="flex flex-col">
                     <DialogTitle className="text-xl font-bold mb-4">
                         Create a new task

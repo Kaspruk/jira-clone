@@ -147,11 +147,24 @@ button.bg-primary, .btn-primary, .bg-primary {
 .dark .ql-toolbar.ql-snow,
 .dark .ql-container.ql-snow {
   border-color: hsl(var(--border));
+  color: #fff;
+}
+
+.dark .ql-editor.ql-blank {
+  color: #fff;
+}
+
+.dark .ql-editor.ql-blank:before {
+  color: #fff;
 }
 
 .dark .ql-snow .ql-picker,
 .dark .ql-snow .ql-formats {
   color: hsl(var(--foreground));
+}
+
+.dark .ql-picker-options {
+  background-color: hsl(var(--background));
 }
 
 .material-symbols-outlined {

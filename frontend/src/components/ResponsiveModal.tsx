@@ -31,7 +31,7 @@ export const ResponsiveModal = ({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="border-border bg-card/95 backdrop-blur-md">
+      <DrawerContent className="border-border bg-card backdrop-blur-md">
         {children}
       </DrawerContent>
     </Drawer>

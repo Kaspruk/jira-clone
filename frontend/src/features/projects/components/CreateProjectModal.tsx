@@ -58,7 +58,7 @@ export const CreateProjectModal = (props: Partial<Omit<ResponsiveModalProps, 'ch
 
     return (
         <ResponsiveModal open={isOpen} onOpenChange={setIsOpen}>
-            <Card className="w-full p-4 h-full border-none shadow-none">
+            <Card className="w-full p-4 h-full border-none shadow-none overflow-y-auto">
                 <CardHeader className="flex mb-4">
                     <DialogTitle className="text-xl font-bold">
                         Create a new project

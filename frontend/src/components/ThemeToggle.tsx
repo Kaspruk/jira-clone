@@ -76,13 +76,20 @@ export const useColorTheme = () => {
 
 export const ThemeToggle = () => {
   const [theme, setTheme] = useColorTheme();
+  const [isMounted, setIsMounted] = useState(false);
 
   const changeTheme = (newTheme: Theme) => {
     setTheme(newTheme);
   };
 
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) return null;
+
   return (
-    <div className="flex rounded-lg border border-border bg-background">
+    <div className="flex rounded-lg border border-border bg-background animate-fade-scale">
       {themes.map((themeOption, index) => (
         <Button
           key={themeOption.value}

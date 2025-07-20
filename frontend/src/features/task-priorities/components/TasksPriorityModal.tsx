@@ -79,7 +79,7 @@ export const TasksPriorityModal = memo((props: TasksPriorityModalProps) => {
 
     return (
         <ResponsiveModal open={isOpen} onOpenChange={handleOpenChange}>
-            <Card className="w-full p-4 h-full border-none shadow-none">
+            <Card className="w-full p-4 h-full border-none shadow-none overflow-y-auto">
                 <CardHeader className="flex mb-4">
                     <DialogTitle className="text-xl font-bold">
                         {isEdit ? "Edit Task Priority" : "Create Task Priority"}

@@ -37,7 +37,7 @@ export const WorkspaceCard = ({ data: workspace }: WorkspaceCardProps) => {
   };
 
   return (
-    <Card className="w-full p-3 flex flex-col card-hover animate-fade-scale">
+    <Card className="w-full p-1 flex flex-col card-hover animate-fade-scale">
       <CardHeader className="mb-3">
         <div className="flex flex-1 items-start justify-between">
           <div className="flex-1">
