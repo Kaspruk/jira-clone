@@ -1,5 +1,6 @@
 'use client';
 
+import { memo } from "react";
 import { useRouter } from "next/navigation";
 import { 
   LuTrash2 as TrashIcon,
@@ -25,7 +26,7 @@ interface TaskActionsProps {
   children: React.ReactNode;
 };
 
-export const TaskActions = ({ taskId, children }: TaskActionsProps) => {
+export const TaskActions = memo(({ taskId, children }: TaskActionsProps) => {
   // const workspaceId = useWorkspaceId();
   const router = useRouter();
 
@@ -96,4 +97,4 @@ export const TaskActions = ({ taskId, children }: TaskActionsProps) => {
       </DropdownMenu>
     </>
   );
-};
+});

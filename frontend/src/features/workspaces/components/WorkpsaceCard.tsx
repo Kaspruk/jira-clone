@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { HtmlOutput } from "@/components/HtmlOutput";
@@ -20,7 +21,7 @@ interface WorkspaceCardProps {
   data: WorkspaceType;
 }
 
-export const WorkspaceCard = ({ data: workspace }: WorkspaceCardProps) => {
+export const WorkspaceCard = memo(({ data: workspace }: WorkspaceCardProps) => {
   const router = useRouter();
 
   const {data: dashboardData, isLoading} = useQuery({
@@ -105,4 +106,4 @@ export const WorkspaceCard = ({ data: workspace }: WorkspaceCardProps) => {
       </CardContent>
     </Card>
   );
-};
+});

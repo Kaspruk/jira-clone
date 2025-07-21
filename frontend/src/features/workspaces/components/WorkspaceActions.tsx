@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { useRouter } from "next/navigation";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { AiOutlineEye, AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
@@ -19,7 +20,7 @@ interface WorkspaceActionsProps {
   workspaceId: number;
 }
 
-export const WorkspaceActions = ({ workspaceId }: WorkspaceActionsProps) => {
+export const WorkspaceActions = memo(({ workspaceId }: WorkspaceActionsProps) => {
   const router = useRouter();
   const [_, setWorkspaceId] = useWorkspaceModalState();
   const { mutate: deleteWorkspace, isPending: isDeleting } = useDeleteWorkspace();
@@ -107,4 +108,4 @@ export const WorkspaceActions = ({ workspaceId }: WorkspaceActionsProps) => {
         </DropdownMenu>
     </>
     );
-}; 
+}); 

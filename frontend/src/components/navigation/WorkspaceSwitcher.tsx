@@ -53,7 +53,7 @@ export const WorkspaceSwitcher = memo(({ isMobile = false, isReadonly = false, i
                 className={cn(
                     "bg-muted/50 hover:bg-muted border-border font-medium h-auto transition-all duration-300",
                     isReadonly && "pointer-events-none ml-0",
-                    isCollapsed ? "p-1 ml-0 w-8 h-8" : "p-1.5",
+                    isCollapsed ? "p-0.5 ml-0 w-8 h-8" : "p-1.5",
                     isMobile && "min-w-8 min-h-8"
                 )}
             >
@@ -140,7 +140,10 @@ const WorkspaceDisplay = ({ workspace, isCollapsed = false }: WorkspaceDisplayPr
             "flex items-center gap-2 transition-all duration-300",
             isCollapsed && "max-lg:justify-center max-lg:gap-0"
         )}>
-            <div className="min-w-6 h-6 rounded bg-primary text-primary-foreground text-xs flex items-center justify-center font-semibold">
+            <div className={cn(
+                "min-w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center font-semibold",
+                isCollapsed && "w-7 min-h-7"
+            )}>
                 {workspace.name.charAt(0).toUpperCase()}
             </div>
             <div className={cn(

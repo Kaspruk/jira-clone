@@ -26,15 +26,18 @@ export const useColorTheme = () => {
     
     if (newTheme === "dark") {
       root.classList.add("dark");
+      updateMetaThemeColor("dark");
     } else if (newTheme === "light") {
       root.classList.remove("dark");
+      updateMetaThemeColor("light");
     } else {
-      // system
       const systemIsDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
       if (systemIsDark) {
         root.classList.add("dark");
+        updateMetaThemeColor("dark");
       } else {
         root.classList.remove("dark");
+        updateMetaThemeColor("light");
       }
     }
 
@@ -72,6 +75,15 @@ export const useColorTheme = () => {
   }, [applyTheme]);
 
   return [theme, applyTheme] as const;
+}
+
+function updateMetaThemeColor(theme: 'light' | 'dark') {
+  const systemIsDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const metaEl = document.querySelector(`meta[name="theme-color"][media*="${systemIsDark ? 'dark' : 'light'}"]`);
+
+  if (metaEl) {
+    metaEl.setAttribute('content', theme === 'dark' ? '#1F1F1F' : '#FDFCFB');
+  }
 }
 
 export const ThemeToggle = memo(() => {

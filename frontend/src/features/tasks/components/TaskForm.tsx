@@ -1,5 +1,6 @@
 'use client';
 
+import { memo, useEffect } from "react";
 import { useQueries } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
@@ -20,7 +21,6 @@ import { ProjectType, TaskType, UserType } from "@/features/types";
 
 import { TaskTypeSelect } from "./TaskTypeSelect";
 import { TaskPrioritySelect } from "./TaskPrioritySelect";
-import { useEffect } from "react";
 const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
 
 type FormDataType = Omit<TaskType, 
@@ -38,7 +38,7 @@ type TaskFormType = React.PropsWithChildren<{
     onSave?(): void;
 }>;
 
-export const TaskForm = (props: TaskFormType) => {
+export const TaskForm = memo((props: TaskFormType) => {
     const params = useParams();
     const projectId = props.data?.project_id ?? Number(params.projectId);
     const workspaceId = Number(params.workspaceId);
@@ -239,4 +239,4 @@ export const TaskForm = (props: TaskFormType) => {
             </div>
         </form>
     )
-};
+});

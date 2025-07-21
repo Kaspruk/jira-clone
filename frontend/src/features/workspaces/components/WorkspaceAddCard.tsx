@@ -1,10 +1,11 @@
 "use client";
 
+import { memo } from "react";
 import { IoAdd } from "react-icons/io5";
 import { Card, CardContent } from "@/components/ui/card";
 import { useWorkspaceModalState } from "../hooks";
 
-export const WorkspaceAddCard = () => {
+export const WorkspaceAddCard = memo(() => {
     const [_, setWorkspaceId] = useWorkspaceModalState();
 
     const handleClick = () => {
@@ -31,4 +32,4 @@ export const WorkspaceAddCard = () => {
             </CardContent>
         </Card>
     );
-};
+});
