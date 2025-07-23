@@ -64,7 +64,9 @@ export const authOptions: NextAuthOptions = {
         token.isExpired = false;
         token.accessToken = user.accessToken
         token.refreshToken = user.refreshToken
+        // @ts-expect-error
         token.accessTokenExpiresAt = user.accessTokenExpiresAt
+        // @ts-expect-error
         token.refreshTokenExpiresAt = user.refreshTokenExpiresAt
         token.id = user.id
       }
