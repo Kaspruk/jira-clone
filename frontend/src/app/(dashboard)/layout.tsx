@@ -12,6 +12,9 @@ import { TopBar, Sidebar, BottomBar } from "@/components/navigation";
 import { SlideUpContainer } from "@/components/animations";
 
 import { authOptions } from "@/lib/auth";
+import { redirect } from "next/navigation";
+import { signOut } from "next-auth/react";
+import { cookies } from "next/headers";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -19,14 +22,18 @@ interface DashboardLayoutProps {
 
 export default async function DashboardLayout(props: DashboardLayoutProps) {
   const session = await getServerSession(authOptions);
+  const userId = session?.user?.id;
+  console.log('dashboard layout session', session, userId)
+
+  if (!session || !userId) {
+    redirect('/login');
+  }
+
   const queryClient = getQueryClient();
 
-  const userId = session?.user?.id;
-  
-  // Безпечно завантажуємо дані - якщо запити падають, не блокуємо рендеринг
   try {
-    await Promise.allSettled([
-      userId ? queryClient.prefetchQuery(getUser(Number(userId))) : null,
+    await Promise.all([
+      queryClient.prefetchQuery(getUser(Number(userId))),
       queryClient.prefetchQuery(getWorkspaces),
       queryClient.prefetchQuery(getWorkspaceDashboardData),
     ]);
@@ -34,7 +41,6 @@ export default async function DashboardLayout(props: DashboardLayoutProps) {
     console.warn("Failed to prefetch data on server:", error);
   }
 
-  // Створюємо dehydrated state після завантаження даних
   const dehydratedState = dehydrate(queryClient);
 
   return (

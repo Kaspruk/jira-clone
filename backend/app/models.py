@@ -79,10 +79,15 @@ class TokenPair(BaseModel):
     refresh_token_expires_at: str
 
 class AuthResponse(BaseModel):
+    user: 'UserResponse'
+    token_type: str
     access_token: str
     refresh_token: str
-    token_type: str
-    user: 'UserResponse'
+    access_token_expires_at: str
+    refresh_token_expires_at: str
+    
+class CheckTokenRequest(BaseModel):
+    access_token: str
 
 class RefreshTokenRequest(BaseModel):
     refresh_token: str

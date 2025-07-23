@@ -126,10 +126,12 @@ class AuthService:
         user_dict.pop('hashed_password', None)
         
         return AuthResponse(
+            user=user_dict,
+            token_type="bearer",
             access_token=tokens.access_token,
             refresh_token=tokens.refresh_token,
-            token_type="bearer",
-            user=user_dict
+            access_token_expires_at=tokens.access_token_expires_at,
+            refresh_token_expires_at=tokens.refresh_token_expires_at,
         )
 
     @staticmethod
@@ -213,6 +215,8 @@ class AuthService:
         return {
             "access_token": new_tokens.access_token,
             "refresh_token": new_tokens.refresh_token,
+            "access_token_expires_at": new_tokens.access_token_expires_at,
+            "refresh_token_expires_at": new_tokens.refresh_token_expires_at,
             "token_type": "bearer",
             "user": UserResponse(
                 id=user['id'],

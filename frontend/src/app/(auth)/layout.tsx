@@ -1,11 +1,15 @@
 import { ReactNode } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth";
 
 interface AuthLayoutProps {
     children: ReactNode;
 }
 
-export default function AuthLayout({ children }: AuthLayoutProps) {
+export default async function AuthLayout({ children }: AuthLayoutProps) {
+    const session = await getServerSession(authOptions);
+
     return (
         <div className="min-h-screen w-screen bg-background relative overflow-hidden flex items-center justify-center p-4">
             {/* Decorative background elements */}

@@ -40,6 +40,9 @@ const DrawerContent = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <DrawerPortal>
     <DrawerOverlay />
+    <DrawerPrimitive.Description>
+      Avoid errors when using the drawer component with the description component.
+    </DrawerPrimitive.Description>
     <DrawerPrimitive.Content
       ref={ref}
       className={cn(

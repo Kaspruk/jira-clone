@@ -3,7 +3,7 @@ from fastapi.security import HTTPAuthorizationCredentials
 from typing import Optional
 from app.database import get_db_connection
 from app.services.auth import AuthService
-from app.models import UserModel, UserLoginModel, UserResponse, AuthResponse, RefreshTokenRequest, ResponseException
+from app.models import UserModel, UserLoginModel, UserResponse, AuthResponse, RefreshTokenRequest, ResponseException, CheckTokenRequest
 
 router = APIRouter(
     prefix="/auth",
@@ -33,6 +33,10 @@ def login(
         raise
     except Exception as e:
         raise ResponseException(message=f"Помилка при вході: {str(e)}")
+    
+@router.post("/check-token", summary="Перевірити токен")
+def check_token(access_token: CheckTokenRequest):
+    return AuthService.verify_jwt_token(access_token.access_token, token_type="access")
 
 @router.post("/refresh", summary="Оновити access токен")
 def refresh_token(

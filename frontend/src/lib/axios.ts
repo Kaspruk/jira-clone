@@ -43,6 +43,7 @@ export const setTokens = (accessToken: string, refreshToken: string) => {
   tokens.refreshToken = refreshToken;
 };
 
+
 function createAxiosClient(): AxiosInstance {
   return axios.create({
     baseURL: BASE_URL,
@@ -51,110 +52,96 @@ function createAxiosClient(): AxiosInstance {
   });
 }
 
-function addClientInterceptors(client: AxiosInstance) {
-  client.interceptors.request.use(
-    async (config) => {
-      const url = config.url || '';
-      const isPublicPath = publicPaths.some(path => url.indexOf(path) !== -1);
-
-      if (!tokens.accessToken) {
-        const session = await getSession();
-        if (session) {
-          setTokens(session?.accessToken || '', session?.refreshToken || '');
-        }
-      }
-
-      if (!isPublicPath && tokens.accessToken) {
-        config.headers.Authorization = `Bearer ${tokens.accessToken}`;
-      }
-
-      return config;
-    },
-    (error) => Promise.reject(error)
-  );
-
-  client.interceptors.response.use(
-    (response) => response,
-    async (error) => {
-      const originalRequest = error.config;
-      if (error.response?.status === 401) {
-        const errorData = error.response?.data;
-        if (errorData?.code === 5 && !originalRequest._retry && tokens.refreshToken) {
-          originalRequest._retry = true;
-
-          try {
-            const refreshResponse = await fetch(`${BASE_URL}/auth/refresh`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ refresh_token: tokens.refreshToken }),
-            });
-
-            if (refreshResponse.ok) {
-              const refreshData = await refreshResponse.json();
-              setTokens(refreshData.access_token, refreshData.refresh_token);
-              originalRequest.headers.Authorization = `Bearer ${refreshData.access_token}`;
-              return client(originalRequest);
-            } else {
-              console.log('Token refresh failed:', refreshResponse.status);
-            }
-          } catch (refreshError) {
-            console.error('Error refreshing token:', refreshError);
-          }
-        }
-
-        setTokens('', '');
-
-        try {
-          await signOut({ callbackUrl: '/login', redirect: true });
-        } catch (logoutError) {
-          window.location.href = '/login';
-        }
-
-        return Promise.reject(null);
-      }
-      return Promise.reject(error);
-    }
-  );
-}
-
-let isServerTokenExpired = false;
-function addServerInterceptors(client: AxiosInstance) {
-  client.interceptors.request.use(
-    async (config) => {
-      const url = config.url || '';
-      const isPublicPath = publicPaths.some(path => url.indexOf(path) !== -1);
-      if (!isPublicPath) {
-        try {
-          const session = await getServerSession(authOptions);
-          if (session?.accessToken) {
-            config.headers.Authorization = `Bearer ${session.accessToken}`;
-          }
-        } catch (error) {
-          console.log('Failed to get server session:', error);
-          return Promise.reject(error);
-        }
-      }
-      return config;
-    },
-    (error) => Promise.reject(error)
-  );
-  // Response interceptor для SSR (логування 401)
-  client.interceptors.response.use(
-    (response) => response,
-    async (error) => {
-      if (error.response?.status === 401) {
-        isServerTokenExpired = true;
-        // redirect('/login');
-      }
-      return Promise.reject(error);
-    }
-  );
-}
-
 const axiosClient = createAxiosClient();
+
+axiosClient.interceptors.request.use(
+  async (config) => {
+    const url = config.url || '';
+    const isPublicPath = publicPaths.some(path => url.indexOf(path) !== -1);
+
+    if (!tokens.accessToken) {
+      const session = await getSession();
+      if (session) {
+        setTokens(session?.accessToken || '', session?.refreshToken || '');
+      }
+    }
+
+    if (!isPublicPath && tokens.accessToken) {
+      config.headers.Authorization = `Bearer ${tokens.accessToken}`;
+    }
+
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+axiosClient.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    if (error.response?.status === 401) {
+      const errorData = error.response?.data;
+      if (errorData?.code === 5 && !originalRequest._retry && tokens.refreshToken) {
+        originalRequest._retry = true;
+
+        try {
+          const refreshResponse = await fetch(`${BASE_URL}/auth/refresh`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ refresh_token: tokens.refreshToken }),
+          });
+
+          if (refreshResponse.ok) {
+            const refreshData = await refreshResponse.json();
+            setTokens(refreshData.access_token, refreshData.refresh_token);
+            originalRequest.headers.Authorization = `Bearer ${refreshData.access_token}`;
+            return axiosClient(originalRequest);
+          } else {
+            console.log('Token refresh failed:', refreshResponse.status);
+          }
+        } catch (refreshError) {
+          console.error('Error refreshing token:', refreshError);
+        }
+      }
+
+      setTokens('', '');
+
+      try {
+        await signOut({ callbackUrl: '/login', redirect: true });
+      } catch (logoutError) {
+        window.location.href = '/login';
+      }
+
+      return Promise.reject(null);
+    }
+    return Promise.reject(error);
+  }
+);
+
+
 const serverAxiosClient = createAxiosClient();
-addClientInterceptors(axiosClient);
-addServerInterceptors(serverAxiosClient);
+
+serverAxiosClient.interceptors.request.use(
+  async (config) => {
+    const url = config.url || '';
+    const isPublicPath = publicPaths.some(path => url.indexOf(path) !== -1);
+    if (!isPublicPath) {
+      try {
+        if (tokens.accessToken) {
+          const session = await getServerSession(authOptions);
+          setTokens(session?.accessToken || '', session?.refreshToken || '');
+
+          config.headers.Authorization = `Bearer ${tokens.accessToken}`;
+        }
+      } catch (error) {
+        console.log('Failed to get server session:', error);
+        return Promise.reject(error);
+      }
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 export const getAxiosClient = () => {
   return getIsClient() ? axiosClient : serverAxiosClient;

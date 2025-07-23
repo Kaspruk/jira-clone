@@ -43,15 +43,14 @@ app.include_router(dashboard.router)
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 # CORS налаштування для розробки та production
-allowed_origins = [
-    "http://localhost:3000",
-    "http://192.168.68.102:3000",
-]
+allowed_origins = []
 
 # Додаємо production frontend URL якщо він існує
 frontend_url = os.getenv("FRONTEND_URL")
 if frontend_url:
     allowed_origins.append(frontend_url)
+else:
+    allowed_origins.append("*")
 
 app.add_middleware(
     CORSMiddleware,

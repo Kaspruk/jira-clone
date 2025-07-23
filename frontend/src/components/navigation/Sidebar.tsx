@@ -16,7 +16,6 @@ import { MediaQuery } from "./MediaQueryWrapper";
 const SidebarComponent = memo(() => {
   const params = useParams();
   const pathname = usePathname();
-  console.log(pathname);
   
   const isTablet = useMediaQuery({ maxWidth: 1024 });
   const [isHovered, setIsHovered] = useState(() => !isTablet);
