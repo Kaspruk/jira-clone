@@ -30,7 +30,6 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  manifest: "/manifest.json",
   icons: {
     icon: [
       { url: "/web-app-manifest-192x192.png", sizes: "192x192", type: "image/png" },
@@ -66,13 +65,13 @@ export const viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  interactiveWidget: "resizes-content",
+  interactiveWidget: "overlays-content",
   colorScheme: "light dark",
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#FDFCFB" },
     { media: "(prefers-color-scheme: dark)", color: "#1F1F1F" },
   ],
-  // viewportFit: "cover",
+  viewportFit: "cover",
 };
 
 export default function RootLayout({

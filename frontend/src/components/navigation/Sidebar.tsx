@@ -81,14 +81,14 @@ const SidebarComponent = memo(() => {
   return (
     <aside
       className={cn(
-        "lg:block min-w-aside-md lg:min-w-aside-lg h-vh overflow-y-auto transition-all duration-300",
+        "lg:block min-w-aside-md lg:min-w-aside-lg h-vh overflow-y-auto transition-[margin-left] duration-300",
         isHome && "-ml-aside-md lg:-ml-aside-lg"
       )}
     >
       <div 
         ref={sidebarRef}
         className={cn(
-          "fixed top-0 h-full pt-10 p-4 z-20 transition-all duration-300 bg-background overflow-hidden",
+          "fixed top-0 h-full pt-10 p-4 z-20 transition-[width,shadow] duration-300 bg-background overflow-hidden",
           // Базова ширина для планшетів і десктопа
           "w-aside-md lg:w-aside-lg",
           // При hover на планшетах розширюємо до повної ширини

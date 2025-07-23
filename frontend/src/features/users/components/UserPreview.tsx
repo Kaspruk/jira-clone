@@ -50,7 +50,7 @@ export const UserPreview = memo(({ className, isCollapsed = false, onOpenChange 
         <DropdownMenu onOpenChange={onOpenChange}>
             <DropdownMenuTrigger asChild>
                 <div className={cn(
-                    "flex items-center rounded-lg cursor-pointer hover:bg-muted transition-all duration-200",
+                    "flex items-center rounded-lg cursor-pointer hover:bg-muted transition-[background-color,gap,padding] duration-200",
                     isCollapsed 
                         ? "p-1.5 justify-center rounded-full"
                         : "gap-3 p-2",

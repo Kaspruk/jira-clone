@@ -23,7 +23,7 @@ const ViewTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <h1
     ref={ref}
-    className={cn("font-semibold leading-none tracking-tight text-xl max-sm:text-lg animate-slide-left delay-100", className)}
+    className={cn("font-semibold leading-none tracking-tight text-xl max-sm:text-lg delay-100", className)}
     {...props}
   />
 ))

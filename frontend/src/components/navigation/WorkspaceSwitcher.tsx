@@ -51,7 +51,7 @@ export const WorkspaceSwitcher = memo(({ isMobile = false, isReadonly = false, i
             <SelectTrigger 
                 variant={(isCollapsed || isReadonly) ? "preview" : "default"}
                 className={cn(
-                    "bg-muted/50 hover:bg-muted border-border font-medium h-auto transition-all duration-300",
+                    "bg-muted/50 hover:bg-muted border-border font-medium h-auto transition-[margin-left,width,height] duration-300",
                     isReadonly && "pointer-events-none ml-0",
                     isCollapsed ? "p-0.5 ml-0 w-8 h-8" : "p-1.5",
                     isMobile && "min-w-8 min-h-8"
@@ -93,7 +93,7 @@ export const WorkspaceSwitcher = memo(({ isMobile = false, isReadonly = false, i
 
     return (
         <div className={cn(
-            "flex flex-col gap-y-3 transition-all duration-300", 
+            "flex flex-col gap-y-3 transition-[gap-y] duration-300", 
             isCollapsed && "gap-y-0"
         )}>
             <div 
@@ -116,7 +116,7 @@ export const WorkspaceSwitcher = memo(({ isMobile = false, isReadonly = false, i
                 <RiAddCircleFill
                     title="Створити новий workspace"
                     className={cn(
-                        "size-5 text-muted-foreground cursor-pointer hover:text-primary transition-all duration-300",
+                        "size-5 text-muted-foreground cursor-pointer hover:text-primary transition-opacity duration-300",
                         isCollapsed && "max-lg:opacity-0 max-lg:pointer-events-none"
                     )}
                     onClick={handleCreateWorkspace}
@@ -137,7 +137,7 @@ const WorkspaceDisplay = ({ workspace, isCollapsed = false }: WorkspaceDisplayPr
     
     return (
         <div className={cn(
-            "flex items-center gap-2 transition-all duration-300",
+            "flex items-center gap-2 transition-[gap] duration-300",
             isCollapsed && "max-lg:justify-center max-lg:gap-0"
         )}>
             <div className={cn(
@@ -150,7 +150,7 @@ const WorkspaceDisplay = ({ workspace, isCollapsed = false }: WorkspaceDisplayPr
                 "flex flex-col text-left",
                 isCollapsed && "max-lg:opacity-0 max-lg:pointer-events-none max-lg:w-0 max-lg:overflow-hidden"
             )}>
-                <span className="font-medium text-sm">{workspace.name}</span>
+                <span className="font-medium text-sm whitespace-nowrap">{workspace.name}</span>
                 <span className="text-xs text-muted-foreground">{workspace.description}</span>
             </div>
         </div>
