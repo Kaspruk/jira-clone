@@ -40,9 +40,6 @@ const DrawerContent = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <DrawerPortal>
     <DrawerOverlay />
-    <DrawerPrimitive.Description>
-      Avoid errors when using the drawer component with the description component.
-    </DrawerPrimitive.Description>
     <DrawerPrimitive.Content
       ref={ref}
       className={cn(
@@ -51,6 +48,9 @@ const DrawerContent = React.forwardRef<
       )}
       {...props}
     >
+      <DrawerPrimitive.Description className="hidden">
+        Avoid errors when using the drawer component with the description component.
+      </DrawerPrimitive.Description>
       <div className="mx-auto mt-4 min-h-2 w-[100px] rounded-full bg-muted" />
       {children}
     </DrawerPrimitive.Content>

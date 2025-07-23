@@ -13,8 +13,6 @@ import { SlideUpContainer } from "@/components/animations";
 
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { signOut } from "next-auth/react";
-import { cookies } from "next/headers";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -23,7 +21,6 @@ interface DashboardLayoutProps {
 export default async function DashboardLayout(props: DashboardLayoutProps) {
   const session = await getServerSession(authOptions);
   const userId = session?.user?.id;
-  console.log('dashboard layout session', session, userId)
 
   if (!session || !userId) {
     redirect('/login');
