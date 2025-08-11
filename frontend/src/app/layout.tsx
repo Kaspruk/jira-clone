@@ -6,13 +6,12 @@ import { cn } from "@/lib/utils";
 import { Providers } from "./providers";
 import { Toaster } from "@/components/ui/sonner";
 
-import "quill/dist/quill.snow.css";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
 const materialIcons = localFont({
-  src: "./material-icons.woff2",
+  src: "../../public/fonts/material-icons.woff2",
   style: "normal",
   display: "swap",
   variable: "--font-material-icons",
@@ -71,7 +70,7 @@ export const viewport = {
     { media: "(prefers-color-scheme: light)", color: "#FDFCFB" },
     { media: "(prefers-color-scheme: dark)", color: "#1F1F1F" },
   ],
-  // viewportFit: "cover",
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -85,7 +84,7 @@ export default function RootLayout({
         className={cn(
           inter.className,
           materialIcons.variable,
-          "flex antialiased min-h-screen-safe bg-background max-md:flex-col"
+          "flex antialiased min-h-screen bg-background max-md:flex-col"
         )}
       >
         <Providers>

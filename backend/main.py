@@ -2,6 +2,7 @@ from typing import Callable
 from urllib.request import Request
 import os
 import uvicorn
+from dotenv import load_dotenv
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
@@ -12,6 +13,8 @@ from app.database import get_db_connection
 from app.schemas import SCHEMAS
 from app.routers import users, workspaces, projects, tasks, task_statuses, task_priorities, task_types, dashboard, auth
 from app.models import ResponseException
+
+load_dotenv('.env')
 
 def setup_database():
     """Ініціалізація бази даних при запуску сервера."""

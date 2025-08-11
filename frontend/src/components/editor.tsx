@@ -10,6 +10,7 @@ import React, {
 } from "react";
 import { ControllerRenderProps } from "react-hook-form";
 import { QuillOptions } from "quill";
+import "quill/dist/quill.snow.css";
 
 const theme = 'snow';
 

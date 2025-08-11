@@ -1,9 +1,6 @@
 from typing import Any, Dict, Optional
 from datetime import datetime
-from app.constants import ErrorMessages
 from pydantic import BaseModel, EmailStr
-from fastapi.responses import JSONResponse
-from fastapi import HTTPException
 
 class WorkspaceModel(BaseModel):
     name: str

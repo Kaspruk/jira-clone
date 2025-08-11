@@ -1,5 +1,3 @@
-"use client";
-
 import { LuLoader, LuArrowLeft } from "react-icons/lu";
 import { View, ViewTitle } from "@/components/ui/view";
 import { Skeleton } from "@/components/ui/skeleton";

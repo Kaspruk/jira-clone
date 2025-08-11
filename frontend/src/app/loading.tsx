@@ -1,5 +1,3 @@
-"use client";
-
 import { LuLoader } from "react-icons/lu";
 
 const LoadingPage = () => {
