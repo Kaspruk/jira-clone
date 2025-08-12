@@ -1,5 +1,3 @@
-"use client";
-
 import { LuLoader, LuPlus } from "react-icons/lu";
 import { View, ViewTitle } from "@/components/ui/view";
 import { Button } from "@/components/ui/button";

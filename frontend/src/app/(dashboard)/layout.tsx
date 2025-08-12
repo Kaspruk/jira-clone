@@ -56,9 +56,10 @@ export default async function DashboardLayout(props: DashboardLayoutProps) {
           <div className="absolute top-[80%] left-[30%] w-60 h-60 bg-primary/5 rounded-full blur-3xl" />
           <div className="absolute top-[12%] left-[35%] w-36 h-36 bg-primary/6 rounded-full blur-2xl" />
         </div>
-        <SlideUpContainer>
+        {props.children}
+        {/* <SlideUpContainer>
           {props.children}
-        </SlideUpContainer>
+        </SlideUpContainer> */}
       </main>
       <BottomBar />
       <WorkspaceModal />

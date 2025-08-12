@@ -6,9 +6,6 @@ import { getProject, getProjects } from "@/features/projects";
 import { BackButton } from "@/components/navigation";
 import { getUsers } from "@/features/users/api";
 
-// Робимо сторінку динамічною для підтримки автентифікації
-export const dynamic = 'force-dynamic';
-
 export default async function Task({ params }: { params: Promise<{ taskId: string }> }) {
     const data = await params;
     const taskId = Number(data.taskId);

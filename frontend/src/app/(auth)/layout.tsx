@@ -1,17 +1,17 @@
 import { ReactNode } from "react";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { authOptions } from "@/lib/auth";
-import { getServerSession } from "next-auth";
 
 interface AuthLayoutProps {
     children: ReactNode;
 }
 
-export default async function AuthLayout({ children }: AuthLayoutProps) {
-    const session = await getServerSession(authOptions);
-
+export default function AuthLayout({ children }: AuthLayoutProps) {
     return (
         <div className="min-h-screen w-screen bg-background relative overflow-hidden flex items-center justify-center p-4">
+            <CheckAuth />
             {/* Decorative background elements */}
             <div className="absolute top-0 left-0 w-full h-full">
                 <div className="absolute top-[10%] left-[5%] w-72 h-72 bg-primary/25 rounded-full blur-3xl" />
@@ -46,4 +46,12 @@ export default async function AuthLayout({ children }: AuthLayoutProps) {
             </div>
         </div>
     );
+}
+
+async function CheckAuth() {
+    const session = await getServerSession(authOptions);
+    if (session) {
+        redirect("/");
+    }
+    return null;
 }
