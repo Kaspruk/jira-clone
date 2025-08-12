@@ -24,8 +24,8 @@ export const LoginForm = () => {
         setError,
     } = useForm<LoginDataType>({
         defaultValues: {
-            email: "andrii@example.com",
-            password: "123456",
+            email: "",
+            password: "",
         },
     });
 

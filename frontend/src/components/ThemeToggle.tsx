@@ -109,7 +109,7 @@ export const ThemeToggle = memo(() => {
           size="sm"
           onClick={() => changeTheme(themeOption.value)}
           className={cn(
-            "h-8 px-3 flex-1 transition-all duration-200",
+            "h-8 px-3 flex-1 transition-[background-color,border-radius] duration-200",
             index === 0 && "rounded-r-none border-r",
             index === 1 && "rounded-none border-r",
             index === 2 && "rounded-l-none",

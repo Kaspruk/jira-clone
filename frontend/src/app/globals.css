@@ -291,7 +291,9 @@ button.bg-primary, .btn-primary, .bg-primary {
 
 /* Hover ефекти для карток */
 .card-hover {
-  transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  transition-property: transform, box-shadow;
+  transition-duration: 0.3s;
+  transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
 .card-hover:hover {

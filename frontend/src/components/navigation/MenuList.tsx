@@ -124,7 +124,7 @@ function MenuItem ({ href, isActive, isCollapsed, icon, label, isMobile = false 
         <Link href={href}>
           <div
             className={cn(
-              "flex items-center gap-2.5 p-2.5 rounded-lg font-medium transition-all duration-300 text-muted-foreground hover:bg-muted/50 hover:text-foreground whitespace-nowrap",
+              "flex items-center gap-2.5 p-2.5 rounded-lg font-medium transition-[color,background-color,padding,gap] duration-300 text-muted-foreground hover:bg-muted/50 hover:text-foreground whitespace-nowrap",
               isActive && "text-primary hover:text-primary/60",
               (isActive && (!isCollapsed && !isMobile)) && "bg-primary/10 hover:bg-primary/15",
               isCollapsed && "max-lg:pl-1.5",

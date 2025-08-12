@@ -19,12 +19,12 @@ const SelectGroup = SelectPrimitive.Group
 const SelectValue = SelectPrimitive.Value
 
 const selectTriggerStyles = cva(
-  "focus:outline-none flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm ring-offset-transparent placeholder:text-muted-foreground focus:ring-2 focus:ring-primary/50 focus:border-primary disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200",
+  "focus:outline-none flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm ring-offset-transparent placeholder:text-muted-foreground focus:ring-2 focus:ring-primary/50 focus:border-primary disabled:cursor-not-allowed disabled:opacity-50 transition-colors duration-200",
   {
     variants: {
       variant: {
         default: "h-10 border border-border bg-background text-foreground shadow-sm",
-        preview: "-ml-3 hover:ml-0 hover:bg-muted transition-all outline-none",
+        preview: "-ml-3 hover:ml-0 hover:bg-muted transition-[margin-left,background-color,color] outline-none",
       },
     },
     defaultVariants: {

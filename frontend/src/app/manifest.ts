@@ -44,19 +44,8 @@ export default function manifest(): MetadataRoute.Manifest {
             "sizes": "192x192"
           }
         ]
-      },
-      {
-        "name": "Tasks",
-        "short_name": "Tasks",
-        "description": "View all tasks",
-        "url": "/dashboard/tasks",
-        "icons": [
-          {
-            "src": "/web-app-manifest-192x192.png",
-            "sizes": "192x192"
-          }
-        ]
       }
     ]
-  } ;
+  }
 }
+

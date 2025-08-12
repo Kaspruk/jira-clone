@@ -52,7 +52,7 @@ export const EditableEditor = ({
                 <div
                     onClick={handleClick}
                     className={cn(
-                        "cursor-pointer hover:bg-muted p-2 -ml-2 hover:ml-0 rounded-lg transition-all duration-200",
+                        "cursor-pointer hover:bg-muted p-2 -ml-2 hover:ml-0 rounded-lg transition-[background-color,margin-left] duration-200",
                         className
                     )}
                     role="button"

@@ -173,7 +173,7 @@ export const DataTable: React.NamedExoticComponent<DataTableProps> & {
                                     key={row.id} 
                                     onClick={onClick}
                                     className={cn(
-                                        "transition-all duration-200 animate-slide-up",
+                                        "transition-[background-color,box-shadow] duration-200",
                                         "hover:bg-muted/50 hover:shadow-sm",
                                         onClick && "cursor-pointer",
                                         "data-[state=selected]:bg-muted",
