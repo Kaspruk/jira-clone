@@ -24,7 +24,7 @@ const BottomBarComponent = memo(() => {
       <div className={
         cn(
           "fixed left-0 right-0 h-bottom-bar p-1.5 border-t border-border bg-background/95 backdrop-blur-sm z-20 transition-[bottom] duration-300",
-          "standalone:pb-5 standalone:pt-2 standalone:h-auto standalone:min-h-bottom-bar",
+          "standalone:pb-7 standalone:pt-2 standalone:h-auto standalone:min-h-bottom-bar",
           isHome ? "-bottom-bottom-bar" : "bottom-0"
         )
       }>
