@@ -46,7 +46,7 @@ export const ProjectActions = memo(({ projectId, children }: TaskActionsProps) =
     <>
       <ConfirmDialog />
       <DropdownMenu modal={false}>
-        <DropdownMenuTrigger asChild>
+        <DropdownMenuTrigger>
           {children}
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-48">
