@@ -9,12 +9,12 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
+load_dotenv('.env')
+
 from app.database import get_db_connection
 from app.schemas import SCHEMAS
 from app.routers import users, workspaces, projects, tasks, task_statuses, task_priorities, task_types, dashboard, auth
 from app.models import ResponseException
-
-load_dotenv('.env')
 
 def setup_database():
     """Ініціалізація бази даних при запуску сервера."""

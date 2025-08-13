@@ -32,21 +32,26 @@ export const LoginForm = () => {
     const { mutate: login, isPending } = useLogin();
 
     const onSubmit = (data: LoginDataType) => {
-        router.prefetch("/");
-        login(data, {
-            onSuccess: () => {
-                router.push("/");
-            },
-            onError: (error: any) => {
-                if (error.code === 4) {
-                    setError("password", { message: error.message });
-                } else if (error.code === 3) {
-                    setError("email", { message: error.message });
-                } else if (error.code === 2) {
-                    setError("root", { message: error?.message || "Помилка входу в систему" });
+        try {
+            router.prefetch("/");
+            login(data, {
+                onSuccess: () => {
+                    console.log('Login successful');
+                    router.push("/");
+                },
+                onError: (error: any) => {
+                    if (error.code === 4) {
+                        setError("password", { message: error.message });
+                    } else if (error.code === 3) {
+                        setError("email", { message: error.message });
+                    } else if (error.code === 2) {
+                        setError("root", { message: error?.message || "Помилка входу в систему" });
+                    }
                 }
-            }
-        });
+            });
+        } catch (error) {
+            console.error('Error logging in:', error);
+        }
     };
 
     return (

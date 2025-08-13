@@ -13,6 +13,11 @@ from app.services.users import UserService
 
 # Конфігурація
 SECRET_KEY = os.getenv("SECRET_KEY")
+# Явна перевірка ключа, щоб уникнути помилки "Expecting a string- or bytes-formatted key"
+if not SECRET_KEY or not isinstance(SECRET_KEY, str):
+    raise RuntimeError(
+        "SECRET_KEY is missing or invalid. Set SECRET_KEY in your backend .env file (string)."
+    )
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 15
 REFRESH_TOKEN_EXPIRE_DAYS = 7
