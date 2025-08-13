@@ -33,7 +33,6 @@ export const LoginForm = () => {
 
     const onSubmit = (data: LoginDataType) => {
         try {
-            router.prefetch("/");
             login(data, {
                 onSuccess: () => {
                     console.log('Login successful');
