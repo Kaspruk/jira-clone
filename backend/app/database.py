@@ -5,7 +5,7 @@ import os
   
 DATABASE_URL = os.getenv("DATABASE_URL", "")
 
-print(DATABASE_URL)
+print('---DATABASE_URL---', DATABASE_URL)
 
 @contextmanager
 def get_db_connection():

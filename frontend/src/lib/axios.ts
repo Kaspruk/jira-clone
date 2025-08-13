@@ -1,5 +1,4 @@
 import axios, { AxiosInstance } from 'axios';
-import { redirect } from 'next/navigation';
 import { getSession, signOut } from 'next-auth/react';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from './auth';
@@ -108,7 +107,8 @@ axiosClient.interceptors.response.use(
 
       try {
         await signOut({ callbackUrl: '/login', redirect: true });
-      } catch (logoutError) {
+      } catch (error) {
+        console.error('Error signing out:', error);
         window.location.href = '/login';
       }
 
@@ -125,18 +125,16 @@ serverAxiosClient.interceptors.request.use(
   async (config) => {
     const url = config.url || '';
     const isPublicPath = publicPaths.some(path => url.indexOf(path) !== -1);
-    if (!isPublicPath) {
-      try {
-        if (tokens.accessToken) {
-          const session = await getServerSession(authOptions);
-          setTokens(session?.accessToken || '', session?.refreshToken || '');
+    try {
+      const session = await getServerSession(authOptions);
+      setTokens(session?.accessToken || '', session?.refreshToken || '');
 
-          config.headers.Authorization = `Bearer ${tokens.accessToken}`;
-        }
-      } catch (error) {
-        console.log('Failed to get server session:', error);
-        return Promise.reject(error);
+      if (!isPublicPath && tokens.accessToken) {
+        config.headers.Authorization = `Bearer ${tokens.accessToken}`;
       }
+    } catch (error) {
+      console.log('Failed to get server session:', error);
+      return Promise.reject(error);
     }
     return config;
   },

@@ -143,6 +143,7 @@ export const TaskForm = memo((props: TaskFormType) => {
                             <Input
                                 {...field}
                                 id="title"
+                                inputSize="md"
                                 placeholder="Text task title"
                             />
                         )}

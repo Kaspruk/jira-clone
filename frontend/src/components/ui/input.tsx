@@ -7,8 +7,9 @@ const inputVariants = cva(
   "flex w-full rounded-lg border border-border bg-background px-4 py-2 text-base text-foreground placeholder:text-muted-foreground transition-[border-color,box-shadow] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50",
   {
     variants: {
-      size: {
+      inputSize: {
         default: "max-sm:h-10 h-12 px-4 py-2 text-base",
+        md: "h-10 px-4 py-2 text-base",
         sm: "h-8 px-2 py-1 text-sm",
       },
       variant: {
@@ -22,7 +23,7 @@ const inputVariants = cva(
       }
     },
     defaultVariants: {
-      size: "default",
+      inputSize: "default",
       variant: "default",
     },
   }
@@ -33,13 +34,13 @@ export type InputProps = React.InputHTMLAttributes<HTMLInputElement>
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   (props, ref) => {
-    const { className, type, size, variant, error = false, ...inputProps } = props;
+    const { className, type, inputSize, variant, error = false, ...inputProps } = props;
 
     return (
       <input
         type={type}
         className={cn(inputVariants({
-          size,
+          inputSize,
           error,
           variant,
           className

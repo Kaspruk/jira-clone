@@ -1,6 +1,7 @@
 "use client";
 
 import { memo } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useLogout } from "@/features/auth/api";
@@ -28,6 +29,7 @@ export const UserPreview = memo(({ className, isCollapsed = false, onOpenChange 
     const { mutate: logout } = useLogout();
     
     const handleLogout = async () => {
+        router.prefetch('/login');
         logout(undefined, {
             onSuccess: () => {
                 router.push('/login');
@@ -91,11 +93,13 @@ export const UserPreview = memo(({ className, isCollapsed = false, onOpenChange 
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem 
-                    onClick={() => router.push('/profile')}
+                    asChild
                     className="cursor-pointer"
                 >
-                    <Icon name="edit" size={16} className="mr-2" />
-                    Edit Profile
+                    <Link href="/profile">
+                        <Icon name="edit" size={16} className="mr-2" />
+                        Edit Profile
+                    </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem 
                     onClick={handleLogout}

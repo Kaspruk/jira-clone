@@ -12,6 +12,7 @@ router = APIRouter(
 
 @router.post("/register", response_model=UserResponse, summary="Реєстрація нового користувача")
 def register(user_data: UserModel, db=Depends(get_db_connection)):
+    print('user_data', user_data)
     try:
         with db as connection:
             return AuthService.register_user(user_data, connection)

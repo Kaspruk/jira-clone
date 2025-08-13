@@ -1,7 +1,6 @@
 "use client";
 
 import { memo } from "react";
-import { useRouter } from "next/navigation";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { AiOutlineEye, AiOutlineEdit, AiOutlineDelete } from "react-icons/ai";
 import {
@@ -15,13 +14,13 @@ import { Button } from "@/components/ui/button";
 import { useConfirm } from "@/hooks/use-confirm";
 import { useWorkspaceModalState } from "../hooks";
 import { useDeleteWorkspace } from "../api";
+import Link from "next/link";
 
 interface WorkspaceActionsProps {
   workspaceId: number;
 }
 
 export const WorkspaceActions = memo(({ workspaceId }: WorkspaceActionsProps) => {
-  const router = useRouter();
   const [_, setWorkspaceId] = useWorkspaceModalState();
   const { mutate: deleteWorkspace, isPending: isDeleting } = useDeleteWorkspace();
 
@@ -30,10 +29,6 @@ export const WorkspaceActions = memo(({ workspaceId }: WorkspaceActionsProps) =>
     "This action cannot be undone.",
     "destructive"
   );
-
-  const handleView = () => {
-    router.push(`/${workspaceId}/projects`);
-  };
 
   const handleEdit = () => {
     setWorkspaceId(workspaceId);
@@ -69,15 +64,11 @@ export const WorkspaceActions = memo(({ workspaceId }: WorkspaceActionsProps) =>
             </DropdownMenuTrigger>
             
             <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        handleView();
-                    }}
-                    className="cursor-pointer"
-                >
-                    <AiOutlineEye className="size-4 mr-2 stroke-2" />
-                    View
+                <DropdownMenuItem asChild onClick={(e) => e.stopPropagation()}>
+                    <Link href={`/${workspaceId}/projects`} className="flex items-center">
+                        <AiOutlineEye className="size-4 mr-2 stroke-2" />
+                        View
+                    </Link>
                 </DropdownMenuItem>
                 
                 <DropdownMenuItem

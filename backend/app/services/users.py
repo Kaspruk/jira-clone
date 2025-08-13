@@ -24,6 +24,7 @@ class UserService:
         try:
             with connection.cursor() as cur:
                 cur.execute(UserSchemes.CREATE_USER, (
+                    None,
                     user.username,
                     user.email,
                     UserService.get_password_hash(user.password)
@@ -48,9 +49,6 @@ class UserService:
         with connection.cursor() as cur:
             cur.execute(UserSchemes.GET_USERS)
             users = cur.fetchall()
-            print('--------------------------------')
-            print('users', users)
-            print('--------------------------------')
             return users
         
     @staticmethod
@@ -143,9 +141,6 @@ class UserService:
     
     @staticmethod
     def change_user_password(user_id: int, password_data: UserPasswordChangeModel, connection):
-        print('--------------------------------')
-        print('user_id', user_id)
-        print('--------------------------------')
         """Змінити пароль користувача"""
         try:
             # Отримуємо поточні дані користувача            

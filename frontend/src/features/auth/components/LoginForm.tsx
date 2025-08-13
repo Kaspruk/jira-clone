@@ -32,6 +32,7 @@ export const LoginForm = () => {
     const { mutate: login, isPending } = useLogin();
 
     const onSubmit = (data: LoginDataType) => {
+        router.prefetch("/");
         login(data, {
             onSuccess: () => {
                 router.push("/");

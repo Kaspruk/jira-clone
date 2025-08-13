@@ -1,7 +1,8 @@
 "use client";
 
 import { memo, useMemo } from "react";
-import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
+import { useParams } from "next/navigation";
 import { TaskType } from "@/features/types";
 import { getQueryClient } from "@/lib/react-query";
 import { QueriesKeys } from "@/lib/constants";
@@ -14,7 +15,6 @@ import { NavigationState } from "./constants";
 
 const BackButtonComponent = memo(() => {
     const params = useParams();
-    const router = useRouter();
     const queryClient = getQueryClient();
     const navigationState = getNavidationStateKey(params as Record<string, string>);
 
@@ -30,21 +30,15 @@ const BackButtonComponent = memo(() => {
         }
     }, [navigationState, params]);
 
-    const handleBack = () => {
-        if (!backUrl) {
-            return;
-        }
-
-        router.push(backUrl);
-    }
-
     return (
         <Button
+            asChild
             size="iconSm"
             variant="outline"
-            onClick={handleBack}
         >
-            <Icon name="arrow_back" size={18} />
+            <Link href={backUrl}>
+                <Icon name="arrow_back" size={18} />
+            </Link>
         </Button>
     );
 });

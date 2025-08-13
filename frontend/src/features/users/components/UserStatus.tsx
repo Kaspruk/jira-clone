@@ -18,6 +18,7 @@ export const UserStatus = memo(() => {
   const router = useRouter();
 
   const handleLogout = async () => {
+    router.prefetch('/login');
     logout(undefined, {
       onSuccess: () => {
         router.push('/login');

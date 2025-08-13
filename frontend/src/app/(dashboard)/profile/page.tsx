@@ -8,8 +8,6 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { UserAvatar } from "@/features/users/components/UserAvatar";
 import { UserForm } from "@/features/users/components/UserForm";
 import { UserStatus } from "@/features/users/components/UserStatus";
-import { Button } from "@/components/ui/button";
-import { Icon } from "@/components/ui/icon";
 
 export default async function ProfilePage() {
     const session = await getServerSession(authOptions);

@@ -13,9 +13,9 @@ from app.services.users import UserService
 
 # Конфігурація
 SECRET_KEY = os.getenv("SECRET_KEY")
-ALGORITHM = os.getenv("ALGORITHM")
-ACCESS_TOKEN_EXPIRE_MINUTES = os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
-REFRESH_TOKEN_EXPIRE_DAYS = os.getenv("REFRESH_TOKEN_EXPIRE_DAYS")
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 15
+REFRESH_TOKEN_EXPIRE_DAYS = 7
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -103,13 +103,18 @@ class AuthService:
     @staticmethod
     def login_user(user_data: UserLoginModel, connection, response: Response = None):
         """Увійти в систему з створенням JWT токенів"""
+        print('--------------------------------')
+        print('user_data', user_data)
         user = AuthService.authenticate_user(user_data.email, user_data.password, connection)
+        print('user', user)
         
         if not user:
             raise ResponseException(status_code=status.HTTP_401_UNAUTHORIZED, message="Неправильний email або пароль", headers={"WWW-Authenticate": "Bearer"})
         
         # Створюємо JWT токени
         tokens = AuthService.create_token_pair(user)
+        print('tokens', tokens)
+        print('--------------------------------')
         
         # Гібридний підхід: access_token доступний для JS, refresh_token httpOnly для безпеки
         if response:

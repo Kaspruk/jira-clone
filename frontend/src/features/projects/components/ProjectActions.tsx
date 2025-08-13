@@ -1,7 +1,7 @@
 'use client';
 
 import { memo } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { 
   LuTrash2 as TrashIcon,
   LuExternalLink,
@@ -15,6 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { HoverPrefetchLink } from "@/components/HoverPrefetchLink";
 
 import { useDeleteProject } from "../api";
 
@@ -24,7 +25,6 @@ interface TaskActionsProps {
 };
 
 export const ProjectActions = memo(({ projectId, children }: TaskActionsProps) => {
-  const router = useRouter();
   const params = useParams();
   const workspaceId = Number(params.workspaceId);
   
@@ -41,14 +41,6 @@ export const ProjectActions = memo(({ projectId, children }: TaskActionsProps) =
 
     mutate(projectId);
   };
-
-  const onOpenProjectDetail = () => {
-    router.push(`/${workspaceId}/projects/${projectId}/settings`);
-  };
-
-  const onOpenTask = () => {
-    router.push(`/${workspaceId}/projects/${projectId}/tasks`);
-  };
   
   return (
     <>
@@ -58,19 +50,23 @@ export const ProjectActions = memo(({ projectId, children }: TaskActionsProps) =
           {children}
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-48">
-          <DropdownMenuItem
-            onClick={onOpenTask}
-            className="cursor-pointer font-medium"
-          >
-            <LuExternalLink className="size-4 mr-2 stroke-2" />
-            Prtoject tasks
+          <DropdownMenuItem asChild>
+            <HoverPrefetchLink
+              href={`/${workspaceId}/projects/${projectId}/tasks`}
+              className="flex items-center"
+            >
+              <LuExternalLink className="size-4 mr-2 stroke-2" />
+              Prtoject tasks
+            </HoverPrefetchLink>
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={onOpenProjectDetail}
-            className="cursor-pointer font-medium"
-          >
-            <LuSettings className="size-4 mr-2 stroke-2" />
-            Settings
+          <DropdownMenuItem asChild>
+            <HoverPrefetchLink
+              href={`/${workspaceId}/projects/${projectId}/settings`}
+              className="flex items-center"
+            >
+              <LuSettings className="size-4 mr-2 stroke-2" />
+              Settings
+            </HoverPrefetchLink>
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={onDelete}

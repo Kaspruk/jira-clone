@@ -1,7 +1,6 @@
 'use client';
 
 import { memo } from "react";
-import { useRouter } from "next/navigation";
 import { 
   LuTrash2 as TrashIcon,
   LuExternalLink
@@ -16,6 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { HoverPrefetchLink } from "@/components/HoverPrefetchLink";
 
 import { useDeleteTask } from "../api";
 
@@ -28,7 +28,6 @@ interface TaskActionsProps {
 
 export const TaskActions = memo(({ taskId, children }: TaskActionsProps) => {
   // const workspaceId = useWorkspaceId();
-  const router = useRouter();
 
   // const { open } = useEditTaskModal();
   
@@ -51,10 +50,6 @@ export const TaskActions = memo(({ taskId, children }: TaskActionsProps) => {
   // const onOpenProjectDetail = () => {
   //   router.push(`/projects/${projectId}/tasks/`);
   // };
-
-  const onOpenTask = () => {
-    router.push(`/tasks/${taskId}/`);
-  };
   
   return (
     <>
@@ -64,12 +59,14 @@ export const TaskActions = memo(({ taskId, children }: TaskActionsProps) => {
           {children}
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-48">
-          <DropdownMenuItem
-            onClick={onOpenTask}
-            className="font-medium p-[10px]"
-          >
-            <LuExternalLink className="size-4 mr-2 stroke-2" />
-            Open task
+          <DropdownMenuItem asChild>
+            <HoverPrefetchLink
+              href={`/tasks/${taskId}`}
+              className="flex items-center font-medium p-[10px]"
+            >
+              <LuExternalLink className="size-4 mr-2 stroke-2" />
+              Open task
+            </HoverPrefetchLink>
           </DropdownMenuItem>
           {/* <DropdownMenuItem
             onClick={onOpenProject}

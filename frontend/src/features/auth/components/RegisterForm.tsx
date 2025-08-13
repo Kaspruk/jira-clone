@@ -32,6 +32,7 @@ export const RegisterForm = () => {
             });
             return;
         }
+        router.prefetch("/login");
 
         register(data, {
             onSuccess: () => {

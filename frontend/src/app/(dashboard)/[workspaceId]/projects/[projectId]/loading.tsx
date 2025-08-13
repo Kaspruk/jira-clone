@@ -16,7 +16,7 @@ const ProjectLoadingPage = () => {
 
       {/* Navigation tabs skeleton */}
       <div className="flex space-x-1 mb-6">
-        {['Overview', 'Tasks', 'Settings'].map((tab, index) => (
+        {['Overview', 'Tasks', 'Settings'].map((tab) => (
           <div
             key={tab}
             className="px-4 py-2 rounded-lg"
