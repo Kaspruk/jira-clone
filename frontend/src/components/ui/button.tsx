@@ -83,9 +83,17 @@ export interface ButtonProps
 const Button = (props: ButtonProps) => {
   const { ref, className, variant, size, asChild = false, loading, children, ...restProps } = props;
 
-  const Comp = asChild ? Slot : "button"
+  if (asChild) {
+    const child = React.Children.only(children) as React.ReactElement;
+    return (
+      <Slot className={buttonVariants({ variant, size, className })} ref={ref} {...restProps}>
+        {child}
+      </Slot>
+    );
+  }
+
   return (
-    <Comp
+    <button
       className={buttonVariants({ variant, size, className })}
       ref={ref}
       {...restProps}
@@ -106,7 +114,7 @@ const Button = (props: ButtonProps) => {
       >
         {children}
       </span>
-    </Comp>
+    </button>
   )
 }
 Button.displayName = "Button"
